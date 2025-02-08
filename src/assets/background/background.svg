@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="431" height="881" viewBox="0 0 431 881">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_86" data-name="Rectángulo 86" width="431" height="881" fill="#192a54"/>
+    </clipPath>
+  </defs>
+  <g id="Enmascarar_grupo_4" data-name="Enmascarar grupo 4" clip-path="url(#clip-path)">
+    <rect id="Rectángulo_80" data-name="Rectángulo 80" width="431" height="881" fill="#192a54"/>
+    <g id="Elipse_13" data-name="Elipse 13" transform="translate(174 -96)" fill="none" stroke="#192a54" stroke-width="100" opacity="0.5" style="mix-blend-mode: overlay;isolation: isolate">
+      <circle cx="223" cy="223" r="223" stroke="none"/>
+      <circle cx="223" cy="223" r="173" fill="none"/>
+    </g>
+    <g id="Elipse_14" data-name="Elipse 14" transform="translate(-183 -166)" fill="none" stroke="#192a54" stroke-width="80" opacity="0.5" style="mix-blend-mode: overlay;isolation: isolate">
+      <circle cx="166" cy="166" r="166" stroke="none"/>
+      <circle cx="166" cy="166" r="126" fill="none"/>
+    </g>
+  </g>
+</svg>

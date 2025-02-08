@@ -1,0 +1,18 @@
+<ion-footer *ngIf="isVisible">
+  <div
+    class="tab-bar"
+    [ngStyle]="{ 'background-color': background }"
+  >
+    @for(button of buttons; track button){
+    <ng-container>
+      @if (button.visible){
+      <div class="tab-button" (click)="navigate(button.route)">
+        <ion-icon [name]="button.icon"></ion-icon>
+      </div>
+      }@else {
+      <div class="tab-button empty"></div>
+      }
+    </ng-container>
+    }
+  </div>
+</ion-footer>
