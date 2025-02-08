@@ -1,0 +1,7 @@
+{
+  "name": "beneficiate_frontend",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
