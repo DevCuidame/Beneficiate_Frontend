@@ -1,5 +1,12 @@
 ng generate component modules/auth/pages/register 
 ng generate component modules/auth/pages/login 
+ng generate component pages/pages
+
+ng generate component shared/components/beneficiary-card
+
+ng generate component modules/beneficiary/add-beneficiary
+
+ng generate module modules/beneficiary
 
 /mi-proyecto-ionic  
 │── e2e/                   # Pruebas end-to-end  

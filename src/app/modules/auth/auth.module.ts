@@ -38,6 +38,6 @@ import { AuthContainerComponent } from './components/auth-container/auth-contain
     AuthGuard,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA] // 👈 Agregado para permitir Web Components
+  schemas: [CUSTOM_ELEMENTS_SCHEMA] 
 })
 export class AuthModule {}

@@ -1,0 +1,110 @@
+<ion-content scroll-y="false">
+  <div class="dash-header">
+    <p>Hola, {{ user?.first_name }}</p>
+    <p>Buenos días</p>
+  </div>
+
+  <div class="card">
+    <div class="profile-container">
+      <div class="circle left">
+        <img [src]="profileImage" [alt]="user?.first_name" />
+      </div>
+      <div class="content">
+        @if (user?.plan?.name === 'Básico') {
+        <ion-icon name="star-outline"></ion-icon>
+        }@else {
+        <fa-icon style="color: var(--ion-color-secondary);" [icon]="faCrown"></fa-icon>
+        }
+        <div class="plan-name">
+          {{ user?.plan?.name }}
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-container">
+      <div
+        class="nav-item"
+        [class.active]="activeTab === 'info'"
+        (click)="setActiveTab('info')"
+      >
+        Salud Info.
+      </div>
+      <div
+        class="nav-item"
+        [class.active]="activeTab === 'beneficios'"
+        (click)="setActiveTab('beneficios')"
+      >
+        Beneficios
+      </div>
+      <div
+        class="nav-item"
+        [class.active]="activeTab === 'planes'"
+        (click)="setActiveTab('planes')"
+      >
+        Planes
+      </div>
+    </div>
+
+    <div class="options-container">
+      @if(activeTab === 'info'){
+      <app-basic-data [user]="user"></app-basic-data>
+      }@else if (activeTab === 'beneficios') {
+      <div class="basic-data-box">
+        <p>{{ user?.plan?.name }}</p>
+        <p>{{ user?.plan?.description }}</p>
+      </div>
+      }@else {
+      <div class="plan-box">
+        <div>Plan Familiar</div>
+        <div>Plan Individual</div>
+      </div>
+      }
+    </div>
+
+    <!-- Slider -->
+
+    <div class="buttons-container">
+      <div
+        class="selected-indicator"
+        [ngStyle]="{ 'border-radius': selectedIndicatorBorder }"
+        id="selectedIndicator"
+      >
+        <p>{{ selectedButtonText }}</p>
+      </div>
+      <div class="buttons">
+        <div
+          class="button"
+          id="firstOption"
+          (click)="selectButton('Beneficiarios')"
+          [ngClass]="{ active: selectedButtonText === 'Beneficiarios' }"
+        >
+          <span>Beneficiarios</span>
+        </div>
+        <div
+          class="button"
+          id="secondOption"
+          (click)="selectButton('Servicios')"
+          [ngClass]="{ active: selectedButtonText === 'Servicios' }"
+        >
+          <span>Servicios</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Beneficiary Cards -->
+
+    <app-beneficiary-card
+      [beneficiaries]="beneficiaries"
+    ></app-beneficiary-card>
+  </div>
+</ion-content>
+
+<app-tab-bar
+  [isVisible]="true"
+  [buttons]="[
+    { icon: 'arrow-back-outline', route: '/', visible: true },
+    { icon: 'menu-outline', route: '/', visible: true },
+    { icon: 'exit-outline', route: '/', visible: true }
+  ]"
+  [background]="'var(--ion-color-dark)'"
+></app-tab-bar>

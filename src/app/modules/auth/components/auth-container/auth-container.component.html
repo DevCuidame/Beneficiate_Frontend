@@ -9,7 +9,7 @@
       ¿No tienes cuenta? <a (click)="toggleView()">Regístrate aquí</a>
     </p>
     }@else {
-    <app-register></app-register>
+    <app-register (registerSuccess)="switchToLogin()"></app-register>
     <p class="toggle-text">
       ¿Ya tienes cuenta? <a (click)="toggleView()">Inicia sesión</a>
     </p>

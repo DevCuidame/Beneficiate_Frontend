@@ -18,4 +18,8 @@ export class AuthContainerComponent {
   toggleView() {
     this.isLoginView = !this.isLoginView;
   }
+
+  switchToLogin() {
+    this.isLoginView = true; 
+  }
 }

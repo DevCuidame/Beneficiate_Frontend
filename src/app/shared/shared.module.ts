@@ -4,6 +4,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { CustomButtonComponent } from './components/custom-button/custom-button.component';
 import { TabBarComponent } from './components/tab-bar/tab-bar.component';
+import { BasicDataComponent } from './components/basic-data/basic-data.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { BeneficiaryCardComponent } from './components/beneficiary-card/beneficiary-card.component';
 
 @NgModule({
   imports: [
@@ -11,9 +14,12 @@ import { TabBarComponent } from './components/tab-bar/tab-bar.component';
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    CustomButtonComponent,
-    TabBarComponent // ✅ Importamos el componente standalone
+    CustomButtonComponent,// ✅ Importamos los componentes standalone
+    TabBarComponent,
+    BasicDataComponent,
+    BeneficiaryCardComponent,
+    FontAwesomeModule
   ],
-  exports: [CustomButtonComponent] // ✅ Lo exportamos para otros módulos
+  exports: [CustomButtonComponent,BasicDataComponent, TabBarComponent, BasicDataComponent, BeneficiaryCardComponent ] // ✅ Los exportamos para otros módulos
 })
 export class SharedModule {}

@@ -12,7 +12,11 @@
 >
   <div class="image-upload-container">
     <div class="image-circle" (click)="selectImage()">
-      <img *ngIf="selectedImage" [src]="selectedImage" alt="User Image" />
+      <img
+        *ngIf="selectedImage"
+        [src]="registerForm.get('base_64')?.value"
+        alt="User Image"
+      />
       <div *ngIf="!selectedImage" class="upload-icon"></div>
       <div class="small-circle">
         <ion-icon class="camera-icon" name="camera"></ion-icon>
@@ -23,27 +27,24 @@
       id="imageInput"
       (change)="onImageSelected($event)"
       hidden
+      accept="image/*"
     />
   </div>
-    <div class="custom-input full-width">
-      <label for="first_name">Nombres</label>
-      <input
-        id="first_name"
-        type="text"
-        formControlName="first_name"
-        required
-      />
-      <p class="error-text" *ngIf="getErrorMessage('first_name')">
-        {{ getErrorMessage("first_name") }}
-      </p>
-    </div>
-    <div class="custom-input full-width">
-      <label for="last_name">Apellidos</label>
-      <input id="last_name" type="text" formControlName="last_name" required />
-      <p class="error-text" *ngIf="getErrorMessage('last_name')">
-        {{ getErrorMessage("last_name") }}
-      </p>
-    </div>
+
+  <div class="custom-input full-width">
+    <label for="first_name">Nombres</label>
+    <input id="first_name" type="text" formControlName="first_name" required />
+    <p class="error-text" *ngIf="getErrorMessage('first_name')">
+      {{ getErrorMessage("first_name") }}
+    </p>
+  </div>
+  <div class="custom-input full-width">
+    <label for="last_name">Apellidos</label>
+    <input id="last_name" type="text" formControlName="last_name" required />
+    <p class="error-text" *ngIf="getErrorMessage('last_name')">
+      {{ getErrorMessage("last_name") }}
+    </p>
+  </div>
   <p class="error-text" *ngIf="getErrorMessage('first_name')">
     {{ getErrorMessage("first_name") }}
   </p>
@@ -57,6 +58,8 @@
       <select id="identification_type" formControlName="identification_type">
         <option value="CC">Cédula</option>
         <option value="TI">Tarjeta de Identidad</option>
+        <option value="PASSPORT">Pasaporte</option>
+        <option value="OTHER">Otro</option>
       </select>
     </div>
 
@@ -64,7 +67,7 @@
       <label for="identification_number">Número de Identificación</label>
       <input
         id="identification_number"
-        type="number"
+        type="text"
         formControlName="identification_number"
         required
       />
@@ -86,14 +89,14 @@
     </div>
 
     <div class="custom-input half-width">
-      <label for="city_id">Departamento</label>
-      <input id="city_id" type="number" formControlName="city_id" required />
+      <label >Departamento</label>
+      <input  type="number" required />
     </div>
   </div>
 
   <div class="custom-input full-width">
     <label for="phone">Teléfono</label>
-    <input id="phone" type="number" formControlName="phone" required />
+    <input id="phone" type="text" formControlName="phone" required />
     <p class="error-text" *ngIf="getErrorMessage('phone')">
       {{ getErrorMessage("phone") }}
     </p>

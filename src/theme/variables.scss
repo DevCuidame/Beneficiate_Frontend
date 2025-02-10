@@ -8,6 +8,7 @@
     --ion-color-light: #FFFFFF;
     --ion-color-medium: #D8E7EE;
     --ion-color-dark: #192A54;
+    --ion-color-card: #89bbd5;
   
     /* Colores personalizados */
     --ion-color-custom-blue: #4A7AF6;
@@ -15,7 +16,7 @@
     --ion-color-custom-yellow: #E8D641;
     --ion-color-custom-gray: #FFF9F9;
     --ion-color-custom-dark-blue: #275289;
-    --ion-color-custom-gradient: linear-gradient(45deg, #4A7AF6, #36ABDE);
+    --ion-color-custom-gradient: radial-gradient( #D8E7EE , #275289);
   }
   
   .ion-color-custom-blue {

@@ -1,0 +1,31 @@
+<div class="card-container">
+  @for (beneficiary of beneficiaries; track beneficiary.id) {
+  <div class="card" (click)="goToBeneficiary(beneficiary.id)">
+    @if(beneficiary.image && beneficiary.image.image_path) {
+    <img
+      [src]="environment + beneficiary.image.image_path.replace('\\', '/')"
+      [alt]="beneficiary.first_name"
+    />
+    }@else {
+    <ng-template #defaultImage>
+      <img
+        src="/src/assets/images/default_user.png"
+        [alt]="beneficiary.first_name"
+      />
+    </ng-template>
+    }
+
+    <h3 appResizeText>{{ beneficiary.first_name }}</h3>
+    <img class="crown" src="/assets/icon/crown.svg" alt="basic" />
+  </div>
+  } @empty {
+  <!-- <li>There are no items.</li> -->
+  }
+
+  <!-- Botón para agregar un nuevo beneficiario -->
+  <div class="add-card" (click)="createBeneficiary()">
+    <div class="add-circle">
+      <ion-icon name="add-circle"></ion-icon>
+    </div>
+  </div>
+</div>

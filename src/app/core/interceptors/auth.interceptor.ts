@@ -42,29 +42,8 @@ export class AuthInterceptor implements HttpInterceptor {
     
     return next.handle(clonedReq).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401 && !this.isRefreshing) {
-          this.isRefreshing = true;
-          this.refreshTokenSubject.next(null);
-
-          return this.authService.refreshToken().pipe(
-            switchMap((newToken: any) => {
-              this.isRefreshing = false;
-              localStorage.setItem('token', newToken.token);
-              this.refreshTokenSubject.next(newToken.token);
-              return next.handle(req.clone({
-                setHeaders: { Authorization: `Bearer ${newToken.token}` }
-              }));
-            }),
-            catchError(refreshError => {
-              this.isRefreshing = false;
-              localStorage.removeItem('token');
-              this.router.navigate(['/auth/login']);
-              return throwError(refreshError);
-            })
-          );
-        } else if (error.status === 401) {
-          localStorage.removeItem('token');
-          this.router.navigate(['/auth/login']);
+        if (error.status === 401) {
+          return this.handle401Error(clonedReq, next);
         } else if (error.status === 500) {
           this.presentToast('Error del servidor, intenta más tarde');
         } else if (error.status === 0) {
@@ -73,5 +52,39 @@ export class AuthInterceptor implements HttpInterceptor {
         return throwError(error);
       })
     );
+  }
+
+  private handle401Error(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    if (!this.isRefreshing) {
+      this.isRefreshing = true;
+      this.refreshTokenSubject.next(null);
+
+      return this.authService.refreshToken().pipe(
+        switchMap((newToken: any) => {
+          this.isRefreshing = false;
+          localStorage.setItem('token', newToken.token);
+          this.refreshTokenSubject.next(newToken.token);
+
+          // REENVIAR LA SOLICITUD ORIGINAL CON EL NUEVO TOKEN
+          return next.handle(req.clone({
+            setHeaders: { Authorization: `Bearer ${newToken.token}` }
+          }));
+        }),
+        catchError(refreshError => {
+          this.isRefreshing = false;
+          this.authService.logout(); // Limpia todo y redirige al login
+          this.router.navigate(['/auth/login']);
+          return throwError(refreshError);
+        })
+      );
+    } else {
+      return this.refreshTokenSubject.pipe(
+        filter(token => token != null),
+        take(1),
+        switchMap(token => next.handle(req.clone({
+          setHeaders: { Authorization: `Bearer ${token}` }
+        })))
+      );
+    }
   }
 }

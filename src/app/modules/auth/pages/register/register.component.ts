@@ -1,6 +1,6 @@
 
 // src/app/modules/auth/pages/register/register.page.ts
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -20,6 +20,7 @@ import { CustomButtonComponent } from 'src/app/shared/components/custom-button/c
 
 })
 export class RegisterComponent {
+  @Output() registerSuccess = new EventEmitter<void>();
   passwordVisible: boolean = false;
   confirmPasswordVisible: boolean = false;
   registerForm: FormGroup;
@@ -52,13 +53,15 @@ export class RegisterComponent {
       identification_type: ['', Validators.required],
       identification_number: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
       address: ['', Validators.required],
-      city_id: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+      city: [null, Validators.required],
       phone: ['', [Validators.required, Validators.pattern('^[0-9-]+$')]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d@$!%*?&]+$')]],
+      password: ['', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)[A-Za-z\\d@$!%*?&]{8,}$')
+      ]],
       confirmPassword: ['', [Validators.required]],
       public_name: ['', Validators.maxLength(50)],
-      base_64: ['']
+      base_64: [''],
+      privacy_policy: [false, Validators.requiredTrue]
     }, { validator: this.passwordMatchValidator });
 
     this.setupRealTimeValidation();
@@ -99,17 +102,23 @@ export class RegisterComponent {
       const loading = await this.loadingCtrl.create({ message: 'Registrando...' });
       await loading.present();
       const { confirmPassword, ...registerData } = this.registerForm.value;
+
+      const registerPayload = {
+        ...registerData,
+        city_id: registerData.city.id, 
+      };
+      delete registerPayload.city;
       
-      this.authService.register(registerData as RegisterData).subscribe(
+      this.authService.register(registerPayload as RegisterData).subscribe(
         async () => {
           await loading.dismiss();
           const alert = await this.alertCtrl.create({
             header: 'Registro exitoso',
-            message: 'Tu cuenta ha sido creada con éxito.',
+            message: 'Tu cuenta ha sido creada con éxito. Por favor, revisa tu correo.',
             buttons: ['OK']
           });
           await alert.present();
-          this.router.navigate(['/auth/login']);
+          this.registerSuccess.emit();
         },
         async (error) => {
           await loading.dismiss();
@@ -132,15 +141,45 @@ export class RegisterComponent {
     document.getElementById('imageInput')?.click();
   }
 
-  onImageSelected(event: any) {
+  async onImageSelected(event: any) {
     const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.selectedImage = reader.result;
-        this.file_pub_name = file.name;
-      };
-      reader.readAsDataURL(file);
+  
+    if (!file) return;
+  
+    // Validar tipo de archivo (aceptamos HEIC, JPEG, PNG y GIF)
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/heic', 'image/heif'];
+    if (!validTypes.includes(file.type)) {
+      const alert = await this.alertCtrl.create({
+        header: 'Formato no válido',
+        message: 'Solo se permiten imágenes en formato JPG, PNG, GIF o HEIC.',
+        buttons: ['OK']
+      });
+      await alert.present();
+      return;
     }
+  
+    // Validar tamaño (máximo 2MB)
+    const maxSize = 5 * 1024 * 1024; // 2MB
+    if (file.size > maxSize) {
+      const alert = await this.alertCtrl.create({
+        header: 'Archivo demasiado grande',
+        message: 'El tamaño máximo permitido es 2MB.',
+        buttons: ['OK']
+      });
+      await alert.present();
+      return;
+    }
+    // Convertir imagen a base64
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.selectedImage = e.target.result;
+      this.registerForm.patchValue({
+        base_64: e.target.result, 
+        public_name: file.name 
+      });
+    };
+    reader.readAsDataURL(file);
   }
+  
+  
 }
