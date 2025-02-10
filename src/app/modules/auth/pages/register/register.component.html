@@ -77,6 +77,35 @@
     </div>
   </div>
 
+  <div class="form-row">
+    <div class="custom-input half-width">
+      <label for="gender">Género</label>
+      <select id="gender" formControlName="gender">
+        <option value="M">Masculino</option>
+        <option value="F">Femenino</option>
+        <option value="Other">Otro</option>
+      </select>
+      <p class="error-text" *ngIf="getErrorMessage('gender')">
+        {{ getErrorMessage("gender") }}
+      </p>
+    </div>
+
+    <div class="custom-input half-width">
+      <label for="birth_date">Fecha de nacimiento</label>
+      <input
+        id="birth_date"
+        type="date"
+        formControlName="birth_date"
+        required
+      />
+      <p class="error-text" *ngIf="getErrorMessage('birth_date')">
+        {{ getErrorMessage("birth_date") }}
+      </p>
+    </div>
+  </div>
+
+
+
   <div class="custom-input full-width">
     <label for="address">Dirección</label>
     <input id="address" type="text" formControlName="address" required />
@@ -84,19 +113,28 @@
 
   <div class="form-row">
     <div class="custom-input half-width">
-      <label for="city_id">Ciudad</label>
-      <input id="city_id" type="number" formControlName="city_id" required />
+      <label for="department">Departamento</label>
+      <select id="department" formControlName="department">
+        <option *ngFor="let department of departments" [value]="department.id">
+          {{ department.name }}
+        </option>
+      </select>
     </div>
-
+  
     <div class="custom-input half-width">
-      <label >Departamento</label>
-      <input  type="number" required />
+      <label for="city">Ciudad</label>
+      <select id="city" formControlName="city">
+        <option *ngFor="let city of cities" [value]="city.id">
+          {{ city.name }}
+        </option>
+      </select>
     </div>
   </div>
+  
 
   <div class="custom-input full-width">
     <label for="phone">Teléfono</label>
-    <input id="phone" type="text" formControlName="phone" required />
+    <input id="phone" type="number" formControlName="phone" required />
     <p class="error-text" *ngIf="getErrorMessage('phone')">
       {{ getErrorMessage("phone") }}
     </p>
@@ -130,9 +168,10 @@
       formControlName="confirmPassword"
       required
     />
-    <p class="error-text" *ngIf="getErrorMessage('confirmPassword')">
-      {{ getErrorMessage("confirmPassword") }}
+    <p class="error-text" *ngIf="registerForm.get('confirmPassword')?.hasError('mismatch')">
+      Las contraseñas no coinciden.
     </p>
+      
   </div>
 
   <div class="custom-checkbox">
@@ -142,7 +181,7 @@
       formControlName="privacy_policy"
       required
     />
-    <label for="privacy_policy" class="checkbox-label">
+    <label for="privacy_policy" class="checkbox-label" (ionChange)="registerForm.updateValueAndValidity()">
       <span class="checkmark"></span>
       Acepto las
       <a href="/privacy-policy" target="_blank">políticas de privacidad</a> y el

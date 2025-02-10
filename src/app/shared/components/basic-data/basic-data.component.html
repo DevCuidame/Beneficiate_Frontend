@@ -7,75 +7,77 @@
       <!-- Identity Card -->
       <div class="item">
         <div class="item-icon icon-1">
-          <i class="fa-solid fa-address-card"></i>
+          <fa-icon [icon]="faAddressCard"></fa-icon>
         </div>
         <div class="item-info">
-          <p>{{ user?.identification_number || 'No aplica'}}</p>
-          <p>{{ user?.identification_type || 'No aplica'}}</p>
+          <p>{{ user?.identification_number || 'No aplica' }}</p>
+          <p>{{ user?.identification_type || 'No aplica' }}</p>
         </div>
       </div>
       <!-- Happy Birthday -->
       <div class="item">
         <div class="item-icon icon-3">
-          <i class="fa-solid fa-cake-candles"></i>
+          <fa-icon [icon]="faCakeCandles"></fa-icon>
         </div>
         <div class="item-info">
-          <p>{{ user?.birth_date || 'No aplica'}}</p>
+          <p>{{ user?.birth_date || 'No aplica' }}</p>
           <p>Fecha Nacimiento</p>
         </div>
       </div>
       <!-- Address -->
       <div class="item">
         <div class="item-icon icon-5">
-          <i class="fa-solid fa-house"></i>
+          <fa-icon [icon]="faHouse"></fa-icon>
         </div>
         <div class="item-info">
-          <p>{{ user?.address || 'No aplica'}}</p>
+          <p>{{ user?.address || 'No aplica' }}</p>
           <p>Dirección</p>
         </div>
       </div>
       <!-- Department -->
       <div class="item">
         <div class="item-icon icon-7">
-          <i class="fa-solid fa-map"></i>
+          <fa-icon [icon]="faMap"></fa-icon>
         </div>
         <div>
           <div class="item-info">
-            <p>{{ user?.location?.department_name}}</p>
+            <p>{{ user?.location?.department_name }}</p>
             <p>Departamento</p>
           </div>
         </div>
       </div>
     </div>
     <div class="parent-column">
+      <!-- Gender -->
       <div class="item">
         <div class="item-icon icon-4">
-          <i class="fa-solid fa-person-half-dress"></i>
+          <fa-icon [icon]="faPersonHalfDress"></fa-icon>
         </div>
         <div class="item-info">
-          <p>{{ user?.gender || 'No aplica'}}</p>
+          <p>{{ user?.gender || 'No aplica' }}</p>
           <p>Género</p>
         </div>
       </div>
+      <!-- Phone -->
       <div class="item">
         <div class="item-icon icon-2">
-          <i class="fa-solid fa-phone"></i>
+          <fa-icon [icon]="faPhone"></fa-icon>
         </div>
         <div class="item-info">
-          <p>{{ user?.phone || 'No aplica'}}</p>
+          <p>{{ user?.phone || 'No aplica' }}</p>
           <p>Teléfono</p>
         </div>
       </div>
+      <!-- City -->
       <div class="item">
         <div class="item-icon icon-6">
-          <i class="fa-solid fa-city"></i>
+          <fa-icon [icon]="faCity"></fa-icon>
         </div>
         <div class="item-info">
-          <p>{{ user?.location?.township_name || 'No aplica'}}</p>
+          <p>{{ user?.location?.township_name || 'No aplica' }}</p>
           <p>Ciudad</p>
         </div>
       </div>
-
     </div>
   </div>
 </div>

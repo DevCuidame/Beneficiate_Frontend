@@ -7,8 +7,8 @@ ion-content {
     display: flex;
     text-align: start;
     color: var(--ion-color-dark);
-    font-size: medium;
-    font-size: 1.063;
+    font-size: 1.063rem;
+    padding: 15px 0 0 0;
   }
 
   .form-row {
@@ -206,3 +206,6 @@ ion-content {
   .checkbox-label a:hover {
     text-decoration: underline;
   }
+
+
+  

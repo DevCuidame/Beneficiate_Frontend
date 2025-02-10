@@ -12,7 +12,19 @@ export class BeneficiaryService {
   private beneficiariesSubject = new BehaviorSubject<Beneficiary[]>([]);
   public beneficiaries$ = this.beneficiariesSubject.asObservable();
 
-  constructor(private http: HttpClient, private userService: UserService) {}
+  private beneficiaryCountSubject = new BehaviorSubject<number>(0);
+  public beneficiaryCount$ = this.beneficiaryCountSubject.asObservable();
+
+  public maxBeneficiariesSubject = new BehaviorSubject<number>(5);
+  public maxBeneficiaries$ = this.maxBeneficiariesSubject.asObservable();
+
+  constructor(private http: HttpClient, private userService: UserService) {
+    this.userService.user$.subscribe((user) => {
+      if (user?.plan?.max_beneficiaries) {
+        this.maxBeneficiariesSubject.next(user.plan.max_beneficiaries);
+      }
+    });
+  }
 
   addBeneficiary(data: Beneficiary): Observable<any> {
     const user = this.userService.getUser();
@@ -39,6 +51,7 @@ export class BeneficiaryService {
             ];
 
             this.beneficiariesSubject.next(updatedBeneficiaries);
+            this.updateBeneficiaryCount(updatedBeneficiaries.length);
 
             localStorage.setItem(
               'beneficiaries',
@@ -53,6 +66,7 @@ export class BeneficiaryService {
 
   setBeneficiaries(beneficiaries: Beneficiary[]): void {
     this.beneficiariesSubject.next(beneficiaries);
+    this.updateBeneficiaryCount(beneficiaries.length);
   }
 
   getBeneficiaries(): Beneficiary[] {
@@ -61,5 +75,10 @@ export class BeneficiaryService {
 
   clearBeneficiaries(): void {
     this.beneficiariesSubject.next([]);
+    this.updateBeneficiaryCount(0); 
+  }
+
+  private updateBeneficiaryCount(count: number): void {
+    this.beneficiaryCountSubject.next(count);
   }
 }

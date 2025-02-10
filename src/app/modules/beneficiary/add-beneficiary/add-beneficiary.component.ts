@@ -18,6 +18,7 @@ import { BeneficiaryService } from 'src/app/modules/auth/services/beneficiary.se
 import { debounceTime } from 'rxjs';
 import { TabBarComponent } from 'src/app/shared/components/tab-bar/tab-bar.component';
 import { CustomButtonComponent } from 'src/app/shared/components/custom-button/custom-button.component';
+import { LocationService } from '../../auth/services/location.service';
 
 @Component({
   selector: 'app-add-beneficiary',
@@ -49,12 +50,16 @@ export class AddBeneficiaryComponent implements OnInit {
     phone: 'Debe ser un número de teléfono válido.',
   };
 
+  public departments: any[] = [];
+  public cities: any[] = [];
+
   constructor(
     private fb: FormBuilder,
     private beneficiaryService: BeneficiaryService,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
-    public navCtrl: NavController
+    public navCtrl: NavController,
+    private locationService: LocationService
   ) {
     this.beneficiaryForm = this.fb.group({
       first_name: [
@@ -72,6 +77,7 @@ export class AddBeneficiaryComponent implements OnInit {
       ],
       address: ['', Validators.required],
       city_id: ['', Validators.required],
+      department: ['', Validators.required],
       phone: ['', [Validators.required, Validators.pattern('^[0-9-]+$')]],
       birth_date: ['', Validators.required],
       gender: ['', Validators.required],
@@ -87,7 +93,30 @@ export class AddBeneficiaryComponent implements OnInit {
     this.setupRealTimeValidation();
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.loadDepartments();
+
+    // Escuchar cambios en el departamento seleccionado y actualizar las ciudades
+    this.beneficiaryForm
+      .get('department')
+      ?.valueChanges.subscribe((departmentId) => {
+        this.loadCities(departmentId);
+      });
+  }
+
+  loadDepartments() {
+    this.locationService.fetchDepartments();
+    this.locationService.departments$.subscribe((departments) => {
+      this.departments = departments;
+    });
+  }
+
+  loadCities(departmentId: number) {
+    this.locationService.fetchCitiesByDepartment(departmentId);
+    this.locationService.cities$.subscribe((cities) => {
+      this.cities = cities;
+    });
+  }
 
   setupRealTimeValidation() {
     this.beneficiaryForm.valueChanges.pipe(debounceTime(300)).subscribe(() => {
@@ -117,10 +146,7 @@ export class AddBeneficiaryComponent implements OnInit {
 
       const beneficiaryData = { ...this.beneficiaryForm.value };
 
-      console.log(
-        '🚀 ~ AddBeneficiaryComponent ~ saveBeneficiary ~ beneficiaryData:',
-        beneficiaryData
-      );
+ 
       this.beneficiaryService
         .addBeneficiary(beneficiaryData as Beneficiary)
         .subscribe(

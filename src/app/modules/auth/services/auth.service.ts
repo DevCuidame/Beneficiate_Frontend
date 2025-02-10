@@ -26,6 +26,10 @@ export class AuthService {
         localStorage.setItem('user', JSON.stringify(response.data.user));
         this.userService.setUser(response.data.user as User);
 
+        if (response.data.plan?.max_beneficiaries) {
+          this.beneficiaryService.maxBeneficiariesSubject.next(response.data.plan.max_beneficiaries);
+        }  
+
          // Guardar beneficiarios
          if (response.data.beneficiaries) {
           localStorage.setItem('beneficiaries', JSON.stringify(response.data.beneficiaries));

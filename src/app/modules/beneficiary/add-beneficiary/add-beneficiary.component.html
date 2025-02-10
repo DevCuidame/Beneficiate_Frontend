@@ -62,8 +62,21 @@
         </ion-item>
 
         <ion-item>
-          <ion-input label="Ciudad" labelPlacement="floating" type="text" formControlName="city_id" required></ion-input>
+          <ion-select label="Departamento" labelPlacement="floating" interface="popover" formControlName="department" required>
+            <ion-select-option *ngFor="let department of departments" [value]="department.id">
+              {{ department.name }}
+            </ion-select-option>
+          </ion-select>
         </ion-item>
+        
+        <ion-item>
+          <ion-select label="Ciudad" labelPlacement="floating" interface="popover" formControlName="city_id" required>
+            <ion-select-option *ngFor="let city of cities" [value]="city.id">
+              {{ city.name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        
 
         <ion-item>
           <ion-input label="Teléfono" labelPlacement="floating" type="text" formControlName="phone" required></ion-input>
