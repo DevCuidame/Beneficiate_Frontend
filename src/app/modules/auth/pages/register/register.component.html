@@ -29,6 +29,9 @@
       hidden
       accept="image/*"
     />
+    <p class="error-text" *ngIf="getErrorMessage('first_name')">
+      {{ getErrorMessage("img_user") }}
+    </p>
   </div>
 
   <div class="custom-input full-width">
@@ -120,7 +123,7 @@
         </option>
       </select>
     </div>
-  
+
     <div class="custom-input half-width">
       <label for="city">Ciudad</label>
       <select id="city" formControlName="city">
@@ -130,7 +133,7 @@
       </select>
     </div>
   </div>
-  
+
 
   <div class="custom-input full-width">
     <label for="phone">Teléfono</label>
@@ -171,7 +174,7 @@
     <p class="error-text" *ngIf="registerForm.get('confirmPassword')?.hasError('mismatch')">
       Las contraseñas no coinciden.
     </p>
-      
+
   </div>
 
   <div class="custom-checkbox">
