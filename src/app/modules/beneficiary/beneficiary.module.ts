@@ -8,6 +8,7 @@ import { AddBeneficiaryComponent } from './add-beneficiary/add-beneficiary.compo
 import { AuthGuard } from 'src/app/core/guards/auth.guard';
 import { HomeBeneficiaryComponent } from './home-beneficiary/home-beneficiary.component';
 import { BeneficiaryHeaderComponent } from 'src/app/shared/components/beneficiary-header/beneficiary-header.component';
+import { PrimaryCardComponent } from 'src/app/shared/components/primary-card/primary-card.component';
 
 const routes: Routes = [
   {
@@ -40,7 +41,7 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes),
     TabBarComponent,
-    BeneficiaryHeaderComponent
+    BeneficiaryHeaderComponent,
   ],
 })
 export class BeneficiaryModule { }

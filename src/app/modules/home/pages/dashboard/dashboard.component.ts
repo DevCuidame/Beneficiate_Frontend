@@ -12,11 +12,12 @@ import { BeneficiaryService } from 'src/app/modules/auth/services/beneficiary.se
 import { BeneficiaryCardComponent } from 'src/app/shared/components/beneficiary-card/beneficiary-card.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCrown } from '@fortawesome/free-solid-svg-icons';
+import { PrimaryCardComponent } from 'src/app/shared/components/primary-card/primary-card.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, IonicModule, TabBarComponent, BasicDataComponent, BeneficiaryCardComponent, FontAwesomeModule], // Advertencia
+  imports: [CommonModule, IonicModule, TabBarComponent, BasicDataComponent, BeneficiaryCardComponent, FontAwesomeModule, PrimaryCardComponent], // Advertencia
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })

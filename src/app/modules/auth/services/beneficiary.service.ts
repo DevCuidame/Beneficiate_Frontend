@@ -75,6 +75,10 @@ export class BeneficiaryService {
     this.updateBeneficiaryCount(beneficiaries.length);
   }
   setActiveBeneficiary(beneficiary: Beneficiary): void {
+    
+    if (Array.isArray(beneficiary.location) && beneficiary.location.length > 0) {
+      beneficiary.location = beneficiary.location[0];
+    }
     this.activeBeneficiarySubject.next(beneficiary);
     localStorage.setItem('activeBeneficiary', JSON.stringify(beneficiary));
   }

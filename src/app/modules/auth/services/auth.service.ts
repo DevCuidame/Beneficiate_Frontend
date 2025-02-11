@@ -49,6 +49,7 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('beneficiaries');
+    localStorage.removeItem('activeBeneficiary');
     this.authState.next(false);
     this.userService.clearUser();
     this.beneficiaryService.clearBeneficiaries();

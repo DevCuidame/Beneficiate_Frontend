@@ -195,19 +195,16 @@ ion-icon {
   z-index: 3;
 }
 
-.basic-data-box {
+.plan-desc {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  padding: 20px;
-  border-radius: 20px;
-  background: #d8e7ee;
-  width: 100%;
-  min-height: 240px;
+  gap: 10px;
+  height: 100%;
 }
 
-.basic-data-box p {
+.plan-desc {
   font-size: 1.3rem;
   font-weight: bold;
 }
