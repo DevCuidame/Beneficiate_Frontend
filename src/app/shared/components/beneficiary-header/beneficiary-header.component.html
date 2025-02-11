@@ -1,0 +1,19 @@
+<div class="beneficiary-header">
+    <div class="info">
+      <div class="beneficiary-name" style="font-size: 4.5vw">
+        <p>
+          <span class="bold">{{activeBeneficiary?.first_name?.split(" ")}} {{activeBeneficiary?.last_name?.split(" ")}}</span>
+        </p>
+      </div>
+      <div class="beneficiary-name">
+        <p>
+          <span class="normal">¡Información vital</span> <br />
+          <span class="normal">al instante!</span>
+        </p>
+      </div>
+    </div>
+    <div class="circle">
+      <img [src]="environment + activeBeneficiary?.image?.image_path" [alt]="activeBeneficiary?.first_name" />
+      <img/>
+    </div>
+  </div>

@@ -1,6 +1,6 @@
 <div class="card-container">
   @for (beneficiary of beneficiaries; track beneficiary.id) {
-  <div class="card" (click)="goToBeneficiary(beneficiary.id)">
+  <div class="card" (click)="goToBeneficiary(beneficiary)">
     @if(beneficiary.image && beneficiary.image.image_path) {
     <img
       [src]="environment + beneficiary.image.image_path.replace('\\', '/')"

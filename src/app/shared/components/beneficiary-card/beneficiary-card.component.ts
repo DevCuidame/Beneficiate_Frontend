@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IonicModule, AlertController } from '@ionic/angular';
+import { IonicModule, AlertController, NavController } from '@ionic/angular';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
 import { environment } from 'src/environments/environment';
 import { BeneficiaryService } from 'src/app/modules/auth/services/beneficiary.service';
@@ -20,7 +20,8 @@ export class BeneficiaryCardComponent implements OnInit {
   constructor(
     private router: Router,
     private alertCtrl: AlertController,
-    private beneficiaryService: BeneficiaryService
+    private beneficiaryService: BeneficiaryService,
+    private navCtrl: NavController
   ) {}
 
   ngOnInit() {
@@ -33,9 +34,10 @@ export class BeneficiaryCardComponent implements OnInit {
     });
   }
 
-  goToBeneficiary(id: number) {
-    console.log(`Navegando a beneficiario: ${id}`);
-    // Aquí puedes agregar la navegación a la vista del beneficiario
+  goToBeneficiary(beneficiary: Beneficiary) {
+    this.beneficiaryService.setActiveBeneficiary(beneficiary)
+    this.navCtrl.navigateForward(['/beneficiary/home'])
+
   }
 
   async createBeneficiary() {

@@ -5,6 +5,7 @@ ng generate component pages/pages
 ng generate component shared/components/beneficiary-card
 
 ng generate component modules/beneficiary/add-beneficiary
+ng generate component modules/beneficiary/home-beneficiary
 
 ng generate module modules/beneficiary
 

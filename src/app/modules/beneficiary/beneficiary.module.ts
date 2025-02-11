@@ -6,6 +6,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { TabBarComponent } from 'src/app/shared/components/tab-bar/tab-bar.component';
 import { AddBeneficiaryComponent } from './add-beneficiary/add-beneficiary.component';
 import { AuthGuard } from 'src/app/core/guards/auth.guard';
+import { HomeBeneficiaryComponent } from './home-beneficiary/home-beneficiary.component';
+import { BeneficiaryHeaderComponent } from 'src/app/shared/components/beneficiary-header/beneficiary-header.component';
 
 const routes: Routes = [
   {
@@ -16,7 +18,12 @@ const routes: Routes = [
   {
     path: 'add',
     component: AddBeneficiaryComponent,
-    canActivate: [AuthGuard], // 👈 Protegemos la ruta con el guard
+    canActivate: [AuthGuard], 
+  },
+  {
+    path: 'home',
+    component: HomeBeneficiaryComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: '**',
@@ -32,7 +39,8 @@ const routes: Routes = [
     ReactiveFormsModule,
     IonicModule,
     RouterModule.forChild(routes),
-    TabBarComponent
+    TabBarComponent,
+    BeneficiaryHeaderComponent
   ],
 })
 export class BeneficiaryModule { }

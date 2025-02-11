@@ -1,0 +1,17 @@
+<ion-content scrollY="false">
+  <app-beneficiary-header></app-beneficiary-header>
+
+  <div class="options">
+    
+  </div>
+</ion-content>
+
+<app-tab-bar
+  [isVisible]="true"
+  [buttons]="[
+    { icon: 'arrow-back-outline', route: '/', visible: true },
+    { icon: 'menu-outline', route: '/', visible: true },
+    { icon: 'exit-outline', route: '/', visible: true }
+  ]"
+  [background]="'var(--ion-color-light)'"
+></app-tab-bar>

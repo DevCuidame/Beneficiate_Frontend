@@ -18,6 +18,12 @@ export class BeneficiaryService {
   public maxBeneficiariesSubject = new BehaviorSubject<number>(5);
   public maxBeneficiaries$ = this.maxBeneficiariesSubject.asObservable();
 
+  // Active beneficiary subject
+  private activeBeneficiarySubject = new BehaviorSubject<Beneficiary | null>(this.loadActiveBeneficiary());
+  public activeBeneficiary$ = this.activeBeneficiarySubject.asObservable();
+
+
+
   constructor(private http: HttpClient, private userService: UserService) {
     this.userService.user$.subscribe((user) => {
       if (user?.plan?.max_beneficiaries) {
@@ -68,6 +74,20 @@ export class BeneficiaryService {
     this.beneficiariesSubject.next(beneficiaries);
     this.updateBeneficiaryCount(beneficiaries.length);
   }
+  setActiveBeneficiary(beneficiary: Beneficiary): void {
+    this.activeBeneficiarySubject.next(beneficiary);
+    localStorage.setItem('activeBeneficiary', JSON.stringify(beneficiary));
+  }
+
+  private loadActiveBeneficiary(): Beneficiary | null {
+    const storedBeneficiary = localStorage.getItem('activeBeneficiary');
+    return storedBeneficiary ? JSON.parse(storedBeneficiary) : null;
+  }
+
+  
+  getActiveBeneficiary(): Beneficiary | null {
+    return this.activeBeneficiarySubject.value;
+  }
 
   getBeneficiaries(): Beneficiary[] {
     return this.beneficiariesSubject.value;
@@ -77,6 +97,13 @@ export class BeneficiaryService {
     this.beneficiariesSubject.next([]);
     this.updateBeneficiaryCount(0); 
   }
+
+  getBeneficiaryById(id: number | string): Observable<Beneficiary | undefined> {
+    return this.beneficiaries$.pipe(
+      map((beneficiaries) => beneficiaries.find(b => b.id === id))
+    );
+  }
+  
 
   private updateBeneficiaryCount(count: number): void {
     this.beneficiaryCountSubject.next(count);

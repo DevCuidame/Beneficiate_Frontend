@@ -16,7 +16,7 @@ import { faCrown } from '@fortawesome/free-solid-svg-icons';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, IonicModule, TabBarComponent, BasicDataComponent, BeneficiaryCardComponent, FontAwesomeModule],
+  imports: [CommonModule, IonicModule, TabBarComponent, BasicDataComponent, BeneficiaryCardComponent, FontAwesomeModule], // Advertencia
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
