@@ -6,6 +6,18 @@ ion-content {
   padding: 0 20px;
 }
 
+.scrollable-content {
+  flex: 1;
+  overflow-y: auto;
+  max-height: calc(100vh - 300px);
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+
 // ----------------------------- Options Container -----------------------------------
 
 .options-container {

@@ -10,6 +10,17 @@ ng generate component modules/beneficiary/home-beneficiary
 
 ng generate module modules/beneficiary
 
+
+ng generate component modules/beneficiary/components/conditions_list
+ng generate component modules/beneficiary/components/medicaments_allergies_list
+ng generate component modules/beneficiary/components/medical_history_list
+ng generate component modules/beneficiary/components/vacinations_list
+
+ng generate component modules/beneficiary/components/health-condition-form
+ng generate component modules/beneficiary/components/medicaments_allergies-form
+ng generate component modules/beneficiary/components/medical_history-form
+ng generate component modules/beneficiary/components/vacinations-form
+
 /mi-proyecto-ionic  
 │── e2e/                   # Pruebas end-to-end  
 │── src/  

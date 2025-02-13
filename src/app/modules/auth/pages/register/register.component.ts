@@ -14,7 +14,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { RegisterData } from 'src/app/core/interfaces/auth.interface';
 import { AlertController, LoadingController } from '@ionic/angular';

@@ -1,0 +1,35 @@
+<h2>Registro de Vacunaciones</h2>
+<form [formGroup]="form" (ngSubmit)="submitForm()">
+  <div formArrayName="vaccinations">
+    <div *ngFor="let vaccination of vaccinations.controls; let i = index" [formGroup]="getVaccinationFormGroup(i)">
+      <app-input
+        label="Vacuna"
+        type="text"
+        placeholder="Ej. Hepatitis B"
+        [control]="getFormControl(getVaccinationFormGroup(i), 'vaccine')"
+      ></app-input>
+
+      <app-input
+        label="Fecha de Vacunación"
+        type="date"
+        [control]="getFormControl(getVaccinationFormGroup(i), 'vaccination_date')"
+      ></app-input>
+
+      <button type="button" class="remove" (click)="removeVaccination(i)" [disabled]="vaccinations.length === 1">
+        - Quitar
+      </button>
+    </div>
+  </div>
+
+  <div class="add-box">
+    <button type="button" class="add" (click)="addVaccination()">+ Añadir</button>
+  </div>
+
+  <app-custom-button
+    label="Guardar"
+    type="submit"
+    [disabled]="form.invalid"
+    [textColor]="'var(--ion-color-light)'"
+    [backgroundImage]="buttonBackground"
+  ></app-custom-button>
+</form>

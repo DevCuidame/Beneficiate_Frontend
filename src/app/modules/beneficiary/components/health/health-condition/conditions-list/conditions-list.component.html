@@ -1,0 +1,35 @@
+<app-primary-card maxHeight="500px">
+  <div class="health-conditions-box">
+    <div class="h-container">
+      <h2>Enfermedades</h2>
+      @if (activeBeneficiary?.diseases?.length ?? 0 > 0) { @for (item of
+      activeBeneficiary?.diseases; track item){
+      <div class="h-card">
+        <p>{{ item.disease }}</p>
+      </div>
+      } }@else {
+      <p style="text-align: start; width: 100%;">No hay enfermedades registradas</p>
+      }
+    </div>
+    <div>
+      <h2>Condiciones</h2>
+      @if(activeBeneficiary?.disabilities?.length ?? 0 > 0){ @for (item of
+      activeBeneficiary?.disabilities; track item){
+      <p>{{ item.name }}</p>
+      } }@else {
+      <p>No hay condiciones registradas</p>
+      }
+    </div>
+    <div>
+      <h2>Distintivos</h2>
+      @if(activeBeneficiary?.distintives?.length ?? 0 > 0){ @for (item of
+      activeBeneficiary?.distintives; track item){
+      <p>{{ item.description }}</p>
+      } }@else {
+      <p>No hay distintivos registrados</p>
+      }
+    </div>
+  </div>
+</app-primary-card>
+
+<app-edit-button route="/beneficiary/home/conditions/form"></app-edit-button>

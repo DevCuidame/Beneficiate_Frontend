@@ -7,11 +7,11 @@ const routes: Routes = [
   { 
     path: 'auth', 
     loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule),
-    canActivate: [AutoRedirectGuard] // 👈 Protegemos la ruta de login
+    canActivate: [AutoRedirectGuard] 
   },
   { path: 'home', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule) },
   { path: 'beneficiary', loadChildren: () => import('./modules/beneficiary/beneficiary.module').then(m => m.BeneficiaryModule) },
-  { path: '**', redirectTo: 'auth/login' } // 👈 Si una ruta no existe, regresa al login
+  { path: '**', redirectTo: 'auth/login' } 
 ];
 
 @NgModule({

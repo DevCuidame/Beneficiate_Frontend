@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
-import { BeneficiaryService } from 'src/app/modules/auth/services/beneficiary.service';
+import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
 import { environment } from 'src/environments/environment';
 
 @Component({

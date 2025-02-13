@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, map, Observable, throwError } from 'rxjs';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
 import { environment } from 'src/environments/environment';
-import { UserService } from './user.service';
+import { UserService } from '../../modules/auth/services/user.service';
 
 const apiUrl = environment.url;
 

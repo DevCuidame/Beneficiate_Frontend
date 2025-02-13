@@ -1,0 +1,31 @@
+<app-primary-card maxHeight="500px">
+  <div class="medical_history-box">
+    <div class="h-container">
+      <h2>Antecedentes Personales</h2>
+      @if (activeBeneficiary?.medical_history?.length ?? 0 > 0) { @for (item of
+      activeBeneficiary?.medical_history; track item){
+      <div class="h-card">
+        <p>{{ item.history_type }}</p>
+        <p>{{ item.history_date }}</p>
+      </div>
+      } }@else {
+      <p style="text-align: start; width: 100%">
+        No hay antecedentes personales registrados.
+      </p>
+      }
+    </div>
+    <div>
+      <h2>Antecedentes Familiares</h2>
+      @if(activeBeneficiary?.family_history?.length ?? 0 > 0){ @for (item of
+      activeBeneficiary?.family_history; track item){
+      <p>{{ item.history_type }}</p>
+      <p>{{ item.relationship }}</p>
+      <p>{{ item.history_date }}</p>
+      } }@else {
+      <p>No hay antecedentes familiares registrados.</p>
+      }
+    </div>
+  </div>
+</app-primary-card>
+
+<app-edit-button route="/beneficiary/home/medical-history/form"></app-edit-button>

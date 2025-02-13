@@ -6,8 +6,8 @@ import { catchError, map } from 'rxjs/operators';
 import { RegisterData, User } from 'src/app/core/interfaces/auth.interface';
 import { environment } from 'src/environments/environment';
 import { UserService } from 'src/app/modules/auth/services/user.service';
-import { BeneficiaryService } from './beneficiary.service';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
+import { BeneficiaryService } from '../../../core/services/beneficiary.service';
 const apiUrl = environment.url;
 
 
@@ -21,7 +21,8 @@ export class AuthService {
   login(credentials: { email: string; password: string }): Observable<any> {
     return this.http.post(`${apiUrl}api/v1/auth/login`, credentials).pipe(
       map((response: any) => {
-        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('token', response.data.token.accessToken);
+        localStorage.setItem('refresh-token', response.data.token.refreshToken);
         this.authState.next(true);
         localStorage.setItem('user', JSON.stringify(response.data.user));
         this.userService.setUser(response.data.user as User);
@@ -47,6 +48,7 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('token');
+    localStorage.removeItem('refresh_token');
     localStorage.removeItem('user');
     localStorage.removeItem('beneficiaries');
     localStorage.removeItem('activeBeneficiary');
@@ -68,10 +70,11 @@ export class AuthService {
   }
 
   refreshToken(): Observable<any> {
-    return this.http.post(`${apiUrl}api/v1/auth/refresh-token`, {}).pipe(
+    const refreshToken = localStorage.getItem('refresh-token')
+    return this.http.post(`${apiUrl}api/v1/auth/refresh-token`, {refreshToken}).pipe(
       map((response: any) => {
-        if (response.token) {
-          localStorage.setItem('token', response.token);
+        if (response.token.data.accessToken) {
+          localStorage.setItem('token', response.data.accessToken);
           return response;
         } else {
           throw new Error('No se recibió un nuevo token');

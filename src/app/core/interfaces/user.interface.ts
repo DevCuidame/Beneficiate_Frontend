@@ -14,3 +14,12 @@ export interface UserImage extends Image {
 export interface BeneficiaryImage extends Image {
   beneficiary_id: string;
 }
+
+export interface UserEmergencyContact {
+  id: number;
+  user_id: number;
+  contact_name: string;
+  contact_phone: string;
+  relationship: string;
+  created_at: Date;
+}

@@ -1,0 +1,18 @@
+<app-primary-card maxHeight="500px">
+  <div>
+    <h2>Vacunas</h2>
+    @if (activeBeneficiary?.vaccinations?.length ?? 0 > 0) { @for (item of
+    activeBeneficiary?.vaccinations; track item){
+    <div class="h-card">
+      <p>{{ item.vaccine }}</p>
+      <p>{{ item.vaccination_date }}</p>
+    </div>
+    } }@else {
+    <p style="text-align: start; width: 100%; color: var(--ion-color-dark)">
+      No hay vacunas registradas.
+    </p>
+    }
+  </div>
+</app-primary-card>
+
+<app-edit-button route="/beneficiary/home/vacinations/form"></app-edit-button>

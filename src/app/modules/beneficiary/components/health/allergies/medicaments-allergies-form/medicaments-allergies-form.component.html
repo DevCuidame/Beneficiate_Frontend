@@ -1,0 +1,116 @@
+<h2>Registro de Medicamentos</h2>
+<form [formGroup]="form" (ngSubmit)="submitForm()">
+  <div formArrayName="medications">
+    <div
+      *ngFor="let medication of medications.controls; let i = index"
+      [formGroup]="getMedicationFormGroup(i)"
+    >
+      <app-input
+        label="Medicamento"
+        type="text"
+        placeholder="Ej. Paracetamol"
+        [control]="getFormControl(getMedicationFormGroup(i), 'medication')"
+      >
+      </app-input>
+
+      <app-input
+        label="Laboratorio"
+        type="text"
+        placeholder="Ej. Bayer"
+        [control]="getFormControl(getMedicationFormGroup(i), 'laboratory')"
+      >
+      </app-input>
+
+      <app-input
+        label="Prescripción"
+        type="text"
+        placeholder="Ej. Tomar cada 8 horas"
+        [control]="getFormControl(getMedicationFormGroup(i), 'prescription')"
+      >
+      </app-input>
+
+      <app-input
+        label="Dosis"
+        type="text"
+        placeholder="Ej. 500mg"
+        [control]="getFormControl(getMedicationFormGroup(i), 'dosage')"
+      >
+      </app-input>
+
+      <app-input
+        label="Frecuencia"
+        type="text"
+        placeholder="Ej. Cada 12 horas"
+        [control]="getFormControl(getMedicationFormGroup(i), 'frequency')"
+      >
+      </app-input>
+
+      <button
+        type="button"
+        class="remove"
+        (click)="removeMedication(i)"
+        [disabled]="medications.length === 1"
+      >
+        - Quitar
+      </button>
+    </div>
+  </div>
+  <div class="add-box">
+    <button type="button" class="add" (click)="addMedication()">
+      + Añadir
+    </button>
+  </div>
+
+  <h2>Registro de Alergias</h2>
+  <div formArrayName="allergies">
+    <div
+      *ngFor="let allergy of allergies.controls; let i = index"
+      [formGroup]="getAllergyFormGroup(i)"
+    >
+      <app-input
+        label="Tipo de Alergia"
+        type="text"
+        placeholder="Ej. Polen"
+        [control]="getFormControl(getAllergyFormGroup(i), 'allergy_type')"
+      >
+      </app-input>
+
+      <app-input
+        label="Descripción"
+        type="text"
+        placeholder="Ej. Estornudos frecuentes"
+        [control]="getFormControl(getAllergyFormGroup(i), 'description')"
+      >
+      </app-input>
+
+      <app-input
+        label="Severidad"
+        type="select"
+        [control]="getFormControl(getAllergyFormGroup(i), 'severity')"
+        [options]="severityOptions"
+      >
+      </app-input>
+
+      <button
+        type="button"
+        class="remove"
+        (click)="removeAllergy(i)"
+        [disabled]="allergies.length === 1"
+      >
+        - Quitar
+      </button>
+    </div>
+  </div>
+
+  <div class="add-box">
+    <button type="button" class="add" (click)="addAllergy()">+ Añadir</button>
+  </div>
+
+  <app-custom-button
+    label="Guardar"
+    type="submit"
+    [disabled]="form.invalid"
+    [textColor]="'var(--ion-color-light)'"
+    [backgroundImage]="buttonBackground"
+  ></app-custom-button>
+</form>

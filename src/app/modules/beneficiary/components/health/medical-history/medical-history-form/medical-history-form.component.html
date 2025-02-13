@@ -1,0 +1,82 @@
+<h2>Historial Médico</h2>
+<form [formGroup]="form" (ngSubmit)="submitForm()">
+  <div formArrayName="medicalHistory">
+    <div *ngFor="let history of medicalHistory.controls; let i = index" [formGroup]="getMedicalHistoryFormGroup(i)">
+      <app-input
+        label="Tipo de Historial"
+        type="text"
+        placeholder="Ej. Cirugía"
+        [control]="getFormControl(getMedicalHistoryFormGroup(i), 'history_type')"
+      ></app-input>
+
+      <app-input
+        label="Descripción"
+        type="text"
+        placeholder="Ej. Apendicectomía"
+        [control]="getFormControl(getMedicalHistoryFormGroup(i), 'description')"
+      ></app-input>
+
+      <app-input
+        label="Fecha"
+        type="date"
+        [control]="getFormControl(getMedicalHistoryFormGroup(i), 'history_date')"
+      ></app-input>
+
+      <button type="button" class="remove" (click)="removeMedicalHistory(i)" [disabled]="medicalHistory.length === 1">
+        - Quitar
+      </button>
+    </div>
+  </div>
+
+  <div class="add-box">
+    <button type="button" class="add" (click)="addMedicalHistory()">+ Añadir</button>
+  </div>
+
+  <h2>Antecedentes Familiares</h2>
+  <div formArrayName="familyHistory">
+    <div *ngFor="let family of familyHistory.controls; let i = index" [formGroup]="getFamilyHistoryFormGroup(i)">
+      <app-input
+        label="Tipo de Historial"
+        type="text"
+        placeholder="Ej. Diabetes"
+        [control]="getFormControl(getFamilyHistoryFormGroup(i), 'history_type')"
+      ></app-input>
+
+      <app-input
+        label="Relación"
+        type="text"
+        placeholder="Ej. Padre"
+        [control]="getFormControl(getFamilyHistoryFormGroup(i), 'relationship')"
+      ></app-input>
+
+      <app-input
+        label="Descripción"
+        type="text"
+        placeholder="Ej. Diagnosticado a los 50 años"
+        [control]="getFormControl(getFamilyHistoryFormGroup(i), 'description')"
+      ></app-input>
+
+      <app-input
+        label="Fecha"
+        type="date"
+        [control]="getFormControl(getFamilyHistoryFormGroup(i), 'history_date')"
+      ></app-input>
+
+      <button type="button" class="remove" (click)="removeFamilyHistory(i)" [disabled]="familyHistory.length === 1">
+        - Quitar
+      </button>
+    </div>
+  </div>
+
+  <div class="add-box">
+    <button type="button" class="add" (click)="addFamilyHistory()">+ Añadir</button>
+  </div>
+
+  <app-custom-button
+    label="Guardar"
+    type="submit"
+    [disabled]="form.invalid"
+    [textColor]="'var(--ion-color-light)'"
+    [backgroundImage]="buttonBackground"
+  ></app-custom-button>
+</form>

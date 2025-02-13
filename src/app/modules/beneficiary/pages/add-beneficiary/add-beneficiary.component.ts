@@ -14,11 +14,11 @@ import {
   NavController,
 } from '@ionic/angular';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
-import { BeneficiaryService } from 'src/app/modules/auth/services/beneficiary.service';
 import { debounceTime } from 'rxjs';
 import { TabBarComponent } from 'src/app/shared/components/tab-bar/tab-bar.component';
 import { CustomButtonComponent } from 'src/app/shared/components/custom-button/custom-button.component';
-import { LocationService } from '../../auth/services/location.service';
+import { LocationService } from '../../../auth/services/location.service';
+import { BeneficiaryService } from '../../../../core/services/beneficiary.service';
 
 @Component({
   selector: 'app-add-beneficiary',

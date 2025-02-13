@@ -8,11 +8,11 @@ import { UserService } from 'src/app/modules/auth/services/user.service';
 import { environment } from 'src/environments/environment';
 import { BasicDataComponent } from 'src/app/shared/components/basic-data/basic-data.component';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
-import { BeneficiaryService } from 'src/app/modules/auth/services/beneficiary.service';
 import { BeneficiaryCardComponent } from 'src/app/shared/components/beneficiary-card/beneficiary-card.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCrown } from '@fortawesome/free-solid-svg-icons';
 import { PrimaryCardComponent } from 'src/app/shared/components/primary-card/primary-card.component';
+import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -62,6 +62,8 @@ export class DashboardComponent implements OnInit {
           ...beneficiary,
           image: (Array.isArray(beneficiary.image) && beneficiary.image.length > 0) ? beneficiary.image[0] : null
         }));
+        console.log("🚀 ~ DashboardComponent ~ this.beneficiaryService.beneficiaries$.subscribe ~ this.beneficiaries :", this.beneficiaries )
+        
       }
     });
     

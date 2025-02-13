@@ -16,7 +16,7 @@ const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
-    canActivate: [AuthGuard], // 👈 Protegemos la ruta con el guard
+    canActivate: [AuthGuard], 
   },
   {
     path: '**',
