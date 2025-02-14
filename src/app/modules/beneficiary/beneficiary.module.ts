@@ -18,6 +18,7 @@ import { MedicamentsAllergiesFormComponent } from './components/health/allergies
 import { VacinationsFormComponent } from './components/health/vacinations/vacinations-form/vacinations-form.component';
 import { EditButtonComponent } from 'src/app/shared/components/edit-button/edit-button.component';
 import { InputComponent } from 'src/app/shared/components/input/input.component';
+import { SecondaryCardComponent } from 'src/app/shared/components/secondary-card/secondary-card.component';
 
 const routes: Routes = [
   {
@@ -84,7 +85,8 @@ const routes: Routes = [
     TabBarComponent,
     BeneficiaryHeaderComponent,
     EditButtonComponent,
-    InputComponent
+    InputComponent,
+    SecondaryCardComponent
   ],
 })
 export class BeneficiaryModule { }

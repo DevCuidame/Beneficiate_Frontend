@@ -2,6 +2,7 @@
 <form [formGroup]="form" (ngSubmit)="submitForm()">
   <div formArrayName="medications">
     <div
+    class="container-item"
       *ngFor="let medication of medications.controls; let i = index"
       [formGroup]="getMedicationFormGroup(i)"
     >
@@ -49,7 +50,6 @@
         type="button"
         class="remove"
         (click)="removeMedication(i)"
-        [disabled]="medications.length === 1"
       >
         - Quitar
       </button>
@@ -64,6 +64,7 @@
   <h2>Registro de Alergias</h2>
   <div formArrayName="allergies">
     <div
+    class="container-item"
       *ngFor="let allergy of allergies.controls; let i = index"
       [formGroup]="getAllergyFormGroup(i)"
     >
@@ -95,7 +96,6 @@
         type="button"
         class="remove"
         (click)="removeAllergy(i)"
-        [disabled]="allergies.length === 1"
       >
         - Quitar
       </button>
@@ -107,10 +107,11 @@
   </div>
 
   <app-custom-button
-    label="Guardar"
-    type="submit"
-    [disabled]="form.invalid"
-    [textColor]="'var(--ion-color-light)'"
-    [backgroundImage]="buttonBackground"
-  ></app-custom-button>
+  label="Guardar"
+  type="submit"
+  [disabled]="!isFormValid()"
+  [textColor]="'var(--ion-color-light)'"
+  [backgroundImage]="buttonBackground"
+></app-custom-button>
+
 </form>

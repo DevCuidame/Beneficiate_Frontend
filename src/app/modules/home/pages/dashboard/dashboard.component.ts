@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
 import { TabBarComponent } from 'src/app/shared/components/tab-bar/tab-bar.component';
@@ -36,6 +36,7 @@ export class DashboardComponent implements OnInit {
     private userService: UserService,
     private authService: AuthService,
     private beneficiaryService: BeneficiaryService,
+    private cdRef: ChangeDetectorRef
   ) {}
   ngOnInit() {
     this.userService.user$.subscribe((userData) => {
@@ -62,9 +63,10 @@ export class DashboardComponent implements OnInit {
           ...beneficiary,
           image: (Array.isArray(beneficiary.image) && beneficiary.image.length > 0) ? beneficiary.image[0] : null
         }));
-        console.log("🚀 ~ DashboardComponent ~ this.beneficiaryService.beneficiaries$.subscribe ~ this.beneficiaries :", this.beneficiaries )
+        console.log("🚀 ~ DashboardComponent ~ this.beneficiaryService.beneficiaries$.subscribe ~ this.beneficiaries:", this.beneficiaries)
         
       }
+      this.cdRef.detectChanges();
     });
     
     

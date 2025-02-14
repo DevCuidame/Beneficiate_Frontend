@@ -4,10 +4,11 @@ import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
 import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
 import { EditButtonComponent } from 'src/app/shared/components/edit-button/edit-button.component';
 import { PrimaryCardComponent } from 'src/app/shared/components/primary-card/primary-card.component';
+import { SecondaryCardComponent } from 'src/app/shared/components/secondary-card/secondary-card.component';
 
 @Component({
   selector: 'app-conditions-list',
-  imports: [PrimaryCardComponent, CommonModule, EditButtonComponent],
+  imports: [PrimaryCardComponent, CommonModule, EditButtonComponent, SecondaryCardComponent],
   templateUrl: './conditions-list.component.html',
   styleUrls: ['./conditions-list.component.scss'],
 })

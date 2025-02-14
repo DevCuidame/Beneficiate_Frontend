@@ -22,8 +22,6 @@ export class BeneficiaryService {
   private activeBeneficiarySubject = new BehaviorSubject<Beneficiary | null>(this.loadActiveBeneficiary());
   public activeBeneficiary$ = this.activeBeneficiarySubject.asObservable();
 
-
-
   constructor(private http: HttpClient, private userService: UserService) {
     this.userService.user$.subscribe((user) => {
       if (user?.plan?.max_beneficiaries) {
@@ -75,20 +73,52 @@ export class BeneficiaryService {
     this.updateBeneficiaryCount(beneficiaries.length);
   }
   setActiveBeneficiary(beneficiary: Beneficiary): void {
-    
     if (Array.isArray(beneficiary.location) && beneficiary.location.length > 0) {
-      beneficiary.location = beneficiary.location[0];
+      beneficiary.location = beneficiary.location[0]; 
     }
-    this.activeBeneficiarySubject.next(beneficiary);
+
+    if (Array.isArray(beneficiary.image) && beneficiary.image.length > 0) {
+      beneficiary.location = beneficiary.image[0]; 
+    }
+    
+    this.activeBeneficiarySubject.next({ ...beneficiary });
     localStorage.setItem('activeBeneficiary', JSON.stringify(beneficiary));
+    
   }
+  
+  
 
   private loadActiveBeneficiary(): Beneficiary | null {
     const storedBeneficiary = localStorage.getItem('activeBeneficiary');
     return storedBeneficiary ? JSON.parse(storedBeneficiary) : null;
   }
 
+
+  updateBeneficiary(id: number | string, data: Partial<Beneficiary>): void {
+    const currentBeneficiaries = this.beneficiariesSubject.value;
+    const updatedBeneficiaries = currentBeneficiaries.map(b =>
+      b.id === id ? { ...b, ...data, image: data.image ?? b.image } : b
+    );
   
+    this.beneficiariesSubject.next(updatedBeneficiaries);
+    localStorage.setItem('beneficiaries', JSON.stringify(updatedBeneficiaries));
+  }
+  
+  
+  removeBeneficiary(id: number | string): void {
+    const currentBeneficiaries = this.beneficiariesSubject.value;
+    const updatedBeneficiaries = currentBeneficiaries.filter(b => b.id !== id);
+  
+    this.beneficiariesSubject.next(updatedBeneficiaries);
+    this.updateBeneficiaryCount(updatedBeneficiaries.length);
+    localStorage.setItem('beneficiaries', JSON.stringify(updatedBeneficiaries));
+  }
+  
+  private updateLocalStorage<T>(key: string, items: T[]): void {
+    localStorage.setItem(key, JSON.stringify(items));
+  }
+  
+
   getActiveBeneficiary(): Beneficiary | null {
     return this.activeBeneficiarySubject.value;
   }
@@ -108,7 +138,6 @@ export class BeneficiaryService {
     );
   }
   
-
   private updateBeneficiaryCount(count: number): void {
     this.beneficiaryCountSubject.next(count);
   }

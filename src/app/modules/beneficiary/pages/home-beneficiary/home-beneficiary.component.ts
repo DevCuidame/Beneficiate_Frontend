@@ -51,7 +51,6 @@ export class HomeBeneficiaryComponent implements OnInit {
 
     this.beneficiaryService.activeBeneficiary$.subscribe((beneficiary) => {
       this.activeBeneficiary = beneficiary;
-      console.log("🚀 ~ HomeBeneficiaryComponent ~ this.beneficiaryService.activeBeneficiary$.subscribe ~ this.activeBeneficiary:", this.activeBeneficiary)
     });
     if (this.activeBeneficiary === null) {
       this.navCtrl.navigateRoot(['/home/dashboard']);

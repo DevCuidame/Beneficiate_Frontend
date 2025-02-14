@@ -4,28 +4,36 @@
       <h2>Antecedentes Personales</h2>
       @if (activeBeneficiary?.medical_history?.length ?? 0 > 0) { @for (item of
       activeBeneficiary?.medical_history; track item){
-      <div class="h-card">
-        <p>{{ item.history_type }}</p>
-        <p>{{ item.history_date }}</p>
-      </div>
+      <app-secondary-card style="width: 100%;">
+        <div class="h-card">
+          <p>{{ item.history_type }}</p>
+          <p>{{ item.history_date }}</p>
+        </div>
+      </app-secondary-card>
       } }@else {
       <p style="text-align: start; width: 100%">
         No hay antecedentes personales registrados.
       </p>
       }
     </div>
-    <div>
+    <div class="h-container">
       <h2>Antecedentes Familiares</h2>
-      @if(activeBeneficiary?.family_history?.length ?? 0 > 0){ @for (item of
-      activeBeneficiary?.family_history; track item){
-      <p>{{ item.history_type }}</p>
-      <p>{{ item.relationship }}</p>
-      <p>{{ item.history_date }}</p>
-      } }@else {
-      <p>No hay antecedentes familiares registrados.</p>
-      }
+      <app-secondary-card style="width: 100%;">
+        @if(activeBeneficiary?.family_history?.length ?? 0 > 0){ @for (item of
+        activeBeneficiary?.family_history; track item){
+        <div class="h-card">
+          <p>{{ item.history_type }}</p>
+        <p>{{ item.relationship }}</p>
+        <p>{{ item.history_date }}</p>
+        </div>
+        } }@else {
+        <p>No hay antecedentes familiares registrados.</p>
+        }
+      </app-secondary-card>
     </div>
   </div>
 </app-primary-card>
 
-<app-edit-button route="/beneficiary/home/medical-history/form"></app-edit-button>
+<app-edit-button
+  route="/beneficiary/home/medical-history/form"
+></app-edit-button>

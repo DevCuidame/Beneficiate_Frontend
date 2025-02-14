@@ -1,7 +1,11 @@
-<h2>Enfermedades</h2>
+<h2>¿Tu ser querido tiene alguna enfermedad?</h2>
 <form [formGroup]="form" (ngSubmit)="submitForm()">
   <div formArrayName="diseases">
-    <div *ngFor="let disease of diseases.controls; let i = index" [formGroup]="getDiseaseFormGroup(i)">
+    <div
+      class="container-item"
+      *ngFor="let disease of diseases.controls; let i = index"
+      [formGroup]="getDiseaseFormGroup(i)"
+    >
       <app-input
         label="Enfermedad"
         type="text"
@@ -21,7 +25,7 @@
         [control]="getFormControl(getDiseaseFormGroup(i), 'treatment_required')"
       ></app-input>
 
-      <button type="button" class="remove" (click)="removeDisease(i)" [disabled]="diseases.length === 1">
+      <button type="button" class="remove" (click)="removeDisease(i)">
         - Quitar
       </button>
     </div>
@@ -31,9 +35,13 @@
     <button type="button" class="add" (click)="addDisease()">+ Añadir</button>
   </div>
 
-  <h2>Discapacidades</h2>
+  <h2>¿Tu ser querido tiene alguna discapacidad o condición?</h2>
   <div formArrayName="disabilities">
-    <div *ngFor="let disability of disabilities.controls; let i = index" [formGroup]="getDisabilityFormGroup(i)">
+    <div
+      class="container-item"
+      *ngFor="let disability of disabilities.controls; let i = index"
+      [formGroup]="getDisabilityFormGroup(i)"
+    >
       <app-input
         label="Nombre"
         type="text"
@@ -41,19 +49,25 @@
         [control]="getFormControl(getDisabilityFormGroup(i), 'name')"
       ></app-input>
 
-      <button type="button" class="remove" (click)="removeDisability(i)" [disabled]="disabilities.length === 1">
+      <button type="button" class="remove" (click)="removeDisability(i)">
         - Quitar
       </button>
     </div>
   </div>
 
   <div class="add-box">
-    <button type="button" class="add" (click)="addDisability()">+ Añadir</button>
+    <button type="button" class="add" (click)="addDisability()">
+      + Añadir
+    </button>
   </div>
 
-  <h2>Rasgos Distintivos</h2>
+  <h2>¿Tu ser querido tiene algún rasgo distinivo?</h2>
   <div formArrayName="distinctives">
-    <div *ngFor="let distinctive of distinctives.controls; let i = index" [formGroup]="getDistinctiveFormGroup(i)">
+    <div
+    class="container-item"
+      *ngFor="let distinctive of distinctives.controls; let i = index"
+      [formGroup]="getDistinctiveFormGroup(i)"
+    >
       <app-input
         label="Nombre"
         type="text"
@@ -61,20 +75,22 @@
         [control]="getFormControl(getDistinctiveFormGroup(i), 'description')"
       ></app-input>
 
-      <button type="button" class="remove" (click)="removeDistinctive(i)" [disabled]="distinctives.length === 1">
+      <button type="button" class="remove" (click)="removeDistinctive(i)">
         - Quitar
       </button>
     </div>
   </div>
 
   <div class="add-box">
-    <button type="button" class="add" (click)="addDistinctive()">+ Añadir</button>
+    <button type="button" class="add" (click)="addDistinctive()">
+      + Añadir
+    </button>
   </div>
 
   <app-custom-button
     label="Guardar"
     type="submit"
-    [disabled]="form.invalid"
+    [disabled]="!isFormValid()"
     [textColor]="'var(--ion-color-light)'"
     [backgroundImage]="buttonBackground"
   ></app-custom-button>

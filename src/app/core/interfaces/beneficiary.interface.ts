@@ -25,7 +25,7 @@ export interface Beneficiary {
   diseases: Disease[];
   family_history: FamilyHistory[];
   disabilities: Disability[];
-  distintives: Distinctive[];
+  distinctives: Distinctive[];
   medical_history: MedicalHistory[];
   medications: Medication[];
   vaccinations: Vaccination[];

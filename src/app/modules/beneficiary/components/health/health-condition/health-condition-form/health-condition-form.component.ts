@@ -8,9 +8,11 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { NavController } from '@ionic/angular';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
 import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
 import { HealthDataService } from 'src/app/core/services/healthData.service';
+import { ToastService } from 'src/app/core/services/toast.service';
 import { CustomButtonComponent } from 'src/app/shared/components/custom-button/custom-button.component';
 import { InputComponent } from 'src/app/shared/components/input/input.component';
 
@@ -34,15 +36,19 @@ export class HealthConditionFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private beneficiaryService: BeneficiaryService,
-    private healthDataService: HealthDataService
+    private healthDataService: HealthDataService,
+    private navCtrL: NavController,
+    private toastService: ToastService
   ) {
-    this.beneficiaryService.activeBeneficiary$.subscribe((beneficiary) => {
-      this.activeBeneficiary = beneficiary;
-    });
     this.form = this.fb.group({
       diseases: this.fb.array([]),
       disabilities: this.fb.array([]),
       distinctives: this.fb.array([]),
+    });
+
+    this.beneficiaryService.activeBeneficiary$.subscribe((beneficiary) => {
+      this.activeBeneficiary = beneficiary;
+      this.initializeForm();
     });
 
     this.addDisease();
@@ -52,6 +58,59 @@ export class HealthConditionFormComponent implements OnInit {
 
   ngOnInit() {}
 
+  initializeForm() {
+    if (!this.activeBeneficiary) return;
+
+    this.form.setControl(
+      'diseases',
+      this.fb.array(
+        this.activeBeneficiary.diseases?.map((d) =>
+          this.fb.group({
+            id: d.id,
+            beneficiary_id: this.activeBeneficiary?.id,
+            disease: [d.disease, [Validators.required]],
+            diagnosed_date: [d.diagnosed_date, [Validators.required]],
+            treatment_required: [d.treatment_required, [Validators.required]],
+          })
+        ) || []
+      )
+    );
+
+    this.form.setControl(
+      'disabilities',
+      this.fb.array(
+        this.activeBeneficiary.disabilities?.map((d) =>
+          this.fb.group({
+            id: d.id,
+            beneficiary_id: this.activeBeneficiary?.id,
+            name: [d.name, [Validators.required]],
+          })
+        ) || []
+      )
+    );
+
+    this.form.setControl(
+      'distinctives',
+      this.fb.array(
+        this.activeBeneficiary.distinctives?.map((d) =>
+          this.fb.group({
+            id: d.id,
+            beneficiary_id: this.activeBeneficiary?.id,
+            description: [d.description, [Validators.required]],
+          })
+        ) || []
+      )
+    );
+  }
+
+  isFormValid(): boolean {
+    return (
+      (this.diseases.length > 0 && this.diseases.valid) ||
+      (this.disabilities.length > 0 && this.disabilities.valid) ||
+      (this.distinctives.length > 0 && this.distinctives.valid)
+    );
+  }
+  
   get diseases(): FormArray {
     return this.form.get('diseases') as FormArray;
   }
@@ -74,6 +133,10 @@ export class HealthConditionFormComponent implements OnInit {
 
   getDistinctiveFormGroup(index: number): FormGroup {
     return this.distinctives.at(index) as FormGroup;
+  }
+
+  getFormControl(formGroup: FormGroup, fieldName: string): FormControl {
+    return formGroup.get(fieldName) as FormControl;
   }
 
   newDisease(): FormGroup {
@@ -101,56 +164,89 @@ export class HealthConditionFormComponent implements OnInit {
 
   addDisease() {
     this.diseases.push(this.newDisease());
+    this.form.updateValueAndValidity();
   }
 
   removeDisease(index: number) {
-    if (this.diseases.length > 1) {
-      this.diseases.removeAt(index);
-    }
+    this.diseases.removeAt(index);
+    this.form.updateValueAndValidity();
   }
 
   addDisability() {
     this.disabilities.push(this.newDisability());
+    this.form.updateValueAndValidity();
   }
 
   removeDisability(index: number) {
-    if (this.disabilities.length > 1) {
-      this.disabilities.removeAt(index);
-    }
+    this.disabilities.removeAt(index);
+    this.form.updateValueAndValidity();
   }
 
   addDistinctive() {
     this.distinctives.push(this.newDistinctive());
+    this.form.updateValueAndValidity();
   }
 
   removeDistinctive(index: number) {
-    if (this.distinctives.length > 1) {
-      this.distinctives.removeAt(index);
-    }
+    this.distinctives.removeAt(index);
+    this.form.updateValueAndValidity();
   }
 
-  getFormControl(formGroup: FormGroup, fieldName: string): FormControl {
-    return formGroup.get(fieldName) as FormControl;
-  }
-
-  submitForm() {
+  async submitForm() {
     if (this.form.valid && this.activeBeneficiary) {
       const payload = {
         diseases: this.form.value.diseases,
         disabilities: this.form.value.disabilities,
-        distinctives: this.form.value.distinctives
+        distinctives: this.form.value.distinctives,
       };
-      console.log("🚀 ~ HealthConditionFormComponent ~ submitForm ~ payload:", payload)
-  
+
       this.healthDataService.saveHealthData(payload).subscribe(
-        (response) => {
-          console.log('📩 Datos guardados:', response);
+        async (response) => {
+          if (
+            response.data?.diseases?.length ||
+            response.data?.disabilities?.length ||
+            response.data?.distinctives?.length
+          ) {
+            const updatedDiseases = response.data.diseases || [];
+            const updatedDisabilities = response.data.disabilities || [];
+            const updatedDistinctives = response.data.distinctives || [];
+
+            if (!this.activeBeneficiary?.id) {
+              return;
+            }
+
+            const updatedActiveBeneficiary = {
+              ...this.activeBeneficiary,
+              diseases: updatedDiseases,
+              disabilities: updatedDisabilities,
+              distinctives: updatedDistinctives,
+            };
+
+            this.beneficiaryService.setActiveBeneficiary({
+              ...updatedActiveBeneficiary,
+            });
+
+            const updatedBeneficiaries = this.beneficiaryService
+              .getBeneficiaries()
+              .map((b) =>
+                b.id === updatedActiveBeneficiary.id
+                  ? updatedActiveBeneficiary
+                  : b
+              );
+
+            this.beneficiaryService.setBeneficiaries(updatedBeneficiaries);
+          }
+
+          await this.toastService.presentToast(
+            response.data.message,
+            'success'
+          );
+          this.navCtrL.navigateRoot('/beneficiary/home/conditions');
         },
-        (error) => {
-          console.error('Error al guardar:', error);
+        async (error) => {
+          await this.toastService.presentToast(error.data.message, 'danger');
         }
       );
     }
   }
-  
 }

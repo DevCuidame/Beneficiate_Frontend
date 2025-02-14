@@ -8,9 +8,11 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { NavController } from '@ionic/angular';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
 import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
 import { HealthDataService } from 'src/app/core/services/healthData.service';
+import { ToastService } from 'src/app/core/services/toast.service';
 import { CustomButtonComponent } from 'src/app/shared/components/custom-button/custom-button.component';
 import { InputComponent } from 'src/app/shared/components/input/input.component';
 
@@ -34,14 +36,18 @@ export class MedicalHistoryFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private beneficiaryService: BeneficiaryService,
-    private healthDataService: HealthDataService
+    private healthDataService: HealthDataService,
+    private navCtrL: NavController,
+    private toastService: ToastService
   ) {
-    this.beneficiaryService.activeBeneficiary$.subscribe((beneficiary) => {
-      this.activeBeneficiary = beneficiary;
-    });
     this.form = this.fb.group({
       medicalHistory: this.fb.array([]),
       familyHistory: this.fb.array([]),
+    });
+
+    this.beneficiaryService.activeBeneficiary$.subscribe((beneficiary) => {
+      this.activeBeneficiary = beneficiary;
+      this.initializeForm();
     });
 
     this.addMedicalHistory();
@@ -50,6 +56,48 @@ export class MedicalHistoryFormComponent implements OnInit {
 
   ngOnInit() {}
 
+  initializeForm() {
+    if (!this.activeBeneficiary) return;
+
+    this.form.setControl(
+      'medicalHistory',
+      this.fb.array(
+        this.activeBeneficiary.medical_history?.map((m) =>
+          this.fb.group({
+            id: m.id,
+            beneficiary_id: this.activeBeneficiary?.id,
+            history_type: [m.history_type, [Validators.required]],
+            description: [m.description, [Validators.required]],
+            history_date: [m.history_date, [Validators.required]],
+          })
+        ) || []
+      )
+    );
+
+    this.form.setControl(
+      'familyHistory',
+      this.fb.array(
+        this.activeBeneficiary.family_history?.map((f) =>
+          this.fb.group({
+            id: f.id,
+            beneficiary_id: this.activeBeneficiary?.id,
+            history_type: [f.history_type, [Validators.required]],
+            relationship: [f.relationship, [Validators.required]],
+            description: [f.description, [Validators.required]],
+            history_date: [f.history_date, [Validators.required]],
+          })
+        ) || []
+      )
+    );
+  }
+
+  isFormValid(): boolean {
+    return (
+      (this.familyHistory.length > 0 && this.familyHistory.valid) ||
+      (this.medicalHistory.length > 0 && this.medicalHistory.valid)
+    );
+  }
+  
   get medicalHistory(): FormArray {
     return this.form.get('medicalHistory') as FormArray;
   }
@@ -64,6 +112,10 @@ export class MedicalHistoryFormComponent implements OnInit {
 
   getFamilyHistoryFormGroup(index: number): FormGroup {
     return this.familyHistory.at(index) as FormGroup;
+  }
+
+  getFormControl(formGroup: FormGroup, fieldName: string): FormControl {
+    return formGroup.get(fieldName) as FormControl;
   }
 
   newMedicalHistory(): FormGroup {
@@ -87,44 +139,71 @@ export class MedicalHistoryFormComponent implements OnInit {
 
   addMedicalHistory() {
     this.medicalHistory.push(this.newMedicalHistory());
+    this.form.updateValueAndValidity();
   }
 
   removeMedicalHistory(index: number) {
-    if (this.medicalHistory.length > 1) {
       this.medicalHistory.removeAt(index);
-    }
+      this.form.updateValueAndValidity();
   }
 
   addFamilyHistory() {
     this.familyHistory.push(this.newFamilyHistory());
+    this.form.updateValueAndValidity();
   }
 
   removeFamilyHistory(index: number) {
-    if (this.familyHistory.length > 1) {
       this.familyHistory.removeAt(index);
-    }
+      this.form.updateValueAndValidity();
   }
 
-  getFormControl(formGroup: FormGroup, fieldName: string): FormControl {
-    return formGroup.get(fieldName) as FormControl;
-  }
-
-  submitForm() {
+  async submitForm() {
     if (this.form.valid && this.activeBeneficiary) {
       const payload = {
         medicalHistory: this.form.value.medicalHistory,
-        familyHistory: this.form.value.familyHistory
+        familyHistory: this.form.value.familyHistory,
       };
-  
+
       this.healthDataService.saveMedicalAndFamilyHistory(payload).subscribe(
-        (response) => {
-          console.log('📩 Datos guardados:', response);
+        async (response) => {
+          if (
+            response.data?.medicalHistory?.length ||
+            response.data?.familyHistory?.length
+          ) {
+            const updatedMedicalHistory = response.data.medicalHistory || [];
+            const updatedFamilyHistory = response.data.familyHistory || [];
+
+            if (!this.activeBeneficiary?.id) {
+              return;
+            }
+
+            const updatedActiveBeneficiary = {
+              ...this.activeBeneficiary,
+              medical_history: updatedMedicalHistory,
+              family_history: updatedFamilyHistory,
+            };
+
+            this.beneficiaryService.setActiveBeneficiary(
+              updatedActiveBeneficiary
+            );
+
+            const updatedBeneficiaries = this.beneficiaryService
+              .getBeneficiaries()
+              .map((b) =>
+                b.id === updatedActiveBeneficiary.id
+                  ? updatedActiveBeneficiary
+                  : b
+              );
+            this.beneficiaryService.setBeneficiaries(updatedBeneficiaries);
+          }
+          await this.toastService.presentToast(response.data.message, 'success');
+          this.navCtrL.navigateRoot('/beneficiary/home/medical-history');
         },
-        (error) => {
-          console.error('Error al guardar:', error);
+
+        async (error) => {
+          await this.toastService.presentToast(error.data.message, 'danger');
         }
       );
     }
   }
-  
 }

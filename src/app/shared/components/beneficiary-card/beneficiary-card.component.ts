@@ -21,7 +21,8 @@ export class BeneficiaryCardComponent implements OnInit {
     private router: Router,
     private alertCtrl: AlertController,
     private beneficiaryService: BeneficiaryService,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    
   ) {}
 
   ngOnInit() {
@@ -35,7 +36,7 @@ export class BeneficiaryCardComponent implements OnInit {
   }
 
   goToBeneficiary(beneficiary: Beneficiary) {
-    this.beneficiaryService.setActiveBeneficiary(beneficiary)
+    this.beneficiaryService.setActiveBeneficiary({...beneficiary})
     this.navCtrl.navigateForward(['/beneficiary/home'])
 
   }

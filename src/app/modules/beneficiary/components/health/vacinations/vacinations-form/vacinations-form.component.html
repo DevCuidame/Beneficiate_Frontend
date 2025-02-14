@@ -1,7 +1,7 @@
 <h2>Registro de Vacunaciones</h2>
 <form [formGroup]="form" (ngSubmit)="submitForm()">
   <div formArrayName="vaccinations">
-    <div *ngFor="let vaccination of vaccinations.controls; let i = index" [formGroup]="getVaccinationFormGroup(i)">
+    <div class="container-item" *ngFor="let vaccination of vaccinations.controls; let i = index" [formGroup]="getVaccinationFormGroup(i)">
       <app-input
         label="Vacuna"
         type="text"
@@ -26,10 +26,11 @@
   </div>
 
   <app-custom-button
-    label="Guardar"
-    type="submit"
-    [disabled]="form.invalid"
-    [textColor]="'var(--ion-color-light)'"
-    [backgroundImage]="buttonBackground"
-  ></app-custom-button>
+  label="Guardar"
+  type="submit"
+  [disabled]="!isFormValid()"
+  [textColor]="'var(--ion-color-light)'"
+  [backgroundImage]="buttonBackground"
+></app-custom-button>
+
 </form>

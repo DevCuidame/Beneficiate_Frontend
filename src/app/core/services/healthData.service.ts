@@ -2,14 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { BeneficiaryService } from './beneficiary.service';
 import { Vaccination, Allergy, Disease, MedicalHistory, FamilyHistory, Disability, Distinctive, Medication } from 'src/app/core/interfaces/beneficiary.interface';
 
 const apiUrl = environment.url;
 
 @Injectable({ providedIn: 'root' })
 export class HealthDataService {
-  constructor(private http: HttpClient, private beneficiaryService: BeneficiaryService) {}
+  constructor(private http: HttpClient) {}
 
   saveVaccinations(vaccinations: Vaccination[]): Observable<any> {
     return this.http.post(`${apiUrl}api/v1/beneficiary/vaccinations/create`, { vaccinations });

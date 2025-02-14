@@ -73,7 +73,7 @@ export class AuthService {
     const refreshToken = localStorage.getItem('refresh-token')
     return this.http.post(`${apiUrl}api/v1/auth/refresh-token`, {refreshToken}).pipe(
       map((response: any) => {
-        if (response.token.data.accessToken) {
+        if (response.data?.accessToken) {
           localStorage.setItem('token', response.data.accessToken);
           return response;
         } else {
