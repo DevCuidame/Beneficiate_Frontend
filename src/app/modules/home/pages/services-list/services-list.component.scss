@@ -1,0 +1,15 @@
+ion-content {
+  --background: var(--ion-color-light);
+}
+.scroll-container {
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.no-services {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 1.2rem;
+  color: gray;
+}

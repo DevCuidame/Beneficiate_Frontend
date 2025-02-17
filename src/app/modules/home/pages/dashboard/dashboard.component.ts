@@ -39,6 +39,8 @@ export class DashboardComponent implements OnInit {
     private cdRef: ChangeDetectorRef
   ) {}
   ngOnInit() {
+
+
     this.userService.user$.subscribe((userData) => {
       if (Array.isArray(userData) && userData.length > 0) {
         this.user = userData[0];
@@ -63,8 +65,6 @@ export class DashboardComponent implements OnInit {
           ...beneficiary,
           image: (Array.isArray(beneficiary.image) && beneficiary.image.length > 0) ? beneficiary.image[0] : null
         }));
-        console.log("🚀 ~ DashboardComponent ~ this.beneficiaryService.beneficiaries$.subscribe ~ this.beneficiaries:", this.beneficiaries)
-        
       }
       this.cdRef.detectChanges();
     });
@@ -78,43 +78,7 @@ export class DashboardComponent implements OnInit {
     this.activeTab = tab;
   }
 
-  setInitialSelectedButton() {
-    const initialButton = document.getElementById('firstOption');
-    if (initialButton) {
-      this.selectButton('Beneficiarios');
-      this.showCards = true;
-    }
-  }
 
   selectButton(buttonType: string) {
-    const firstButton = document.getElementById('firstOption');
-    const secondButton = document.getElementById('secondOption');
-    const selectedIndicator = document.getElementById('selectedIndicator');
-
-    if (buttonType === 'Beneficiarios') {
-      this.showCards = true;
-      if (selectedIndicator) {
-        selectedIndicator.style.left = '0';
-        selectedIndicator.textContent = 'Beneficiarios';
       }
-      if (firstButton) {
-        firstButton.classList.add('active');
-        secondButton?.classList.remove('active');
-      }
-      this.selectedButtonText = 'Beneficiarios';
-      this.selectedIndicatorBorder = '20px';
-    } else if (buttonType === 'Servicios') {
-      this.showCards = false;
-      if (selectedIndicator) {
-        selectedIndicator.style.left = '50%';
-        selectedIndicator.textContent = 'Servicios';
-      }
-      if (secondButton) {
-        secondButton.classList.add('active');
-        firstButton?.classList.remove('active');
-      }
-      this.selectedButtonText = 'Servicios';
-      this.selectedIndicatorBorder = '20px';
-    }
-  }
 }

@@ -1,10 +1,12 @@
 ng generate component modules/auth/pages/register 
 ng generate component modules/auth/pages/login 
+ng generate component modules/home/pages/services-list 
 ng generate component pages/pages
 
 ng generate component shared/components/beneficiary-card
 ng generate component shared/components/primary-card
 ng generate component shared/components/secondary-card
+ng generate component shared/components/service-card
 
 ng generate component modules/beneficiary/add-beneficiary
 ng generate component modules/beneficiary/home-beneficiary

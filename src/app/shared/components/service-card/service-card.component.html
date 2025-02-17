@@ -1,0 +1,16 @@
+<div class="data-container">
+  @for(service of services; track service){
+  <div class="card-container">
+    <ion-label class="card" (click)="openService(service.whatsapp_link)">
+      <div class="background-gradient"></div>
+      <ion-img
+        class="background-img"
+        [src]="environment + service.image_path"
+      ></ion-img>
+    </ion-label>
+    <div class="title position">
+      <label>{{ service.name }}</label>
+    </div>
+  </div>
+  }
+</div>

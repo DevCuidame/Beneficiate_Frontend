@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { getLabel, historyTypeOptions, relativeOptions } from 'src/app/core/constants/options';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
 import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
 
@@ -16,6 +17,9 @@ import { SecondaryCardComponent } from 'src/app/shared/components/secondary-card
 })
 export class MedicalHistoryListComponent implements OnInit {
   public activeBeneficiary: Beneficiary | null = null;
+  public getLabel = getLabel
+  public historyTypeOptions = historyTypeOptions;
+  public relativeOptions = relativeOptions
 
   constructor(
     private beneficiaryService: BeneficiaryService,

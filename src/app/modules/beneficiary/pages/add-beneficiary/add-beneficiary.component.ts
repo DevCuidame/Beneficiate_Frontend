@@ -13,13 +13,14 @@ import {
   LoadingController,
   NavController,
 } from '@ionic/angular';
-import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
 import { debounceTime } from 'rxjs';
 import { TabBarComponent } from 'src/app/shared/components/tab-bar/tab-bar.component';
 import { CustomButtonComponent } from 'src/app/shared/components/custom-button/custom-button.component';
 import { LocationService } from '../../../auth/services/location.service';
 import { BeneficiaryService } from '../../../../core/services/beneficiary.service';
+import { environment } from 'src/environments/environment';
 
+import { ActivatedRoute } from '@angular/router'; 
 @Component({
   selector: 'app-add-beneficiary',
   standalone: true,
@@ -54,6 +55,7 @@ export class AddBeneficiaryComponent implements OnInit {
   public cities: any[] = [];
 
   constructor(
+    private route: ActivatedRoute,
     private fb: FormBuilder,
     private beneficiaryService: BeneficiaryService,
     private loadingCtrl: LoadingController,
@@ -62,6 +64,7 @@ export class AddBeneficiaryComponent implements OnInit {
     private locationService: LocationService
   ) {
     this.beneficiaryForm = this.fb.group({
+      id: [''],
       first_name: [
         '',
         [Validators.required, Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$')],
@@ -94,15 +97,55 @@ export class AddBeneficiaryComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    this.route.queryParams.subscribe(params => {
+      if (params['new']) {
+        this.beneficiaryService.setActiveBeneficiary(null);
+      }
+    });
+
     this.loadDepartments();
 
-    // Escuchar cambios en el departamento seleccionado y actualizar las ciudades
     this.beneficiaryForm
       .get('department')
       ?.valueChanges.subscribe((departmentId) => {
-        this.loadCities(departmentId);
+        if (departmentId) {
+          this.beneficiaryForm.patchValue({ city_id: '' });
+          this.loadCities(departmentId);
+        }
       });
+
+    this.loadBeneficiaryData();
   }
+
+  loadBeneficiaryData() {
+    const beneficiary = this.beneficiaryService.getActiveBeneficiary();
+    
+    if (!beneficiary) {
+      this.beneficiaryForm.reset(); 
+      // return;
+    }
+  
+    if (beneficiary) {
+      this.beneficiaryForm.patchValue(beneficiary);
+  
+      this.imageLoaded = beneficiary.image?.image_path 
+        ? `${environment.url}${beneficiary.image.image_path.replace('\\', '/')}` 
+        : '';
+  
+      this.locationService.fetchDepartments();
+      this.locationService.departments$.subscribe((departments) => {
+        this.departments = departments;
+  
+        if (beneficiary.location?.department_id) {
+          this.beneficiaryForm.patchValue({ department: beneficiary.location.department_id });
+  
+          this.loadCities(beneficiary.location.department_id, beneficiary.location?.township_id);
+        }
+      });
+    }
+  }
+  
 
   loadDepartments() {
     this.locationService.fetchDepartments();
@@ -111,12 +154,20 @@ export class AddBeneficiaryComponent implements OnInit {
     });
   }
 
-  loadCities(departmentId: number) {
+  loadCities(departmentId: any, cityId?: any) {
     this.locationService.fetchCitiesByDepartment(departmentId);
+  
     this.locationService.cities$.subscribe((cities) => {
       this.cities = cities;
+  
+      if (cityId && cities.some(city => city.id === cityId)) {
+        setTimeout(() => {
+          this.beneficiaryForm.patchValue({ city_id: cityId });
+        }, 100); 
+      }
     });
   }
+  
 
   setupRealTimeValidation() {
     this.beneficiaryForm.valueChanges.pipe(debounceTime(300)).subscribe(() => {
@@ -139,40 +190,41 @@ export class AddBeneficiaryComponent implements OnInit {
 
   async saveBeneficiary() {
     if (this.beneficiaryForm.valid) {
-      const loading = await this.loadingCtrl.create({
-        message: 'Guardando...',
-      });
+      const loading = await this.loadingCtrl.create({ message: 'Guardando...' });
       await loading.present();
-
+  
       const beneficiaryData = { ...this.beneficiaryForm.value };
-
- 
-      this.beneficiaryService
-        .addBeneficiary(beneficiaryData as Beneficiary)
-        .subscribe(
-          async () => {
-            await loading.dismiss();
-            const alert = await this.alertCtrl.create({
-              header: 'Éxito',
-              message: 'El beneficiario ha sido agregado correctamente.',
-              buttons: ['OK'],
-            });
-            await alert.present();
-            this.navCtrl.navigateRoot('/home/dashboard');
-          },
-          async (error: any) => {
-            await loading.dismiss();
-            const alert = await this.alertCtrl.create({
-              header: 'Error',
-              message: 'Hubo un problema al agregar el beneficiario.',
-              buttons: ['OK'],
-            });
-            await alert.present();
-            console.error('Error al agregar beneficiario:', error);
-          }
-        );
+      const isEditing = !!beneficiaryData.identification_number; 
+  
+      const action$ = isEditing
+        ? this.beneficiaryService.updateBeneficiary(beneficiaryData.id, beneficiaryData)
+        : this.beneficiaryService.addBeneficiary(beneficiaryData);
+  
+      action$.subscribe(
+        async () => {
+          await loading.dismiss();
+          const alert = await this.alertCtrl.create({
+            header: 'Éxito',
+            message: isEditing ? 'Beneficiario actualizado correctamente.' : 'Beneficiario agregado correctamente.',
+            buttons: ['OK'],
+          });
+          await alert.present();
+          this.navCtrl.navigateRoot('/home/dashboard');
+        },
+        async (error: any) => {
+          console.log("🚀 ~ AddBeneficiaryComponent ~ error:", error)
+          await loading.dismiss();
+          const alert = await this.alertCtrl.create({
+            header: 'Error',
+            message: isEditing ? 'Hubo un problema al actualizar el beneficiario.' : 'Hubo un problema al agregar el beneficiario.',
+            buttons: ['OK'],
+          });
+          await alert.present();
+        }
+      );
     }
   }
+  
 
   // Image Controller
   selectImage() {

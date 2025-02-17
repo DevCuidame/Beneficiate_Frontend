@@ -162,7 +162,7 @@ ion-icon {
   background: var(--ion-color-secondary);
   transition: left 0.5s, right 0.5s, width 0.5s, border-radius 1s;
   z-index: 3;
-  border-radius: 20px;
+  border-radius: 20px 0 0px 20px !important;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -41,6 +41,13 @@ export class BeneficiaryCardComponent implements OnInit {
 
   }
 
+  get sortedBeneficiaries(): Beneficiary[] {
+    return [...this.beneficiaries].sort((a, b) =>
+      a.first_name.localeCompare(b.first_name)
+    );
+  }
+  
+
   async createBeneficiary() {
     if (this.beneficiaryCount >= this.maxBeneficiaries) {
       const alert = await this.alertCtrl.create({
@@ -51,7 +58,8 @@ export class BeneficiaryCardComponent implements OnInit {
       await alert.present();
       return;
     }
-
-    this.router.navigate(['/beneficiary/add']);
+  
+    this.router.navigate(['/beneficiary/add'], { queryParams: { new: true } });
   }
+  
 }

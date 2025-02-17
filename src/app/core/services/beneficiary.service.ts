@@ -68,11 +68,18 @@ export class BeneficiaryService {
       );
   }
 
+
   setBeneficiaries(beneficiaries: Beneficiary[]): void {
     this.beneficiariesSubject.next(beneficiaries);
     this.updateBeneficiaryCount(beneficiaries.length);
   }
-  setActiveBeneficiary(beneficiary: Beneficiary): void {
+  setActiveBeneficiary(beneficiary: Beneficiary | null): void {
+    if (!beneficiary) {
+      this.activeBeneficiarySubject.next(null);
+      localStorage.removeItem('activeBeneficiary');
+      return;
+    }
+    
     if (Array.isArray(beneficiary.location) && beneficiary.location.length > 0) {
       beneficiary.location = beneficiary.location[0]; 
     }
@@ -93,15 +100,25 @@ export class BeneficiaryService {
     return storedBeneficiary ? JSON.parse(storedBeneficiary) : null;
   }
 
-
-  updateBeneficiary(id: number | string, data: Partial<Beneficiary>): void {
-    const currentBeneficiaries = this.beneficiariesSubject.value;
-    const updatedBeneficiaries = currentBeneficiaries.map(b =>
-      b.id === id ? { ...b, ...data, image: data.image ?? b.image } : b
-    );
+  updateBeneficiary(id: number | string, data: Partial<Beneficiary>): Observable<any> {
+    return this.http.put(`${apiUrl}api/v1/beneficiary/update/${id}`, data).pipe(
+      map((response: any) => {
+        if (response.statusCode === 200 && response.data) {
+          console.log("🚀 ~ BeneficiaryService ~ map ~ response:", response)
+          const updatedBeneficiary = response.data;
+          const currentBeneficiaries = this.beneficiariesSubject.value;
   
-    this.beneficiariesSubject.next(updatedBeneficiaries);
-    localStorage.setItem('beneficiaries', JSON.stringify(updatedBeneficiaries));
+          const updatedBeneficiaries = currentBeneficiaries.map(b =>
+            b.id === id ? { ...b, ...updatedBeneficiary } : b
+          );
+  
+          this.beneficiariesSubject.next(updatedBeneficiaries);
+          localStorage.setItem('beneficiaries', JSON.stringify(updatedBeneficiaries));
+        }
+        return response;
+      }),
+      catchError((error) => throwError(() => error))
+    );
   }
   
   

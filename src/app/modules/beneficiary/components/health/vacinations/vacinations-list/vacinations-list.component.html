@@ -1,12 +1,17 @@
 <app-primary-card maxHeight="500px">
-  <div>
-    <h2>Vacunas</h2>
+  <h2>Vacunas</h2>
+  <div class="h-container">
     @if (activeBeneficiary?.vaccinations?.length ?? 0 > 0) { @for (item of
     activeBeneficiary?.vaccinations; track item){
-    <div class="h-card">
-      <p>{{ item.vaccine }}</p>
-      <p>{{ item.vaccination_date }}</p>
-    </div>
+    <app-secondary-card style="width: 100%">
+      <div class="vaccine-box">
+        <fa-icon [icon]="faSyringe"></fa-icon>
+        <div class="h-card">
+          <p>{{ item.vaccine }}</p>
+          <p>{{ item.vaccination_date }}</p>
+        </div>
+      </div>
+    </app-secondary-card>
     } }@else {
     <p style="text-align: start; width: 100%; color: var(--ion-color-dark)">
       No hay vacunas registradas.

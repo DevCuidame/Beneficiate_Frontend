@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 import { UserService } from 'src/app/modules/auth/services/user.service';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
 import { BeneficiaryService } from '../../../core/services/beneficiary.service';
+import { Services } from 'src/app/core/interfaces/services.interface';
 const apiUrl = environment.url;
 
 
@@ -26,6 +27,8 @@ export class AuthService {
         this.authState.next(true);
         localStorage.setItem('user', JSON.stringify(response.data.user));
         this.userService.setUser(response.data.user as User);
+
+        localStorage.setItem('services', JSON.stringify(response.data.services));
 
         if (response.data.plan?.max_beneficiaries) {
           this.beneficiaryService.maxBeneficiariesSubject.next(response.data.plan.max_beneficiaries);

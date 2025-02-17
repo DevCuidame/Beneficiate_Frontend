@@ -27,7 +27,7 @@ import { CustomButtonComponent } from 'src/app/shared/components/custom-button/c
     ReactiveFormsModule,
     IonicModule,
     CustomButtonComponent,
-  ], // 👈 Importando IonicModule
+  ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
@@ -64,7 +64,10 @@ export class LoginComponent {
       this.authService.login(this.loginForm.value).subscribe(
         async (response) => {
           await loading.dismiss();
-          // this.navCtrl.navigateRoot('/home/dashboard');
+          setTimeout(() => {
+            this.router.navigateByUrl('/home/dashboard');
+          }, 100);
+          
 
           // Solution to the redirect problem
 

@@ -6,6 +6,8 @@ import { AuthGuard } from 'src/app/core/guards/auth.guard';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TabBarComponent } from 'src/app/shared/components/tab-bar/tab-bar.component';
+import { ServicesListComponent } from './pages/services-list/services-list.component';
+import { ServiceCardComponent } from 'src/app/shared/components/service-card/service-card.component';
 
 const routes: Routes = [
   {
@@ -16,6 +18,12 @@ const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
+    canActivate: [AuthGuard], 
+  },
+
+  {
+    path: 'services',
+    component: ServicesListComponent,
     canActivate: [AuthGuard], 
   },
   {
@@ -33,7 +41,8 @@ const routes: Routes = [
     ReactiveFormsModule,
     IonicModule,
     RouterModule.forChild(routes),
-    TabBarComponent
+    TabBarComponent,
+    ServiceCardComponent
   ],
 })
 export class HomeModule {}

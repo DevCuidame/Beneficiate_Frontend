@@ -9,6 +9,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { NavController } from '@ionic/angular';
+import { historyTypeOptions, relativeOptions } from 'src/app/core/constants/options';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
 import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
 import { HealthDataService } from 'src/app/core/services/healthData.service';
@@ -30,6 +31,12 @@ import { InputComponent } from 'src/app/shared/components/input/input.component'
 export class MedicalHistoryFormComponent implements OnInit {
   public activeBeneficiary: Beneficiary | null = null;
   public buttonBackground: string = 'assets/background/secondary_button_bg.svg';
+
+  //TODO: Data should be loaded from the other file/database...
+
+  public relativeOptions = relativeOptions
+  public historyTypeOptions = historyTypeOptions
+  
 
   form: FormGroup;
 

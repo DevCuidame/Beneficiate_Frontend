@@ -1,0 +1,23 @@
+<ion-content scrollY="false">
+  <app-beneficiary-header></app-beneficiary-header>
+  <div class="scroll-container">
+    @if(services.length > 0){
+    <app-service-card [services]="services"></app-service-card>
+
+    }@else {
+    <p style="text-align: center; margin-top: 20px">
+      No hay servicios disponibles.
+    </p>
+    }
+  </div>
+</ion-content>
+
+<app-tab-bar
+  [isVisible]="true"
+  [buttons]="[
+    { icon: 'arrow-back-outline', route: '/', visible: true },
+    { icon: 'menu-outline', route: '/', visible: true },
+    { icon: 'exit-outline', route: '/', visible: true }
+  ]"
+  [background]="'var(--ion-color-light)'"
+></app-tab-bar>
