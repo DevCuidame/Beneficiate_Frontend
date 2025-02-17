@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, NavController } from '@ionic/angular';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
 import { TabBarComponent } from 'src/app/shared/components/tab-bar/tab-bar.component';
 import { User } from 'src/app/core/interfaces/auth.interface';
@@ -17,13 +17,21 @@ import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, IonicModule, TabBarComponent, BasicDataComponent, BeneficiaryCardComponent, FontAwesomeModule, PrimaryCardComponent], // Advertencia
+  imports: [
+    CommonModule,
+    IonicModule,
+    TabBarComponent,
+    BasicDataComponent,
+    BeneficiaryCardComponent,
+    FontAwesomeModule,
+    PrimaryCardComponent,
+  ], // Advertencia
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
   public user: User | any = null;
-  public beneficiaries: Beneficiary[] = []; 
+  public beneficiaries: Beneficiary[] = [];
   public environment = environment.url;
   public profileImage: string = '';
   public activeTab: string = 'info';
@@ -36,40 +44,45 @@ export class DashboardComponent implements OnInit {
     private userService: UserService,
     private authService: AuthService,
     private beneficiaryService: BeneficiaryService,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private navController: NavController
   ) {}
   ngOnInit() {
-
-
     this.userService.user$.subscribe((userData) => {
       if (Array.isArray(userData) && userData.length > 0) {
         this.user = userData[0];
       } else {
         this.user = userData;
       }
-    
-      if (this.user?.location && Array.isArray(this.user.location) && this.user.location.length > 0) {
-        this.user.location = this.user.location[0]; 
-      } 
+
+      if (
+        this.user?.location &&
+        Array.isArray(this.user.location) &&
+        this.user.location.length > 0
+      ) {
+        this.user.location = this.user.location[0];
+      }
       if (this.user?.image?.image_path) {
-        this.profileImage = `${environment.url}${this.user.image.image_path.replace(/\\/g, '/')}`;
+        this.profileImage = `${
+          environment.url
+        }${this.user.image.image_path.replace(/\\/g, '/')}`;
       } else {
         this.profileImage = 'assets/images/default-profile.png';
       }
-    
     });
-    
+
     this.beneficiaryService.beneficiaries$.subscribe((beneficiaries) => {
       if (Array.isArray(beneficiaries)) {
-        this.beneficiaries = beneficiaries.map(beneficiary => ({
+        this.beneficiaries = beneficiaries.map((beneficiary) => ({
           ...beneficiary,
-          image: (Array.isArray(beneficiary.image) && beneficiary.image.length > 0) ? beneficiary.image[0] : null
+          image:
+            Array.isArray(beneficiary.image) && beneficiary.image.length > 0
+              ? beneficiary.image[0]
+              : null,
         }));
       }
       this.cdRef.detectChanges();
     });
-    
-    
 
     this.authService.refreshUserData();
   }
@@ -78,7 +91,9 @@ export class DashboardComponent implements OnInit {
     this.activeTab = tab;
   }
 
-
   selectButton(buttonType: string) {
-      }
+    if (buttonType === 'Servicios') {
+      this.navController.navigateForward('/home/services');
+    }
+  }
 }
