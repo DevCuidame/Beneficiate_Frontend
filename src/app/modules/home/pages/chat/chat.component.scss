@@ -1,0 +1,21 @@
+ion-content {
+    --background: url("../../../../../assets/background/background-light.svg")
+      no-repeat center center / cover;
+  }
+  
+   
+  .card {
+    background: url("../../../../../assets/background/background.svg")
+    no-repeat top center / cover;
+    border-radius: 20px 20px 0% 0%;
+    position: absolute;
+    width: 100%;
+    color: var(--ion-color-dark);
+    padding-left: 5%;
+    padding-right: 5%;
+    max-height: 50%;
+    min-height: 20%;
+    overflow-y: auto;
+    bottom: 0;
+  }
+  

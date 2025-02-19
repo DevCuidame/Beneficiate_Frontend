@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonicModule, AlertController, NavController } from '@ionic/angular';
+import { User } from 'src/app/core/interfaces/auth.interface';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
 import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
 import { environment } from 'src/environments/environment';
@@ -22,7 +23,6 @@ export class BeneficiaryCardComponent implements OnInit {
     private alertCtrl: AlertController,
     private beneficiaryService: BeneficiaryService,
     private navCtrl: NavController,
-    
   ) {}
 
   ngOnInit() {

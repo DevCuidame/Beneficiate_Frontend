@@ -49,10 +49,15 @@ export class DashboardComponent implements OnInit {
   ) {}
   ngOnInit() {
     this.userService.user$.subscribe((userData) => {
+
+      this.user = userData;
+      this.cdRef.detectChanges();
+
       if (Array.isArray(userData) && userData.length > 0) {
         this.user = userData[0];
       } else {
         this.user = userData;
+
       }
 
       if (
@@ -92,8 +97,8 @@ export class DashboardComponent implements OnInit {
   }
 
   selectButton(buttonType: string) {
-    if (buttonType === 'Servicios') {
-      this.navController.navigateForward('/home/services');
+    if (buttonType === 'Agenda') {
+      this.navController.navigateForward(['/home/appointment-booking']);
     }
   }
 }

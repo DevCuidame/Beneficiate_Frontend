@@ -1,0 +1,14 @@
+<ion-content scrollY="false"></ion-content>
+
+<div class="card">
+</div>
+
+<app-tab-bar
+  [isVisible]="true"
+  [buttons]="[
+    { icon: 'arrow-back-outline', route: '/', visible: true },
+    { icon: 'menu-outline', route: '/', visible: true },
+    { icon: 'exit-outline', route: '/', visible: true }
+  ]"
+  [background]="backgroundStyle"
+></app-tab-bar>

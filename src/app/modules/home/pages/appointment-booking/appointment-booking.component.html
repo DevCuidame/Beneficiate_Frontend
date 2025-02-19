@@ -1,0 +1,40 @@
+<ion-content scroll-y="false">
+  <div class="appointment-header">
+    <p class="header-title">Tu Agenda</p>
+    <img
+      [src]="profileImage"
+      [alt]="'Foto de ' + (user?.first_name || 'usuario')"
+      class="profile-image"
+    />
+  </div>
+
+  <div class="content-container">
+    <app-appointment-card></app-appointment-card>
+
+    <div class="profesional-scroll">
+      <div class="professional-card" (scroll)="onScroll($event)">
+        @for (profesional of professionals; track profesional){
+          <app-health-professional-card></app-health-professional-card>
+        }
+      </div>
+  
+      <div class="professional-indicators">
+        <span
+          class="indicator"
+          *ngFor="let professional of professionals; let i = index"
+          [ngClass]="{ active: i === currentProfessionalIndex }"
+        ></span>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<app-tab-bar
+  [isVisible]="true"
+  [buttons]="[
+    { icon: 'arrow-back-outline', route: '/', visible: true },
+    { icon: 'menu-outline', route: '/', visible: true },
+    { icon: 'exit-outline', route: '/', visible: true }
+  ]"
+  [background]="backgroundStyle"
+></app-tab-bar>

@@ -1,0 +1,32 @@
+<app-primary-card maxHeight="fit-content" minHeight="auto" padding="20px">
+  <div class="appointment-card">
+    <div class="doctor-info">
+      <img src="assets/images/default_doctor.svg" alt="Foto del Doctor" class="doctor-image" />
+      <div class="appointment-details">
+        <h3 class="appointment-title">MEDICINA GENERAL</h3>
+        <p class="doctor-name">Dr. Justo Barrera</p>
+      </div>
+    </div>
+
+    <div class="appointment-footer">
+      <div class="appointment-date">
+        <div class="time-outline-bg">
+          <ion-icon name="time-outline"></ion-icon>
+        </div>
+        <div class="date-text">
+          <p>Viernes,</p>
+          <p>13 de abril de 2025</p>
+          <p>01:30 p.m</p>
+        </div>
+      </div>
+      @if(!edit_button){
+      <button class="edit-button" [ngClass]="{'hidden': edit_button}"  (click)="edit()">Editar</button>
+      }
+    </div>
+    
+    <div class="additional-footer" [ngClass]="{'active': edit_button}">
+      <button class="cancel-button" (click)="edit()">Cancelar</button>
+      <button class="edit-button">Reprogramar</button>
+    </div>
+  </div>
+</app-primary-card>

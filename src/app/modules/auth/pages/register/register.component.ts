@@ -32,7 +32,7 @@ import { LocationService } from '../../services/location.service';
     ReactiveFormsModule,
     IonicModule,
     CustomButtonComponent,
-  ], // 👈 Importando IonicModule
+  ], 
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
@@ -189,6 +189,17 @@ this.registerForm.get('confirmPassword')?.valueChanges
   }
 
   async register() {
+
+    if (!this.selectedImage) {
+      const alert = await this.alertCtrl.create({
+        header: 'Falta imagen',
+        message: 'Por favor, carga una imagen antes de continuar.',
+        buttons: ['OK']
+      });
+      await alert.present();
+      return; 
+    }
+
     if (this.registerForm.valid) {
       const loading = await this.loadingCtrl.create({
         message: 'Registrando...',

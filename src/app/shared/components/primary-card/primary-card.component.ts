@@ -9,6 +9,8 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class PrimaryCardComponent  implements OnInit {
   @Input() maxHeight: string = '240px';
+  @Input() minHeight: string = '';
+  @Input() padding: string = '';
 
   constructor() { }
 

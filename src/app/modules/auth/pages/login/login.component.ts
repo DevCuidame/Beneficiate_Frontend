@@ -1,5 +1,5 @@
 // src/app/modules/auth/pages/login/login.page.ts
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -36,10 +36,15 @@ export class LoginComponent {
   public passwordVisible: boolean = false;
   public buttonBackground: string = 'assets/background/primary_button_bg.svg';
 
+  @Output() forgotPassword = new EventEmitter<void>();
+
+  onForgotPassword() {
+    this.forgotPassword.emit(); 
+  }
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
     public navCtrl: NavController
@@ -64,18 +69,10 @@ export class LoginComponent {
       this.authService.login(this.loginForm.value).subscribe(
         async (response) => {
           await loading.dismiss();
-          setTimeout(() => {
-            this.router.navigateByUrl('/home/dashboard');
-          }, 100);
           
+          await this.navCtrl.navigateRoot(['/home/dashboard']);
 
-          // Solution to the redirect problem
-
-          // this.router.navigateByUrl('/home/dashboard');
-
-          // Solution to the redirect problem
-          // window.location.href = '/home';
-
+          window.location.reload();
         },
         async (error) => {
           await loading.dismiss();

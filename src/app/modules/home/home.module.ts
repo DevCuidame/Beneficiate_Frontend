@@ -6,8 +6,8 @@ import { AuthGuard } from 'src/app/core/guards/auth.guard';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TabBarComponent } from 'src/app/shared/components/tab-bar/tab-bar.component';
-import { ServicesListComponent } from './pages/services-list/services-list.component';
-import { ServiceCardComponent } from 'src/app/shared/components/service-card/service-card.component';
+import { AppointmentBookingComponent } from './pages/appointment-booking/appointment-booking.component';
+import { ChatComponent } from './pages/chat/chat.component';
 
 const routes: Routes = [
   {
@@ -22,8 +22,14 @@ const routes: Routes = [
   },
 
   {
-    path: 'services',
-    component: ServicesListComponent,
+    path: 'appointment-booking',
+    component: AppointmentBookingComponent,
+    canActivate: [AuthGuard], 
+  },
+
+  {
+    path: 'chat',
+    component: ChatComponent,
     canActivate: [AuthGuard], 
   },
   {
@@ -42,7 +48,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes),
     TabBarComponent,
-    ServiceCardComponent
   ],
 })
 export class HomeModule {}
