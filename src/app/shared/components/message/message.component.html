@@ -1,0 +1,20 @@
+<div
+  class="message"
+  [ngClass]="{
+    sent: message.type === 'sent',
+    received: message.type === 'received'
+  }"
+>
+  <div class="message-content">
+    {{ message.message }}
+  </div>
+  <div class="message-meta"   [ngClass]="{
+    sent: message.type === 'sent',
+    received: message.type === 'received'
+  }">
+    <span class="time">{{ message.sent_at }}</span>
+    <span class="status" *ngIf="message.type === 'sent' && message.status">
+      {{ message.status }}
+    </span>
+  </div>
+</div>

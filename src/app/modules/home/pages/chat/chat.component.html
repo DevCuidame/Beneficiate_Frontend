@@ -1,12 +1,29 @@
-<ion-content scrollY="false"></ion-content>
+<ion-content scrollY="false">
+  <div class="messages">
+    @for(msg of messages; track msg){
 
-<div class="card">
-</div>
+    <app-message [message]="msg"></app-message>
+    }
+  </div>
+  <div class="card">
+    <div class="message-input">
+      <ion-item lines="none">
+        <ion-input
+          placeholder="Escribe tu mensaje"
+          [(ngModel)]="messageText"
+        ></ion-input>
+        <ion-button fill="clear" (click)="sendMessage()">
+          <ion-icon name="send-outline"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </div>
+  </div>
+</ion-content>
 
 <app-tab-bar
   [isVisible]="true"
   [buttons]="[
-    { icon: 'arrow-back-outline', route: '/', visible: true },
+    { icon: 'arrow-back-outline', route: '/home/appointment-booking', visible: true },
     { icon: 'menu-outline', route: '/', visible: true },
     { icon: 'exit-outline', route: '/', visible: true }
   ]"

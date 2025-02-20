@@ -10,6 +10,7 @@ ng generate component shared/components/primary-card
 ng generate component shared/components/secondary-card
 ng generate component shared/components/appointment-card
 ng generate component shared/components/health-professional-card
+ng generate component shared/components/message
 
 ng generate component modules/beneficiary/add-beneficiary
 ng generate component modules/beneficiary/home-beneficiary

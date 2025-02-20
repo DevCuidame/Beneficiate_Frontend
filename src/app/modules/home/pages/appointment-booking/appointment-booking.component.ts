@@ -46,9 +46,8 @@ export class AppointmentBookingComponent implements OnInit {
   }
 
   onScroll(event: any) {
-    // Calcula el índice activo según la posición del scroll
     const element = event.target;
-    const cardWidth = element.offsetWidth; // Suponiendo que cada tarjeta ocupa el ancho completo del contenedor visible
+    const cardWidth = element.offsetWidth; 
     const index = Math.round(element.scrollLeft / cardWidth);
     this.currentProfessionalIndex = index;
   }
