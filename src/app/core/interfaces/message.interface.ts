@@ -1,7 +1,9 @@
 export interface Message {
     id: number;
+    chat_id: number;
+    sender_id: number;
     message: string;
-    type: 'sent' | 'received';
+    sender_type: 'USER' | 'AGENT';
     sent_at: string; 
     status?: 'sent' | 'delivered' | 'read'; 
     // senderName?: string;

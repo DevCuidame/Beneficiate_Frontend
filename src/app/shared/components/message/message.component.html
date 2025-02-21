@@ -1,19 +1,19 @@
 <div
   class="message"
   [ngClass]="{
-    sent: message.type === 'sent',
-    received: message.type === 'received'
+    sent: message.sender_type === 'USER',
+    received: ['AGENT', 'BOT'].includes(message.sender_type)
   }"
 >
   <div class="message-content">
     {{ message.message }}
   </div>
   <div class="message-meta"   [ngClass]="{
-    sent: message.type === 'sent',
-    received: message.type === 'received'
+    sent: message.sender_type === 'USER',
+    received: ['AGENT', 'BOT'].includes(message.sender_type)
   }">
     <span class="time">{{ message.sent_at }}</span>
-    <span class="status" *ngIf="message.type === 'sent' && message.status">
+    <span class="status" *ngIf="message.sender_type === 'USER' && message.status">
       {{ message.status }}
     </span>
   </div>
