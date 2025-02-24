@@ -1,0 +1,87 @@
+.appointment-card {
+    background-color: #fff;
+    border-radius: 20px;
+    padding: 1rem;
+    max-width: 400px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .appointment-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  
+  .patient-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .status-badge {
+    background-color: #00c292;
+    color: #fff;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+  }
+  
+  
+  .appointment-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .patient-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .patient-info img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .patient-name {
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .patient-specialty {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  .professional {
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  .request-date {
+    font-size: 0.8rem;
+    color: #999;
+  }
+
+
+.appointment-footer {
+  display: flex;
+  justify-content: space-between;
+}
+
+app-custom-button {
+  transition: filter 0.3s ease;
+}
+
+app-custom-button:hover {
+  filter: brightness(0.95);
+}
+
+fa-icon{
+  font-size: 2rem;
+}

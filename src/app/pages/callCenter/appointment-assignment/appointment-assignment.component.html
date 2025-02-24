@@ -1,0 +1,44 @@
+<div class="pending-appointments">
+  <div class="top-bar">
+    <div class="requests-info">
+      Tienes <span>10 solicitudes </span> de citas pendientes por asignar.
+    </div>
+    <div class="filter-section">
+      <input type="text" placeholder="Filtrar por..." />
+      <div class="dropdown">
+        <button class="dropdown-btn" (click)="toggleDropdown()">
+          <span>Filtrar</span>
+        </button>
+        @if (showDropdown){
+          <div class="dropdown-content">
+            <a href="#">Opción 1</a>
+            <a href="#">Opción 2</a>
+            <a href="#">Opción 3</a>
+          </div>
+        }
+      
+      </div>
+    </div>
+    
+    
+  </div>
+
+  <div class="main-content">
+    <div class="cards-section">
+      <!-- Tarjeta de solicitud -->
+      @for (item of items; track $index) {
+
+      <app-pending-card color="var(--ion-color-primary)"></app-pending-card>
+      }
+    </div>
+
+    <!-- Sección de chat o usuario en espera -->
+    <!-- <div class="chat-section">
+      <button class="chat-button">
+        Hay (1) un usuario en espera
+        <br />
+        Chat
+      </button>
+    </div> -->
+  </div>
+</div>

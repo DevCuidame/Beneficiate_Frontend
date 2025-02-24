@@ -1,0 +1,34 @@
+<div class="appointment-card">
+  <div class="appointment-header">
+    <div class="patient-status">
+      <span class="status-badge">Activo Beneficiario</span>
+    </div>
+    <fa-icon [icon]="faClock" [ngStyle]="{ color: color }"></fa-icon>
+  </div>
+  <div class="appointment-body">
+    <div class="patient-info">
+      <img
+        src="https://plus.unsplash.com/premium_photo-1690407617542-2f210cf20d7e?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        alt="Foto de perfil"
+      />
+      <div>
+        <p></p>
+        <p class="patient-name">Antonio Malagon</p>
+        <p class="patient-specialty">Cardiología</p>
+      </div>
+    </div>
+    <p class="professional">Sin Profesional Solicitado</p>
+    <div class="appointment-footer">
+      <p class="request-date">18/02/2025</p>
+      <app-custom-button
+        label="Asignar"
+        fontSize="1rem"
+        padding="5px 10px"
+        type="submit"
+        [disabled]="false"
+        [textColor]="'var(--ion-color-dark)'"
+        [backgroundImage]="buttonBackground"
+      ></app-custom-button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,26 @@
+<svg id="Componente_21_2" data-name="Componente 21 – 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="136" viewBox="0 0 1280 136">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_386" data-name="Rectángulo 386" width="1280" height="136" fill="#192a54"/>
+    </clipPath>
+  </defs>
+  <g id="Enmascarar_grupo_3" data-name="Enmascarar grupo 3" clip-path="url(#clip-path)">
+    <rect id="Rectángulo_385" data-name="Rectángulo 385" width="1280" height="800" fill="#192a54"/>
+    <g id="Elipse_14" data-name="Elipse 14" transform="translate(1073 -133)" fill="none" stroke="#192a54" stroke-width="80" opacity="0.5" style="mix-blend-mode: overlay;isolation: isolate">
+      <circle cx="166" cy="166" r="166" stroke="none"/>
+      <circle cx="166" cy="166" r="126" fill="none"/>
+    </g>
+    <g id="Elipse_16" data-name="Elipse 16" transform="translate(231 -51)" fill="none" stroke="#192a54" stroke-width="80" opacity="0.5" style="mix-blend-mode: overlay;isolation: isolate">
+      <circle cx="166" cy="166" r="166" stroke="none"/>
+      <circle cx="166" cy="166" r="126" fill="none"/>
+    </g>
+    <g id="Elipse_13" data-name="Elipse 13" transform="translate(-199 309)" fill="none" stroke="#192a54" stroke-width="100" opacity="0.5" style="mix-blend-mode: overlay;isolation: isolate">
+      <circle cx="223" cy="223" r="223" stroke="none"/>
+      <circle cx="223" cy="223" r="173" fill="none"/>
+    </g>
+    <g id="Elipse_15" data-name="Elipse 15" transform="translate(717 577)" fill="none" stroke="#192a54" stroke-width="100" opacity="0.5" style="mix-blend-mode: overlay;isolation: isolate">
+      <circle cx="223" cy="223" r="223" stroke="none"/>
+      <circle cx="223" cy="223" r="173" fill="none"/>
+    </g>
+  </g>
+</svg>

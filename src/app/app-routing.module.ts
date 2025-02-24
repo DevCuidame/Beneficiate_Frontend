@@ -11,6 +11,7 @@ const routes: Routes = [
   },
   { path: 'home', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule) },
   { path: 'beneficiary', loadChildren: () => import('./modules/beneficiary/beneficiary.module').then(m => m.BeneficiaryModule) },
+  { path: 'call-center', loadChildren: () => import('./modules/callCenter/call-center.module').then(m => m.CallCenterModule) },
   { path: '**', redirectTo: 'auth/login' } 
 ];
 

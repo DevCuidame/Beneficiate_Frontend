@@ -9,7 +9,6 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class ChatService {
-  // URL base para la API de chat; ajusta según la ruta de tu servidor
   private baseUrl = environment.url + 'api/v1/chat';
 
   constructor(private http: HttpClient) {}
