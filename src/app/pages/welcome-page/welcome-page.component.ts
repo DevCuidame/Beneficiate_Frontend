@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { HeaderComponent } from '../components/header/header.component';
 import { PlanCardComponent } from '../components/plans-card/plan-card.component';
+import { FooterComponent} from '../components/footer-component/footer-component.component';
 
 @Component({
   selector: 'app-welcome-page',
@@ -10,6 +11,7 @@ import { PlanCardComponent } from '../components/plans-card/plan-card.component'
   imports: [
     CommonModule,
     PlanCardComponent,
+    FooterComponent,
     HeaderComponent
   ],
   templateUrl: './welcome-page.component.html',
