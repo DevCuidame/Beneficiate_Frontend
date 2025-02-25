@@ -12,6 +12,10 @@ ng generate component pages/callCenter/pendingAppointments
 ng generate component pages/callCenter/appointmentAssignment
 ng generate component pages/callCenter/dailyAppointments
 ng generate component shared/call-center/pendingCard
+ng generate component shared/components/call-center/appointmentWizard
+ng generate component shared/components/call-center/appointmentAssigned
+ng generate component shared/components/call-center/chatFloating
+ng generate component shared/components/call-center/specialtyCard
 
 ng generate component shared/components/beneficiary-card
 ng generate component shared/components/primary-card

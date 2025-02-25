@@ -38,15 +38,14 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 0.75rem;
+  justify-content: flex-end;
+  align-items: center;
   position: relative;
   z-index: 2;
 }
 
 .card-content h2 {
-  margin: 0;
+  margin: 0 0 20px 0;
   font-size: 1.5rem;
   color: var(--ion-color-dark);
 }
@@ -78,7 +77,6 @@
   background-color: var(--ion-color-dark);
 }
 
-
 // Alert
 .two-button-alert .alert-wrapper {
   background: #e5e5e5;
@@ -93,7 +91,7 @@
 }
 
 .two-button-alert .whatsapp-button::part(button) {
-  background-color: #25D366; 
+  background-color: #25d366;
 }
 
 .two-button-alert .chat-button::part(button) {

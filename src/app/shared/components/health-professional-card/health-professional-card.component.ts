@@ -1,12 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, Input, OnInit } from '@angular/core';
 import { AlertController, NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-health-professional-card',
+  imports: [CommonModule],
   templateUrl: './health-professional-card.component.html',
   styleUrls: ['./health-professional-card.component.scss'],
 })
 export class HealthProfessionalCardComponent implements OnInit {
+
+  @Input() buttonVisible: boolean = true;
+  @Input() agendaColor: string = 'var(--ion-color-primary)';
 
   constructor(private alertCtrl: AlertController, private navCtrl: NavController) { }
 

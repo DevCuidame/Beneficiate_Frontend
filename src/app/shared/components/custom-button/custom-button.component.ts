@@ -22,6 +22,7 @@ export class CustomButtonComponent {
   @Input() routerLink?: string;
   @Input() fontSize: string = '1.25rem';
   @Input() padding: string = '15px 10px';
+  @Input() boxShadow?: string = 'none';
 
 
   constructor(private router: Router) {}

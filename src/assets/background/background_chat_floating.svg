@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="355" height="129.364" viewBox="0 0 355 129.364">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectángulo_465" data-name="Rectángulo 465" width="129.364" height="355" rx="35" transform="translate(-16.82)" fill="#fff"/>
+    </clipPath>
+    <linearGradient id="linear-gradient" x1="0.5" y1="1" x2="0.5" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#e8af41"/>
+      <stop offset="1" stop-color="#e8d641"/>
+    </linearGradient>
+  </defs>
+  <g id="Grupo_449" data-name="Grupo 449" transform="translate(355 16.82) rotate(90)" clip-path="url(#clip-path)">
+    <g id="Grupo_448" data-name="Grupo 448" transform="translate(-52.172 -51.352)">
+      <rect id="Rectángulo_464" data-name="Rectángulo 464" width="302.081" height="375.142" transform="translate(0 43.221)" fill="url(#linear-gradient)"/>
+      <ellipse id="Elipse_131" data-name="Elipse 131" cx="86.836" cy="105.365" rx="86.836" ry="105.365" transform="translate(25.858 239.197)" fill="#192a54" opacity="0.27" style="mix-blend-mode: color-dodge;isolation: isolate"/>
+      <ellipse id="Elipse_132" data-name="Elipse 132" cx="61.933" cy="75.676" rx="61.933" ry="75.676" transform="translate(9.97 0)" fill="#192a54" opacity="0.27" style="mix-blend-mode: color-dodge;isolation: isolate"/>
+      <ellipse id="Elipse_133" data-name="Elipse 133" cx="30.51" cy="36.927" rx="30.51" ry="36.927" transform="translate(25.858 168.344)" fill="#192a54" opacity="0.27" style="mix-blend-mode: color-dodge;isolation: isolate"/>
+      <ellipse id="Elipse_134" data-name="Elipse 134" cx="51.972" cy="62.274" rx="51.972" ry="62.274" transform="translate(115.669 117.649)" fill="#e8d641" opacity="0.15" style="mix-blend-mode: color-dodge;isolation: isolate"/>
+    </g>
+  </g>
+</svg>

@@ -8,10 +8,12 @@
     <h2>Dr. Miguel Ojeda</h2>
     <p class="specialty">Cardiólogo</p>
     
-    <div class="availability">
+    <div class="availability" [ngStyle]="{'color': agendaColor}">
       Agenda disponible
     </div>
     
-    <button class="cta-button" (click)="onSolicitarCita()">Solicitar cita</button>
+    @if (buttonVisible) {
+      <button class="cta-button" (click)="onSolicitarCita()">Solicitar cita</button>
+    }
   </div>
 </div>

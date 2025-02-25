@@ -1,6 +1,8 @@
 import { CustomButtonComponent } from './../../../../shared/components/custom-button/custom-button.component';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sidebar-dash',
@@ -11,11 +13,24 @@ import { Component, OnInit } from '@angular/core';
 export class SidebarDashComponent implements OnInit {
   activeButton: string = 'assigment';
 
-  constructor() {}
+  constructor(private router: Router) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        const url = event.url;
+        if (url.includes('/daily')) {
+          this.activeButton = 'daily';
+        } else if (url.includes('/pending')) {
+          this.activeButton = 'pending';
+        } else if (url.includes('/assigment')) {
+          this.activeButton = 'assigment';
+        }
+      });
+  }
 
-    setActive(button: string) {
-      this.activeButton = button;
-    }
+  setActive(button: string) {
+    this.activeButton = button;
+  }
 }
