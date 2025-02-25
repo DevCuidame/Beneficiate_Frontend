@@ -1,4 +1,5 @@
 :root {
+<<<<<<< Updated upstream
     --ion-color-primary: #4EAA03;
     --ion-color-secondary: #E8D641;
     --ion-color-tertiary: #275289;
@@ -30,4 +31,39 @@
   .ion-color-custom-yellow {
     --ion-color-base: var(--ion-color-custom-yellow);
   }
-  
+    
+=======
+  --ion-color-primary: #4EAA03;
+  --ion-color-secondary: #E8D641;
+  --ion-color-tertiary: #275289;
+  --ion-color-success: #4EAA03;
+  --ion-color-warning: #E8D641;
+  --ion-color-danger: #D72638;
+  --ion-color-light: #FFFFFF;
+  --ion-color-medium: #D8E7EE;
+  --ion-color-dark: #192A54;
+  --ion-color-card: #89bbd5;
+
+  /* Colores personalizados */
+  --ion-color-custom-blue: #4A7AF6;
+  --ion-color-custom-green: #4EAA03;
+  --ion-color-custom-yellow: #E8D641;
+  --ion-color-custom-gray: #FFF9F9;
+  --ion-color-custom-white: #F2F2F2;
+  --ion-color-custom-dark-blue: #275289;
+  --ion-color-boxshadow-green: 0px 1px 7px rgba(78, 170, 3, 0.5);
+  --ion-color-custom-gradient: radial-gradient( #D8E7EE , #275289);
+}
+
+.ion-color-custom-blue {
+  --ion-color-base: var(--ion-color-custom-blue);
+}
+
+.ion-color-custom-green {
+  --ion-color-base: var(--ion-color-custom-green);
+}
+
+.ion-color-custom-yellow {
+  --ion-color-base: var(--ion-color-custom-yellow);
+}
+>>>>>>> Stashed changes

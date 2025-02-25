@@ -114,6 +114,7 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit() {
     this.loadDepartments();
+    console.log(this.departments);
 
   this.registerForm.get('password')?.valueChanges
   .pipe(debounceTime(300), distinctUntilChanged())

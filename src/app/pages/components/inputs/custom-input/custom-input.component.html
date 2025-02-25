@@ -1,0 +1,32 @@
+<div class="custom-input">
+  <label [for]="label" [style]="label_s">{{ label }}</label>
+
+  <div class="input-wrapper" *ngIf="type !== 'select'; else selectTemplate">
+    <input
+      [id]="label"
+      [type]="getInputType()"
+      [formControl]="control"
+      required
+    />
+    <button
+      *ngIf="type === 'password'"
+      type="button"
+      class="toggle-password"
+      (click)="togglePasswordVisibility()"
+    >
+      👁️
+    </button>
+  </div>
+
+  <ng-template #selectTemplate>
+    <select [formControl]="control">
+      <option *ngFor="let option of options" [value]="option.value">
+        {{ option.label }}
+      </option>
+    </select>
+  </ng-template>
+</div>
+
+<p class="error-text" *ngIf="control?.invalid && control?.touched">
+  {{ errorMessage }}
+</p>

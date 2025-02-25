@@ -1,17 +1,35 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AutoRedirectGuard } from './core/guards/auth.guard';
+import { WelcomePageComponent } from './pages/welcome-page/welcome-page.component';
+import { LoginComponent } from './pages/auth/login/login.component';
+import { RegisterComponent } from './pages/auth/register/register.component';
+import { NosotrosPageComponent } from './pages/nosotros-page/nosotros-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
   { 
     path: 'auth', 
+  { path: 'welcome', component: WelcomePageComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'nosotros', component: NosotrosPageComponent },
+  {
+    path: 'auth',
     loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule),
+<<<<<<< Updated upstream
     canActivate: [AutoRedirectGuard] // 👈 Protegemos la ruta de login
   },
   { path: 'home', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule) },
   { path: 'beneficiary', loadChildren: () => import('./modules/beneficiary/beneficiary.module').then(m => m.BeneficiaryModule) },
   { path: '**', redirectTo: 'auth/login' } // 👈 Si una ruta no existe, regresa al login
+=======
+    canActivate: [AutoRedirectGuard]
+  },
+  { path: 'home', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule) },
+  { path: 'beneficiary', loadChildren: () => import('./modules/beneficiary/beneficiary.module').then(m => m.BeneficiaryModule) },
+  { path: '**', redirectTo: 'auth/login' }
+>>>>>>> Stashed changes
 ];
 
 @NgModule({

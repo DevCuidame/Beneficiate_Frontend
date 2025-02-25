@@ -1,0 +1,38 @@
+<div class="nosotros-page">
+
+  <section class="info-section">
+      <app-header [addBackground]="true"></app-header>
+
+      <img src="../../../assets/logo/beneficiate_logo.svg" alt="logo" class="logo">
+
+      <div class="info-contain">
+        <img src="../../../assets/images/Desktop/nosotros/banner.jpg" alt="" class="banner">
+
+        <p class="text">
+          Somos una plataforma tecnológica de conexión en salud y bienestar,
+          que permite, mediante membresías de un solo pago anual,
+          que sus suscriptores accedan a una red de más de 3.200 prestadores
+          de servicios de prevención, atención y eventualidades médicas,
+          más de 90 laboratorios clínicos y múltiples prestadores
+          de servicio integrales de bienestar, que cubren al tomador
+          y hasta cuatro miembros de su familia, en más de 55 ciudades
+          en todo el territorio.
+        </p>
+    </div>
+
+  </section>
+
+  <section class="card-section">
+
+    <div class="card-container">
+
+      <div class="card" *ngFor="let texto of textoCard; let i = index">
+        <img [src]="'../../../assets/images/Desktop/nosotros/cards/bg-' + (i + 1) + '.jpg'" alt="background" class="bg">
+        <img src="../../../assets/icon/crown.svg" alt="icono" class="icono">
+        <h3 class="text" [innerHTML]="texto"></h3>
+      </div>
+
+    </div>
+
+  </section>
+</div>
