@@ -1,0 +1,58 @@
+<main>
+  <app-header [addBackground]="false"></app-header>
+
+  <div class="beneficiarios-container">
+    <div class="beneficiarios-nav">
+      <button
+        class="btn-nav"
+        [class.selected]="selectedButton === 'beneficiarios'"
+        (click)="selectButton('beneficiarios')">
+        <p>Beneficiarios</p>
+      </button>
+
+      <button
+        class="btn-nav"
+        [class.selected]="selectedButton === 'detalles'"
+        (click)="selectButton('detalles')">
+        <p>Detalles del plan</p>
+      </button>
+
+      <button
+        class="btn-nav"
+        [class.selected]="selectedButton === 'planes'"
+        (click)="selectButton('planes')">
+        <p>Planes</p>
+      </button>
+    </div>
+
+    <div class="paneles-container">
+      <div class="beneficiarios-panel" *ngIf="selectedPanel === 'beneficiarios'">
+        <app-beneficiary-card ></app-beneficiary-card>
+      </div>
+
+      <div class="planes-panel" *ngIf="selectedPanel === 'planes'">
+        <h2>Tu bienestar es nuestra prioridad. Descubre opciones que se adaptan a ti.</h2>
+
+        <div class="plan-container">
+          <app-plan-card
+          [imagen]="imgPlanFamiliar"
+          titulo="PLAN FAMILIAR"
+          precio="$480.000 COP/año"
+          descripcion="Cuota única anual Titular + 4 familiares"
+          botonTexto="Adquirir"
+        />
+
+        <app-plan-card
+          [imagen]="imgPlanIndividual"
+          titulo="PLAN INDIVIDUAL"
+          precio="$250.000 COP/año"
+          descripcion="Cuota única anual"
+          botonTexto="Adquirir"
+        />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-info-user></app-info-user>
+</main>

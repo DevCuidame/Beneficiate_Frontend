@@ -1,0 +1,19 @@
+.siguenos {
+    height: 5vh;
+    width: 15vw;
+    padding: 10px 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 2px solid white;
+    border-radius: 30px;
+    position: absolute;
+    bottom: 5%;
+    left: 10%;
+
+    ion-icon {
+        color: white;
+        transform: scale(1.5);
+        cursor: pointer;
+    }
+} 

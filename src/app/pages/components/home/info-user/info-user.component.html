@@ -1,0 +1,161 @@
+<section class="info-container">
+
+  <div class="translate">
+
+    <div class="circle left">
+      <img [src]="profileImage" [alt]="user?.first_name" />
+    </div>
+
+    <h1 class="user-name">{{user?.first_name}} {{user?.last_name}}</h1>
+
+    <div class="content-plan">
+      @if (user?.plan?.name === 'Básico') {
+      <ion-icon name="star-outline" class="icon"></ion-icon>
+      }@else {
+      <fa-icon class="icon" [icon]="faCrown"></fa-icon>
+      }
+      <span class="plan-name">
+        {{ user?.plan?.name }}
+      </span>
+    </div>
+
+    <div class="care-div">
+      <h2>10</h2>
+      <span>Personas a cargo</span>
+      <h2>5</h2>
+      <span>Mascotas a cargo</span>
+    </div>
+
+    <div class="personal-info">
+      <div class="parent-column">
+        <!-- Identity Card -->
+        <div class="item">
+          <div class="item-icon icon-1">
+            <fa-icon [icon]="faAddressCard"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{ user?.identification_number || 'No aplica' }}</p>
+            <p>{{ user?.identification_type || 'No aplica' }}</p>
+          </div>
+        </div>
+        <!-- Address -->
+        <div class="item">
+          <div class="item-icon icon-5">
+            <fa-icon [icon]="faHouse"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{ user?.address || 'No aplica' }}</p>
+            <p>Dirección</p>
+          </div>
+        </div>
+        <!-- Department -->
+        <div class="item">
+          <div class="item-icon icon-7">
+            <fa-icon [icon]="faMap"></fa-icon>
+          </div>
+          <div>
+            <div class="item-info">
+              <p>{{ user?.location?.department_name }}</p>
+              <p>Departamento</p>
+            </div>
+          </div>
+        </div>
+        <!-- City -->
+        <div class="item">
+          <div class="item-icon icon-6">
+            <fa-icon [icon]="faCity"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{ user?.location?.township_name || 'No aplica' }}</p>
+            <p>Ciudad</p>
+          </div>
+        </div>
+      </div>
+      <div class="parent-column">
+        <!-- Gender -->
+        <div class="item">
+          <div class="item-icon icon-4">
+            <fa-icon [icon]="faPersonHalfDress"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{ user?.gender || 'No aplica' }}</p>
+            <p>Género</p>
+          </div>
+        </div>
+        <!-- Happy Birthday -->
+        <div class="item">
+          <div class="item-icon icon-3">
+            <fa-icon [icon]="faCakeCandles"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{ user?.birth_date || 'No aplica' }}</p>
+            <p>Fecha Nacimiento</p>
+          </div>
+        </div>
+        <!-- Phone -->
+        <div class="item">
+          <div class="item-icon icon-2">
+            <fa-icon [icon]="faPhone"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{ user?.phone || 'No aplica' }}</p>
+            <p>Teléfono</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!--TODO: Cambiar el contenido del div.item por los que aparecen en el mockup-->
+    <div class="health-info">
+      <div class="parent-column">
+        <!-- Identity Card -->
+        <div class="item">
+          <div class="item-icon icon-1">
+            <fa-icon [icon]="faAddressCard"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{ user?.identification_number || 'No aplica' }}</p>
+            <p>{{ user?.identification_type || 'No aplica' }}</p>
+          </div>
+        </div>
+        <!-- Address -->
+        <div class="item">
+          <div class="item-icon icon-5">
+            <fa-icon [icon]="faHouse"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{ user?.address || 'No aplica' }}</p>
+            <p>Dirección</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="parent-column">
+        <!-- Gender -->
+        <div class="item">
+          <div class="item-icon icon-4">
+            <fa-icon [icon]="faPersonHalfDress"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{ user?.gender || 'No aplica' }}</p>
+            <p>Género</p>
+          </div>
+        </div>
+        <!-- Happy Birthday -->
+        <div class="item">
+          <div class="item-icon icon-3">
+            <fa-icon [icon]="faCakeCandles"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{ user?.birth_date || 'No aplica' }}</p>
+            <p>Fecha Nacimiento</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>

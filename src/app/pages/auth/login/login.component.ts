@@ -77,7 +77,7 @@ export class LoginComponent {
         async (response) => {
           await loading.dismiss();
           setTimeout(() => {
-            this.router.navigateByUrl('/home/dashboard');
+            this.router.navigateByUrl('/home-desktop');
           }, 100);
         },
         async (error) => {
