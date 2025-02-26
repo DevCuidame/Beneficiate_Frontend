@@ -12,6 +12,7 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
   { path: 'nosotros', component: NosotrosPageComponent },
+  { path: 'home-desktop', loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule) },
   {
     path: 'auth',
     loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule),
