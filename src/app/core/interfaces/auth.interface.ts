@@ -26,5 +26,7 @@ export interface User extends RegisterData {
   plan: Plan;     
   image: UserImage; 
   location: Location;
-  contacts: UserEmergencyContact
+  contacts: UserEmergencyContact,
+  isAgent?: boolean,
+  agentActive?: boolean
 }

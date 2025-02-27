@@ -5,10 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { identificationOptions } from 'src/app/core/constants/indentifications';
 import { AppointmentAssignedComponent } from '../appointment-assigned/appointment-assigned.component';
 import { SpecialityCardComponent } from '../specialty-card/speciality-card.component';
+import { PatientSearchBarComponent } from '../patient-search-bar/patient-search-bar.component';
+import { personaData } from 'src/app/core/interfaces/personaData.interface';
 
 @Component({
   selector: 'app-appointment-wizard',
-  imports: [CommonModule, FormsModule, AppointmentAssignedComponent, HealthProfessionalCardComponent, SpecialityCardComponent],
+  imports: [CommonModule, FormsModule, AppointmentAssignedComponent, HealthProfessionalCardComponent, SpecialityCardComponent, PatientSearchBarComponent],
   templateUrl: './appointment-wizard.component.html',
   styleUrls: ['./appointment-wizard.component.scss'],
 })
@@ -19,16 +21,7 @@ export class AppointmentWizardComponent {
   @ViewChild('carouselContent', { static: false })
   carouselContent!: ElementRef<HTMLDivElement>;
 
-  // Datos de ejemplo
-  patientData = {
-    identificationType: 'CC',
-    identification: '',
-    fullName: '',
-    phone: '',
-    email: '',
-    firstTime: false,
-    control: false,
-  };
+  public personaData!: personaData
 
   specialties = [
     { name: 'Cardiología', img: 'assets/cardiologia.jpg' },

@@ -4,7 +4,7 @@ import { Observable, Observer } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class ChatWebsocketService {
+export class WebsocketService {
   private ws!: WebSocket;
 
   public connect(): Observable<any> {

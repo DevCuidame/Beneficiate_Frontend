@@ -1,0 +1,14 @@
+<div class="patient-search-container">
+  <div class="patient-info">
+    <img [src]="patientPhotoUrl" alt="Foto paciente" class="patient-img" />
+    <div class="patient-text">
+      <p class="patient-name">{{ patientName }}</p>
+      <p class="appointment-type">{{ appointmentType }}</p>
+    </div>
+  </div>
+
+  <div class="search-wrapper">
+    <input type="text" placeholder="buscar" />
+    <fa-icon class="search-icon" [icon]="faSearch"></fa-icon>
+  </div>
+</div>

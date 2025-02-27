@@ -30,7 +30,7 @@
       <div class="form-group">
         <label>Identificación</label>
         <div class="row">
-          <select [(ngModel)]="patientData.identificationType">
+          <select [(ngModel)]="personaData.identificationType">
             <option value="CC">Cédula</option>
             <option value="TI">Tarjeta de Identidad</option>
             <option value="PASSPORT">Pasaporte</option>
@@ -39,27 +39,32 @@
           <input
             type="text"
             placeholder="#"
-            [(ngModel)]="patientData.identification"
+            [(ngModel)]="personaData.identification"
           />
         </div>
       </div>
       <div class="form-group">
         <label>Nombres y apellidos</label>
-        <input type="text" [(ngModel)]="patientData.fullName" />
+        <input type="text" disabled="true" [(ngModel)]="personaData.fullName" />
       </div>
       <div class="form-group">
-        <label>Teléfono</label>
-        <input type="text" [(ngModel)]="patientData.phone" />
+        <div class="row">
+          <div class="item">
+            <label>Teléfono</label>
+            <input type="text" disabled="true" [(ngModel)]="personaData.phone" />
+          </div>
+          <div class="item">
+            <label>E-Mail</label>
+            <input type="text" disabled="true" [(ngModel)]="personaData.email" />
+          </div>
+        </div>
       </div>
-      <div class="form-group">
-        <label>E-Mail</label>
-        <input type="text" [(ngModel)]="patientData.email" />
-      </div>
+      <div class="form-group"></div>
       <div class="custom-checkbox-container">
         <input
           type="checkbox"
           id="firstTimeCheck"
-          [(ngModel)]="patientData.firstTime"
+          [(ngModel)]="personaData.firstTime"
         />
         <label for="firstTimeCheck"> Cita primera vez </label>
       </div>
@@ -68,37 +73,45 @@
         <input
           type="checkbox"
           id="controlCheck"
-          [(ngModel)]="patientData.control"
+          [(ngModel)]="personaData.control"
         />
         <label for="controlCheck"> Control </label>
       </div>
     </div>
     }@else if(currentStep === 2){
+    <app-patient-search-bar></app-patient-search-bar>
     <!-- PASO 2: ESPECIALIDAD -->
     <div class="step-content">
       <h2>Selecciona la especialidad médica que requieres:</h2>
       <div class="carousel-container">
-        <button class="arrow left-arrow" (click)="scrollLeft()">&#10094;</button>
+        <button class="arrow left-arrow" (click)="scrollLeft()">
+          &#10094;
+        </button>
         <div class="carousel-content" #carouselContent>
           <app-speciality-card
-          *ngFor="let spec of specialties; let i = index"
-          [speciality]="spec.name"
-          [class.selected]="i === selectedSpecialtyIndex"
-          (click)="selectSpecialty(i)"
+            *ngFor="let spec of specialties; let i = index"
+            [speciality]="spec.name"
+            [class.selected]="i === selectedSpecialtyIndex"
+            (click)="selectSpecialty(i)"
           ></app-speciality-card>
         </div>
-        
-        <button class="arrow right-arrow" (click)="scrollRight()">&#10095;</button>
+
+        <button class="arrow right-arrow" (click)="scrollRight()">
+          &#10095;
+        </button>
       </div>
-      
     </div>
     }@else if(currentStep === 3){
     <!-- PASO 3: PROFESIONAL -->
     <div class="step-content">
+      <app-patient-search-bar></app-patient-search-bar>
+
       <h2>Médico</h2>
       <p>Selecciona el profesional con el que deseas agendar cita</p>
       <div class="carousel-container">
-        <button class="arrow left-arrow" (click)="scrollLeft()">&#10094;</button>
+        <button class="arrow left-arrow" (click)="scrollLeft()">
+          &#10094;
+        </button>
         <div class="carousel-content" #carouselContent>
           <app-health-professional-card
             *ngFor="let prof of professionals; let i = index"
@@ -108,9 +121,10 @@
             (click)="selectProfessional(i)"
           ></app-health-professional-card>
         </div>
-        <button class="arrow right-arrow" (click)="scrollRight()">&#10095;</button>
+        <button class="arrow right-arrow" (click)="scrollRight()">
+          &#10095;
+        </button>
       </div>
-      
     </div>
     }@else if(currentStep === 4){
     <!-- PASO 4: FECHA Y HORA -->

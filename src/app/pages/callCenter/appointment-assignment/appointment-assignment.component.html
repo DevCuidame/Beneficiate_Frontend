@@ -1,13 +1,13 @@
 <div class="pending-appointments">
 
-  <app-search-bar highlighted="10 solicitudes"></app-search-bar>
+  <app-search-bar [highlighted]="requests"></app-search-bar>
 
   <div class="main-content">
     <div class="cards-section">
       <!-- Tarjeta de solicitud -->
-      @for (item of items; track $index) {
+      @for (appointment of appointments; track $index) {
 
-      <app-pending-card color="var(--ion-color-primary)"></app-pending-card>
+        <app-pending-card [appointment]="appointment" [color]="'var(--ion-color-primary)'"></app-pending-card>
       }
     </div>
 

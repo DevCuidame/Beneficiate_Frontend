@@ -1,11 +1,23 @@
+import { User } from "./auth.interface";
+import { Beneficiary } from "./beneficiary.interface";
+
 export interface Appointment {
-    id?: number;                  
-    user_id: number | null;       
-    beneficiary_id?: number | null; 
-    appointment_date: string;      
-    status?: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED'; 
-    notes?: string;                
-    is_for_beneficiary: boolean;   
-    created_at?: string;           
-  }
-  
+  id: number;
+  user_id: string;
+  beneficiary_id: string;
+  appointment_date: string;
+  status: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'RESCHEDULED' | 'EXPIRED';
+  notes: string;
+  specialty: string;
+  created_at: string;
+  is_for_beneficiary: boolean;
+  userData: User | Beneficiary; 
+}
+
+export interface appointmentCounts {
+  EXPIRED: number;
+  PENDING: number;
+  CONFIRMED: number;
+  CANCELLED: number;
+  RESCHEDULED: number;
+}
