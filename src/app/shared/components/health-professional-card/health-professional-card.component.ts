@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { AlertController, NavController } from '@ionic/angular';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-health-professional-card',
@@ -10,8 +11,14 @@ import { AlertController, NavController } from '@ionic/angular';
 })
 export class HealthProfessionalCardComponent implements OnInit {
 
+  @Input() first_name: string = ''; 
+  @Input() last_name: string = ''; 
+  @Input() specialty_name: string = ''; 
+  @Input() profileImage: string = 'assets/images/test_doctor.svg'; 
   @Input() buttonVisible: boolean = true;
   @Input() agendaColor: string = 'var(--ion-color-primary)';
+
+  public api = environment.url;
 
   constructor(private alertCtrl: AlertController, private navCtrl: NavController) { }
 
@@ -21,11 +28,10 @@ export class HealthProfessionalCardComponent implements OnInit {
     const alert = await this.alertCtrl.create({
       header: 'Solicitar cita',
       message: 'Selecciona el método de contacto que prefieras',
-      cssClass: 'two-button-alert', // Clase personalizada para aumentar la especificidad
+      cssClass: 'two-button-alert', 
       buttons: [
         {
           text: 'Whatsapp',
-          // icon: 'logo-whatsapp', // Ionic 8 permite usar icon
           cssClass: 'whatsapp-button',
           handler: () => {
             console.log('WhatsApp presionado');
@@ -33,17 +39,14 @@ export class HealthProfessionalCardComponent implements OnInit {
         },
         {
           text: 'Chat',
-          // icon: 'chatbubbles-outline',
           cssClass: 'chat-button',
           handler: () => {
             console.log('Chat presionado');
             this.navCtrl.navigateForward(['/home/chat']);
-
           }
         }
       ]
     });
     await alert.present();
-    
   }
 }

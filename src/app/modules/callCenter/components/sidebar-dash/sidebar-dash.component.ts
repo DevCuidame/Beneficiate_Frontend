@@ -25,6 +25,7 @@ export class SidebarDashComponent implements OnInit {
         } else if (url.includes('/pending')) {
           this.activeButton = 'pending';
         } else if (url.includes('/assigment')) {
+          localStorage.removeItem('selectedAppointment')
           this.activeButton = 'assigment';
         }
       });

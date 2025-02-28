@@ -38,7 +38,6 @@ export class AppointmentAssignmentComponent implements OnInit, OnDestroy {
       next: (data) => {
         console.log('Datos recibidos desde WebSocket:', data);
         if (data.event === 'all_appointments' && data.appointments) {
-          // Extraer citas y contadores desde el objeto recibido
           this.appointments = data.appointments.data as Appointment[];
           this.appointmentCounts = data.appointments.counts;
           console.log('Citas actualizadas:', this.appointments);

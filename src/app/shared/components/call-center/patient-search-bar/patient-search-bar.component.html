@@ -1,14 +1,19 @@
 <div class="patient-search-container">
   <div class="patient-info">
-    <img [src]="patientPhotoUrl" alt="Foto paciente" class="patient-img" />
+    <img [src]="environment + image_path" [alt]="first_name" class="patient-img" />
     <div class="patient-text">
-      <p class="patient-name">{{ patientName }}</p>
-      <p class="appointment-type">{{ appointmentType }}</p>
+      <p class="patient-name">{{ first_name.split(" ")[0] }} {{ last_name.split(" ")[0]}}</p>
+      <p class="appointment-type">{{
+        firstTime
+          ? "Primera vez"
+          : "Control"
+      }}</p>
     </div>
   </div>
 
   <div class="search-wrapper">
-    <input type="text" placeholder="buscar" />
+    <input type="text" placeholder="Buscar..." (input)="onSearchTermChange($event)" />
     <fa-icon class="search-icon" [icon]="faSearch"></fa-icon>
   </div>
+  
 </div>

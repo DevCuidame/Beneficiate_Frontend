@@ -11,6 +11,7 @@ export interface Beneficiary {
   phone: string;
   birth_date?: string;
   gender: string;
+  email: string;
   city_id: number;
   address: string;
   blood_type: string;

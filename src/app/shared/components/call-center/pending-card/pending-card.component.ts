@@ -4,7 +4,9 @@ import { CustomButtonComponent } from '../../custom-button/custom-button.compone
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faClock } from '@fortawesome/free-regular-svg-icons';
-import { Appointment } from 'src/app/core/interfaces/appointment.interface'; 
+import { Appointment } from 'src/app/core/interfaces/appointment.interface';
+import { NavController } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-pending-card',
@@ -14,31 +16,40 @@ import { Appointment } from 'src/app/core/interfaces/appointment.interface';
 })
 export class PendingCardComponent implements OnInit {
   @Input() color: string = '';
-  @Input() appointment!: Appointment; 
+  @Input() appointment!: Appointment;
   public environment = environment.url;
 
   public buttonBackground: string = 'assets/background/primary_button_bg.svg';
   public faClock = faClock;
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   ngOnInit() {}
 
   getClockColor(appointment: Appointment): string {
     const createdAt = new Date(appointment.created_at).getTime();
-    const expirationTime = createdAt + 2 * 60 * 60 * 1000; // 2 horas
+    const expirationTime = createdAt + 2 * 60 * 60 * 1000;
     const now = Date.now();
-  
+
     if (now >= expirationTime) {
-      return 'var(--ion-color-danger)'; // Rojo
+      return 'var(--ion-color-danger)';
     }
     const remaining = expirationTime - now;
-    if (remaining <= 30 * 60 * 1000) { // 30 minutos o menos
-      return 'var(--ion-color-secondary)'; // Naranja
+    if (remaining <= 30 * 60 * 1000) {
+      return 'var(--ion-color-secondary)';
     }
-    return 'var(--ion-color-primary)'; // Verde
+    return 'var(--ion-color-primary)';
   }
-  
-  
 
+  goToAppointment(appointment: Appointment) {
+    if (!appointment) {
+      console.error('Error: appointment no está definido.');
+      return;
+    }
+
+    localStorage.setItem('selectedAppointment', JSON.stringify(appointment));
+    this.router.navigate(['/call-center/dash/pending'], {
+      state: { appointment },
+    });
+  }
 }

@@ -11,6 +11,8 @@ export interface Appointment {
   specialty: string;
   created_at: string;
   is_for_beneficiary: boolean;
+  firstTime: boolean;
+  control: boolean;
   userData: User | Beneficiary; 
 }
 
