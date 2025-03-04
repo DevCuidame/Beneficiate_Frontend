@@ -1,0 +1,91 @@
+<section class="info-container">
+  <div class="translate">
+    <div class="circle left">
+      <img [src]="profileImage" [alt]="beneficiary?.first_name" />
+    </div>
+
+    <h1 class="user-name">{{ beneficiary?.first_name }} {{ beneficiary?.last_name }}</h1>
+
+    <div class="personal-info-container">
+      <h3>Información Personal</h3>
+
+      <div class="parent-column personal-info">
+        <!-- Identity Card -->
+        <div class="item">
+          <div class="item-icon icon-1">
+            <fa-icon [icon]="faAddressCard"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{ beneficiary?.identification_number || 'No aplica' }}</p>
+            <p>{{ beneficiary?.identification_type || 'No aplica' }}</p>
+          </div>
+        </div>
+        <!-- Gender -->
+        <div class="item">
+          <div class="item-icon icon-4">
+            <fa-icon [icon]="faPersonHalfDress"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{ beneficiary?.gender || 'No aplica' }}</p>
+            <p>Género</p>
+          </div>
+        </div>
+        <!-- Birth Date -->
+        <div class="item">
+          <div class="item-icon icon-3">
+            <fa-icon [icon]="faCakeCandles"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{ beneficiary?.birth_date ? (beneficiary?.birth_date | date: 'dd/MM/yyyy') : 'No aplica' }}</p>
+            <p>Fecha Nacimiento</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="parent-column address-info">
+        <!-- Address -->
+        <div class="item">
+          <div class="item-icon icon-5">
+            <fa-icon [icon]="faHouse"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{ beneficiary?.address || 'No aplica' }}</p>
+            <p>Dirección</p>
+          </div>
+        </div>
+        <!-- Phone -->
+        <div class="item">
+          <div class="item-icon icon-2">
+            <fa-icon [icon]="faPhone"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{ beneficiary?.phone || 'No aplica' }}</p>
+            <p>Teléfono</p>
+          </div>
+        </div>
+        <!-- Department -->
+        <div class="item">
+          <div class="item-icon icon-7">
+            <fa-icon [icon]="faMap"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{ beneficiary?.location?.department_name || 'No aplica' }}</p>
+            <p>Departamento</p>
+          </div>
+        </div>
+        <!-- City -->
+        <div class="item">
+          <div class="item-icon icon-6">
+            <fa-icon [icon]="faCity"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{ beneficiary?.location?.township_name || 'No aplica' }}</p>
+            <p>Ciudad</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aquí puedes agregar más secciones con la información que desees mostrar -->
+    </div>
+  </div>
+</section>

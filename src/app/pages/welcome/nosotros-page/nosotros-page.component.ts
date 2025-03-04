@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { HeaderComponent } from '../components/header/header.component';
+import { HeaderComponent } from '../../components/header/header.component';
 
 @Component({
   selector: 'app-nosotros-page',

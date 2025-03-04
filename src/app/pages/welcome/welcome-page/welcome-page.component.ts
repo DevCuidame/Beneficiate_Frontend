@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { HeaderComponent } from '../components/header/header.component';
-import { PlanCardComponent } from '../components/plans-card/plan-card.component';
-import { FooterComponent} from '../components/footer-component/footer-component.component';
+import { HeaderComponent } from '../../components/header/header.component';
+import { PlanCardComponent } from '../../components/plans-card/plan-card.component';
+import { FooterComponent} from '../../components/footer-component/footer-component.component';
 
 @Component({
   selector: 'app-welcome-page',

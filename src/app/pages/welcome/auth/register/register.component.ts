@@ -11,10 +11,10 @@ import { AlertController, LoadingController } from '@ionic/angular';
 import { IonicModule } from '@ionic/angular';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
-import { HeaderComponent } from '../../components/header/header.component';
-import { CustomInputComponent } from '../../components/inputs/custom-input/custom-input.component';
-import { LocationService } from '../../../modules/auth/services/location.service';
-import { AuthService } from '../../../modules/auth/services/auth.service';
+import { HeaderComponent } from '../../../components/header/header.component';
+import { CustomInputComponent } from '../../../components/inputs/custom-input/custom-input.component';
+import { LocationService } from '../../../../modules/auth/services/location.service';
+import { AuthService } from '../../../../modules/auth/services/auth.service';
 import { RegisterData } from 'src/app/core/interfaces/auth.interface';
 
 @Component({

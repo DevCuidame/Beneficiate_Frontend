@@ -13,7 +13,7 @@ const apiUrl = environment.url;
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  
+
   private authState = new BehaviorSubject<boolean>(this.hasToken());
 
   constructor(private http: HttpClient,  private userService: UserService, private beneficiaryService: BeneficiaryService) {}
@@ -21,14 +21,14 @@ export class AuthService {
   login(credentials: { email: string; password: string }): Observable<any> {
     return this.http.post(`${apiUrl}api/v1/auth/login`, credentials).pipe(
       map((response: any) => {
-        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('token', response.data.token.accessToken);
         this.authState.next(true);
         localStorage.setItem('user', JSON.stringify(response.data.user));
         this.userService.setUser(response.data.user as User);
 
         if (response.data.plan?.max_beneficiaries) {
           this.beneficiaryService.maxBeneficiariesSubject.next(response.data.plan.max_beneficiaries);
-        }  
+        }
 
          // Guardar beneficiarios
          if (response.data.beneficiaries) {
@@ -59,7 +59,7 @@ export class AuthService {
   }
 
   getUserData(): any {
-    return JSON.parse(localStorage.getItem('user') || 'null'); 
+    return JSON.parse(localStorage.getItem('user') || 'null');
   }
 
   isAuthenticated(): boolean {
@@ -82,7 +82,7 @@ export class AuthService {
       })
     );
   }
-  
+
 
   refreshUserData(): void {
     const user = this.getUserData();

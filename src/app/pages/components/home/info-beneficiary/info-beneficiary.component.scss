@@ -1,0 +1,97 @@
+.info-container{
+  color: var( --ion-color-dark);
+  height: 80vh;
+  width: 24vw;
+  margin-top: 5vh;
+  position: relative;
+  z-index: 10;
+
+  .translate {
+    width: 100%;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    top: -15%;
+
+    .circle {
+      width: 15vh;
+      margin-bottom: 5px;
+      aspect-ratio: 1/1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        width: 100%;
+        height: 100%;
+        box-shadow: 0px 5px 5px 0px var(--ion-color-custom-green);
+        border-radius: 50%;
+        object-fit: cover;
+      }
+    }
+
+    .user-name {
+      color: var(--ion-color-dark);
+      margin-bottom: 20px;
+    }
+
+    .personal-info-container {
+      background: radial-gradient(circle, rgb(211, 226, 235) 0%, rgb(198, 216, 228) 25%, rgb(184, 204, 220) 50%, rgb(159, 183, 206) 75%, rgb(148, 174, 199) 100%);
+      display: flex;
+      width: 100%;
+      padding: 15px 50px 25px;
+      flex-direction: column;
+      align-items: center;
+      border-radius: 50px;
+      overflow-y: scroll;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      .parent-column {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        justify-items: stretch;
+
+        .item {
+          margin-bottom: 25px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+
+          .item-icon {
+            transform: scale(1.25);
+          }
+
+          .item-info {
+            display: flex;
+            flex-direction: column;
+
+            p:nth-child(1) {
+              font-size: 1rem;
+              font-weight: bold;
+            }
+
+            p:nth-child(2) {
+              font-size: 0.75rem;
+              font-weight: 500;
+            }
+          }
+
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 1420px) {
+  .info-container{
+    width: 35vw;
+  }
+}

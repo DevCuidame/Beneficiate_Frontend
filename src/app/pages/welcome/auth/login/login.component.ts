@@ -14,7 +14,7 @@ import {
   IonicModule,
   NavController,
 } from '@ionic/angular';
-import { AuthService } from '../../../modules/auth/services/auth.service';
+import { AuthService } from '../../../../modules/auth/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { CustomInputComponent } from 'src/app/pages/components/inputs/custom-input/custom-input.component';
 import { HeaderComponent } from 'src/app/pages/components/header/header.component';

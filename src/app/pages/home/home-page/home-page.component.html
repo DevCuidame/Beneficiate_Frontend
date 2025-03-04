@@ -30,6 +30,11 @@
         <app-beneficiary-card ></app-beneficiary-card>
       </div>
 
+      <div class="detalles-panel" *ngIf="selectedPanel === 'detalles'">
+
+
+      </div>
+
       <div class="planes-panel" *ngIf="selectedPanel === 'planes'">
         <h2>Tu bienestar es nuestra prioridad. Descubre opciones que se adaptan a ti.</h2>
 
@@ -55,4 +60,6 @@
   </div>
 
   <app-info-user></app-info-user>
+
+  <app-footer-component></app-footer-component>
 </main>
