@@ -38,3 +38,43 @@
     margin-right: 0.5rem;
   }
   
+  /* Contenedor del mensaje seleccionable */
+.selectable-message {
+  background: var(--ion-color-secondary);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 12px 0;
+  color: var(--ion-color-dark);
+}
+
+.selectable-message .message-text {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.selectable-message .options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.selectable-message .option-button {
+  background: var(--ion-color-primary);
+  border-radius: 4px;
+  padding: 10px;
+  font-weight: bold;
+  font-size: 1rem;
+  color: var(--ion-color-light);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* Efecto hover para resaltar la opción */
+.selectable-message .option-button:hover {
+  background: var(--ion-color-dark);
+  font-weight: bold;
+
+  border-color: var(--ion-color-light);
+  color: var(--ion-color-light);
+}

@@ -1,20 +1,33 @@
-<div
-  class="message"
-  [ngClass]="{
-    sent: message.sender_type === 'USER',
-    received: ['AGENT', 'BOT'].includes(message.sender_type)
-  }"
->
-  <div class="message-content">
-    {{ message.message }}
+<ng-container *ngIf="message.list; else regularMessage">
+  <div class="selectable-message">
+    <div class="message-text">{{ message.message }}</div>
+    <div class="options">
+      <button *ngFor="let option of message.options" 
+        (click)="onSelectOption(option)" 
+        class="option-button"
+        [disabled]="specialtySelected">
+  {{ option }}
+</button>
+
+    </div>
   </div>
-  <div class="message-meta"   [ngClass]="{
+</ng-container>
+<ng-template #regularMessage>
+  <div class="message" [ngClass]="{
     sent: message.sender_type === 'USER',
     received: ['AGENT', 'BOT'].includes(message.sender_type)
   }">
-    <span class="time">{{ message.sent_at }}</span>
-    <span class="status" *ngIf="message.sender_type === 'USER' && message.status">
-      {{ message.status }}
-    </span>
+    <div class="message-content">
+      {{ message.message }}
+    </div>
+    <div class="message-meta" [ngClass]="{
+      sent: message.sender_type === 'USER',
+      received: ['AGENT', 'BOT'].includes(message.sender_type)
+    }">
+      <span class="time">{{ message.sent_at }}</span>
+      <span class="status" *ngIf="message.sender_type === 'USER' && message.status">
+        {{ message.status }}
+      </span>
+    </div>
   </div>
-</div>
+</ng-template>

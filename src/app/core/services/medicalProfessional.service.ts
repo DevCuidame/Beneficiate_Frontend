@@ -9,6 +9,7 @@ import { MedicalProfessional, MedicalProfessionalResponse } from '../interfaces/
 })
 export class MedicalProfessionalService {
   private apiUrl = `${environment.url}api/v1/medical-professionals/specialty/`;
+  private apiMedicalProf = `${environment.url}api/v1/medical-professionals/all`;
   private cacheKey = 'medicalProfessionalsCache';
 
   // Signal para almacenar los profesionales en caché
@@ -26,6 +27,25 @@ export class MedicalProfessionalService {
     }
 
     return this.http.get<MedicalProfessionalResponse>(`${this.apiUrl}${specialtyId}`).pipe(
+      map(response => response.data),
+      tap(data => this.saveToCache(data)), 
+      catchError(error => {
+        console.error('Error al obtener profesionales médicos:', error);
+        return of([]);
+      })
+    );
+  }
+
+   /**
+   * Obtiene los profesionales médicos por especialidad desde la API o caché.
+   * @param specialtyId - ID de la especialidad médica.
+   */
+   getMedicalProfessionals(): Observable<MedicalProfessional[]> {
+    if (this.professionals().length > 0) {
+      return of(this.professionals());
+    }
+
+    return this.http.get<MedicalProfessionalResponse>(`${this.apiMedicalProf}`).pipe(
       map(response => response.data),
       tap(data => this.saveToCache(data)), 
       catchError(error => {

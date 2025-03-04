@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Message } from 'src/app/core/interfaces/message.interface';
@@ -12,4 +12,13 @@ import { Message } from 'src/app/core/interfaces/message.interface';
 })
 export class MessageComponent {
   @Input() message!: Message;
+  @Output() optionSelected = new EventEmitter<string>();
+  @Input() specialtySelected: boolean = false;
+
+  onSelectOption(option: string) {
+    if (this.specialtySelected) {
+      return;
+    }
+    this.optionSelected.emit(option);
+  }
 }

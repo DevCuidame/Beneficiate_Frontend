@@ -31,12 +31,13 @@ ion-content {
 .content-container {
   position: relative;
   height: 80vh;
-  padding: 0 30px;
+  padding: 0 30px 300px;
+  overflow-y: auto;
 }
 
 .profesional-scroll {
-  position: absolute;
-  bottom: 0;
+  position: fixed;
+  bottom: 55px;
   left: 0;
   right: 0;
   padding: 0 20px;
@@ -48,6 +49,10 @@ ion-content {
   gap: 40px;
   width: 100%;
   scroll-snap-type: x mandatory;
+}
+
+.empty-message{
+  color: var(--ion-color-dark);
 }
 
 app-health-professional-card {

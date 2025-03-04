@@ -85,6 +85,7 @@ export class AppointmentWizardComponent implements OnInit {
     user_id: '',
     beneficiary_id: '',
     professional_id: '',
+    specialty_id: '',
     appointment_date: '',
     appointment_time: '',
     status: 'PENDING',
@@ -192,10 +193,17 @@ export class AppointmentWizardComponent implements OnInit {
     if (this.currentStep === 3) {
       // Validar que haya un índice seleccionado antes de acceder al array
       const selectedIndex = this.selectedProfessionalIndex();
+      const selectedSpecialtyIndex = this.selectedSpecialtyIndex();
       if (selectedIndex !== null) {
         const selectedProfessional = this.professionals()[selectedIndex];
         if (selectedProfessional) {
           this.appointment.professional_id = selectedProfessional.id.toString();
+        }
+      }
+      if (selectedSpecialtyIndex!== null) {
+        const selectedSpecialty = this.specialties()[selectedSpecialtyIndex];
+        if (selectedSpecialty) {
+          this.appointment.specialty_id = selectedSpecialty.id.toString();
         }
       }
     }

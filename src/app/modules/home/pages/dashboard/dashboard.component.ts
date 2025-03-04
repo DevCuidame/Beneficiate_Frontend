@@ -97,8 +97,10 @@ export class DashboardComponent implements OnInit {
   }
 
   selectButton(buttonType: string) {
-    if (buttonType === 'Agenda') {
-      this.navController.navigateForward(['/home/appointment-booking']);
+    if(this.user.plan ){
+      if (buttonType === 'Agenda') {
+        this.navController.navigateForward(['/home/appointment-booking']);
+      }
     }
   }
 }

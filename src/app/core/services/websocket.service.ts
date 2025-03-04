@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Observable, Observer } from 'rxjs';
+import { BehaviorSubject, Observable, Observer } from 'rxjs';
+import { Appointment } from '../interfaces/appointment.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebsocketService {
   private ws!: WebSocket;
+  private userAppointments = new BehaviorSubject<Appointment[]>([]);
+  public userAppointments$ = this.userAppointments.asObservable();
 
   public connect(): Observable<any> {
     const token = localStorage.getItem('token');
@@ -24,6 +27,10 @@ export class WebsocketService {
       this.ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
+          if (data.event === 'user_appointments') {
+            console.log("📢 Citas recibidas:", data.appointments);
+            this.userAppointments.next(data.appointments);
+          }
           observer.next(data);
         } catch (error) {
           observer.error(error);

@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 import { UserService } from 'src/app/modules/auth/services/user.service';
 import { User } from 'src/app/core/interfaces/auth.interface';
 import { WebsocketService } from 'src/app/core/services/websocket.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-chat',
@@ -31,21 +32,30 @@ export class ChatComponent implements OnInit, OnDestroy {
   public messageText: string = '';
   public messages: Message[] = [];
   private wsSubscription!: Subscription;
-  private user!: User | null
+  private user!: User | null;
+  public professionalId!: number | null;
+  public specialtySelected: boolean = false;
 
   constructor(
     private websocketService: WebsocketService,
     private toastService: ToastService,
-    private userService: UserService
+    private userService: UserService,
+    private activatedRoute: ActivatedRoute
   ) {}
 
-  
-
   ngOnInit() {
+    // Primero, obtener el professionalId desde los query parameters
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.professionalId = params['professionalId'] ? +params['professionalId'] : null;
+      console.log('Professional ID recibido:', this.professionalId);
+      // Una vez obtenido, iniciamos la conexión WebSocket
+      this.connectWebSocket();
+    });
 
     this.user = this.userService.getUser();
+  }
 
-
+  connectWebSocket() {
     this.wsSubscription = this.websocketService.connect().subscribe(
       (data) => {
         if (data.event === 'chatbot_message') {
@@ -62,7 +72,11 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.toastService.presentToast('Conexión cerrada', 'warning');
       }
     );
-    
+
+    // Enviar mensaje de inicialización tan pronto se conecte
+    if (this.professionalId) {
+      this.websocketService.send({ event: 'init', professionalId: this.professionalId });
+    }
   }
 
   sendMessage() {
@@ -92,5 +106,15 @@ export class ChatComponent implements OnInit, OnDestroy {
     if (this.wsSubscription) {
       this.wsSubscription.unsubscribe();
     }
+  }
+
+  handleOptionSelected(option: string) {
+    if (this.specialtySelected) {
+      return;
+    }
+    this.specialtySelected = true;
+    console.log('Opción seleccionada:', option);
+    this.messageText = option;
+    this.sendMessage();
   }
 }

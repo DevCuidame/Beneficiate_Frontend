@@ -6,6 +6,8 @@ export interface Message {
     sender_type: 'USER' | 'AGENT';
     sent_at: string; 
     status?: 'sent' | 'delivered' | 'read'; 
+    list?: boolean; 
+    options?: string[];
     // senderName?: string;
     // avatarUrl?: string;
     // mediaUrl?: string;

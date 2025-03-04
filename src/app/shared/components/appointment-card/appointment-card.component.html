@@ -3,8 +3,12 @@
     <div class="doctor-info">
       <img src="assets/images/default_doctor.svg" alt="Foto del Doctor" class="doctor-image" />
       <div class="appointment-details">
-        <h3 class="appointment-title">MEDICINA GENERAL</h3>
-        <p class="doctor-name">Dr. Justo Barrera</p>
+        <h3 class="appointment-title">{{specialty}}</h3>
+        @if(first_name){
+          <p class="doctor-name">Dr. {{first_name}} {{last_name}}</p>
+        }@else {
+          <p class="doctor-name">Sin profesional asignado</p>
+        }
       </div>
     </div>
 
@@ -14,9 +18,9 @@
           <ion-icon name="time-outline"></ion-icon>
         </div>
         <div class="date-text">
-          <p>Viernes,</p>
-          <p>13 de abril de 2025</p>
-          <p>01:30 p.m</p>
+          <p>{{dayOfWeek || 'Sin día asignado'}}</p>
+          <p>{{date || 'Sin fecha asignada'}}</p>
+          <p>{{time || 'Sin hora asignada'}}</p>
         </div>
       </div>
       @if(!edit_button){

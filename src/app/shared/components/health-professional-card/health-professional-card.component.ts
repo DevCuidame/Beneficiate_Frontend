@@ -17,6 +17,7 @@ export class HealthProfessionalCardComponent implements OnInit {
   @Input() profileImage: string = 'assets/images/test_doctor.svg'; 
   @Input() buttonVisible: boolean = true;
   @Input() agendaColor: string = 'var(--ion-color-primary)';
+  @Input() professionalId!: number;
 
   public api = environment.url;
 
@@ -42,7 +43,7 @@ export class HealthProfessionalCardComponent implements OnInit {
           cssClass: 'chat-button',
           handler: () => {
             console.log('Chat presionado');
-            this.navCtrl.navigateForward(['/home/chat']);
+            this.navCtrl.navigateForward(['/home/chat'], { queryParams: { professionalId: this.professionalId } });
           }
         }
       ]

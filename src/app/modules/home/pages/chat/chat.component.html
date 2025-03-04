@@ -2,7 +2,12 @@
   <div class="messages">
     @for(msg of messages; track msg){
 
-    <app-message [message]="msg"></app-message>
+    <app-message
+      [message]="msg"
+      [specialtySelected]="specialtySelected"
+      (optionSelected)="handleOptionSelected($event)">
+    ></app-message>
+
     }
   </div>
   <div class="card">
@@ -23,7 +28,11 @@
 <app-tab-bar
   [isVisible]="true"
   [buttons]="[
-    { icon: 'arrow-back-outline', route: '/home/appointment-booking', visible: true },
+    {
+      icon: 'arrow-back-outline',
+      route: '/home/appointment-booking',
+      visible: true
+    },
     { icon: 'menu-outline', route: '/', visible: true },
     { icon: 'exit-outline', route: '/', visible: true }
   ]"

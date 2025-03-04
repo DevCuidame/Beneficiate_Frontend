@@ -6,6 +6,7 @@ export interface Appointment {
   user_id: string;
   beneficiary_id: string;
   professional_id: string;
+  specialty_id: string;
   appointment_date: string;
   appointment_time: string;
   status: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'RESCHEDULED' | 'EXPIRED' | 'TO_BE_CONFIRMED';
