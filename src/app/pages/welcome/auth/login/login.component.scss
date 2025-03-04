@@ -13,7 +13,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: url('../../../../assets/background/circles-bg.svg');
+    background-image: url('../../../../../assets/background/circles-bg.svg');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     filter: contrast(0) brightness(15%);
@@ -33,7 +33,7 @@
     .banner {
       width: 70%;
       border-radius: 50px;
-      
+
     }
   }
 
@@ -79,7 +79,7 @@
         }
 
         .login-button {
-          background-image: url('../../../../assets/background/primary_button_bg.svg');
+          background-image: url('../../../../../assets/background/primary_button_bg.svg');
           background-repeat: no-repeat;
           background-size: cover;
           color: var(--ion-color-dark);

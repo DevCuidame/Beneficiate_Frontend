@@ -21,6 +21,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  cursor: pointer;
   animation: cardAnimation 0.3s ease-in-out forwards;
 }
 
@@ -51,7 +52,6 @@
   @extend .card;
   background-color: var(--ion-color-card);;
   border: none;
-  cursor: pointer;
 
   p {
     color: white;

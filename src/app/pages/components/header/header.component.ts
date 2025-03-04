@@ -1,8 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
+  standalone: true,
   imports: [
     CommonModule
   ],
@@ -11,4 +13,14 @@ import { CommonModule } from '@angular/common';
 })
 export class HeaderComponent {
   @Input() addBackground: boolean = false;
+
+  constructor(private router: Router) {}
+
+  navigateToHome() {
+    this.router.navigate(['/desktop/']);
+  }
+
+  navigateToAboutUs() {
+    this.router.navigate(['/desktop/about-us']);
+  }
 }

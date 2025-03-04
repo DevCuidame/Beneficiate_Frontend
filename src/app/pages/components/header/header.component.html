@@ -3,9 +3,9 @@
 
   <nav class="menu">
     <ul>
-      <li class="nav-option"><a href="#">Inicio</a></li>
-      <li class="nav-option"><a href="#">Nosotros</a></li>
-      <li class="nav-option"><a href="#">Trabaja con Nosotros</a></li>
+      <li class="nav-option"><a (click)="navigateToHome()">Inicio</a></li>
+      <li class="nav-option"><a (click)="navigateToAboutUs()">Nosotros</a></li>
+      <li class="nav-option"><a routerLink="/about-us">Trabaja con Nosotros</a></li>
     </ul>
   </nav>
 </header>

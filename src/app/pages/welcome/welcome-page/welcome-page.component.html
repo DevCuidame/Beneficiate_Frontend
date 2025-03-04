@@ -66,11 +66,11 @@
 
         <div class="right-banner">
           <div class="banner-image">
-            <img src="../../../assets/images/Desktop/inicio-docs.png" alt="Cuidador en acción" />
+            <img src="../../../../assets/images/Desktop/inicio-docs.png" alt="Cuidador en acción" />
           </div>
           <div class="auth-section">
-            <p>No tienes cuenta? <strong style="cursor: pointer;" routerLink="/home-desktop"><br>Regístrate</strong></p>
-            <button class="login-button">Iniciar sesión</button>
+            <p>No tienes cuenta? <strong style="cursor: pointer;" (click)="navigateToRegister()"><br>Regístrate</strong></p>
+            <button class="login-button" (click)="navigateToLogin()">Iniciar sesión</button>
           </div>
         </div>
       </div>

@@ -1,36 +1,30 @@
 <div class="card-info">
   <div *ngIf="!isEditing">
     <!-- Modo visualización -->
-    <h3 class="f-big">{{ Title }}</h3>
+    <h3 class="f-big">{{ title }}</h3>
     <h4 class="f-small">{{ info }}</h4>
     <h4 class="f-small">{{ optionalInfo }}</h4>
-    <button (click)="toggleEdit()">Editar</button>
+    <button class="btn btn-edit" (click)="toggleEdit()">
+      <fa-icon [icon]="faPen"></fa-icon>
+    </button>
   </div>
 
   <div *ngIf="isEditing">
-    <!-- Modo edición usando custom-input para cada campo -->
-    <app-custom-input
-      [label]="'Título'"
-      [label_s]="'Título de la información'"
-      [(control)]="TitleControl"
-      [errorMessage]="'Este campo es obligatorio'"
-      [type]="'text'"
-    ></app-custom-input>
-
-    <app-custom-input
-      [label]="'Información'"
-      [label_s]="'Descripción adicional de la información'"
-      [(control)]="infoControl"
-      [errorMessage]="'Este campo es obligatorio'"
-      [type]="'text'"
-    ></app-custom-input>
-
-    <app-custom-input
-      [label]="'Información opcional'"
-      [label_s]="'Descripción de la información opcional'"
-      [(control)]="optionalInfoControl"
-      [errorMessage]="'Este campo es obligatorio'"
-      [type]="'text'"
-    ></app-custom-input>
+    <!-- Modo edición -->
+    <h3 class="f-big">
+      <input [(ngModel)]="title" /> <!-- Permitimos editar el título -->
+    </h3>
+    <h4 class="f-small">
+      <input [(ngModel)]="info" /> <!-- Permitimos editar la info principal -->
+    </h4>
+    <h4 class="f-small">
+      <input [(ngModel)]="optionalInfo" /> <!-- Permitimos editar la info adicional -->
+    </h4>
+    <button class="btn btn-cancel" (click)="toggleEdit()">
+      <fa-icon [icon]="faTimes"></fa-icon>
+    </button>
+    <button class="btn btn-save" type="submit">
+      <fa-icon [icon]="faSave"></fa-icon>
+    </button>
   </div>
 </div>

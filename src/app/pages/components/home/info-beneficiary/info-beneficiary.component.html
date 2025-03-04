@@ -85,7 +85,48 @@
         </div>
       </div>
 
-      <!-- Aquí puedes agregar más secciones con la información que desees mostrar -->
+      <div class="parent-column address-info">
+        <!-- Address -->
+        <div class="item">
+          <div class="item-icon icon-5">
+            <fa-icon [icon]="faHeart"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{ beneficiary?.blood_type || 'No aplica' }}</p>
+            <p>Dirección</p>
+          </div>
+        </div>
+        <!-- Phone -->
+        <div class="item">
+          <div class="item-icon icon-2">
+            <fa-icon [icon]="faHospital"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{ beneficiary?.health_provider || 'No aplica' }}</p>
+            <p>EPS</p>
+          </div>
+        </div>
+        <!-- Department -->
+        <div class="item">
+          <div class="item-icon icon-7">
+            <fa-icon [icon]="faHospital"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{ beneficiary?.work_risk_insurance || 'No aplica' }}</p>
+            <p>ARL</p>
+          </div>
+        </div>
+        <!-- City -->
+        <div class="item">
+          <div class="item-icon icon-6">
+            <fa-icon [icon]="faHospital"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{ beneficiary?.funeral_insurance || 'No aplica' }}</p>
+            <p>Seguro funerario</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>

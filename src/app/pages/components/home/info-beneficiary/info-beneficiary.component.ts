@@ -12,6 +12,8 @@ import {
   faPersonHalfDress,
   faPhone,
   faCity,
+  faHeart,
+  faHospital,
 } from '@fortawesome/free-solid-svg-icons';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
 
@@ -35,6 +37,8 @@ export class InfoBeneficiaryComponent implements OnInit {
   public faPersonHalfDress = faPersonHalfDress;
   public faPhone = faPhone;
   public faCity = faCity;
+  public faHeart = faHeart;
+  public faHospital = faHospital;
 
   constructor() {}
 

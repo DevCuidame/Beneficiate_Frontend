@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 import { HeaderComponent } from '../../components/header/header.component';
 import { PlanCardComponent } from '../../components/plans-card/plan-card.component';
@@ -36,7 +37,7 @@ export class WelcomePageComponent  implements OnInit {
     'Conectamos las <span class="change-c">necesidades</span> médicas de nuestros usuarios con los <span class="change-c">mejores</span> especialistas y servicios de salud del país.',
   ];
 
-  constructor() { }
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     this.startImageRotation();
@@ -66,5 +67,11 @@ export class WelcomePageComponent  implements OnInit {
     }, 10000);
   }
 
+  navigateToLogin() {
+    this.router.navigate(['/desktop/login']);
+  }
 
+  navigateToRegister() {
+    this.router.navigate(['/desktop/register']);
+  }
 }
