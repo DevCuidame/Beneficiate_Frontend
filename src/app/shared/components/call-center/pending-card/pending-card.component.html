@@ -24,7 +24,15 @@
           >Cancelada</span
         >
       </div>
-      } @else if(appointment.status === 'CONFIRMED'){
+      }@else if(appointment.status === 'TO_BE_CONFIRMED'){
+        <div class="patient-status">
+          <span
+            class="status-badge"
+            style="background-color: var(--ion-color-secondary)"
+            >Pendiente por Confirmar</span
+          >
+        </div>
+        } @else if(appointment.status === 'CONFIRMED'){
       <div class="patient-status">
         <span
           class="status-badge"
@@ -53,8 +61,10 @@
       </div>
       }
     </div>
+   @if(appointment.status !== 'CONFIRMED'){
     <fa-icon [icon]="faClock" [ngStyle]="{ color: getClockColor(appointment) }">
     </fa-icon>
+   }
   </div>
   <div class="appointment-body">
     <div class="patient-info">
@@ -68,14 +78,16 @@
           {{ appointment.userData.last_name }}
         </p>
         <p class="patient-specialty">
-          {{ appointment.specialty || "Sin especialidad" }}
+          <!-- {{ appointment.specialty || "Sin especialidad" }} -->
         </p>
       </div>
     </div>
-    <p class="professional">Sin profesional solicitado</p>
+    @if(appointment.status === 'CONFIRMED'){
+      <p class="professional">Profesional: {{appointment.userData.first_name.split(" ")[0]}} {{appointment.userData.last_name.split(" ")[0]}}</p>
+    }
     <div class="appointment-footer">
       <p class="request-date">
-        {{ appointment.appointment_date }}
+        {{ appointment.created_at_formatted }}
       </p>
       @if (appointment.status === 'PENDING') {
       <app-custom-button

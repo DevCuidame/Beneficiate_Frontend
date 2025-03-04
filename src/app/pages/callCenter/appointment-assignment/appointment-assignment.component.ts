@@ -24,10 +24,7 @@ export class AppointmentAssignmentComponent implements OnInit, OnDestroy {
     CANCELLED: 0,
     RESCHEDULED: 0,
   };
-  public requests: string =
-    this.appointmentCounts.PENDING > 0
-      ? `${this.appointmentCounts.PENDING} solicitudes`
-      : '0 solicitudes';
+  public requests: string = '0 solicitudes';
 
   private wsSubscription!: Subscription;
 
@@ -40,11 +37,13 @@ export class AppointmentAssignmentComponent implements OnInit, OnDestroy {
         if (data.event === 'all_appointments' && data.appointments) {
           this.appointments = data.appointments.data as Appointment[];
           this.appointmentCounts = data.appointments.counts;
+          this.updateRequests();
           console.log('Citas actualizadas:', this.appointments);
           console.log('Contadores:', this.appointmentCounts);
         } else if (data.event === 'new_appointment' && data.appointment) {
           this.appointments.push(data.appointment as Appointment);
           console.log('Nueva cita agregada:', data.appointment);
+          this.updateRequests();
         }
       },
       error: (error) => {
@@ -56,6 +55,12 @@ export class AppointmentAssignmentComponent implements OnInit, OnDestroy {
     });
   }
 
+
+  updateRequests() {
+    this.requests = this.appointmentCounts.PENDING > 0
+      ? `${this.appointmentCounts.PENDING} solicitudes`
+      : '0 solicitudes';
+  }
   ngOnDestroy(): void {
     if (this.wsSubscription) {
       this.wsSubscription.unsubscribe();

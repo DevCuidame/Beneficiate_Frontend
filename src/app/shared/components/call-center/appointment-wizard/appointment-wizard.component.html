@@ -76,7 +76,7 @@
         <input
           type="checkbox"
           id="firstTimeCheck"
-          [checked]="appointment.firstTime"
+          [checked]="appointment.first_time"
           (change)="toggleSelection('firstTime')"
         />
         <label for="firstTimeCheck"> Cita primera vez </label>
@@ -97,7 +97,7 @@
       [image_path]="appointment.userData.image.image_path"
       [first_name]="appointment.userData.first_name"
       [last_name]="appointment.userData.last_name"
-      [firstTime]="appointment.firstTime"
+      [firstTime]="appointment.first_time"
       (searchTermChanged)="updateSearchTerm($event)"
     ></app-patient-search-bar>
     <!-- PASO 2: ESPECIALIDAD -->
@@ -130,7 +130,7 @@
         [image_path]="appointment.userData.image.image_path"
         [first_name]="appointment.userData.first_name"
         [last_name]="appointment.userData.last_name"
-        [firstTime]="appointment.firstTime"
+        [firstTime]="appointment.first_time"
       ></app-patient-search-bar>
 
       <h2>Médico</h2>
@@ -211,17 +211,18 @@
   </div>
 </div>
 }@else {
-<app-appointment-assigned [isPending]="true"> </app-appointment-assigned>
+<!-- <app-appointment-assigned [isPending]="true"> </app-appointment-assigned> -->
 
 <app-appointment-assigned
   [isPending]="false"
-  [patientName]="'Antonia Malagón'"
-  [professionalName]="'Dra. María López'"
-  [specialty]="'Cardióloga'"
-  [date]="'21 de Febrero'"
-  [time]="'13:00'"
-  [dayOfWeek]="'domingo'"
+  [patientName]="appointment.userData.first_name + ' ' + appointment.userData.last_name"
+  [professionalName]="getSelectedProfessionalName()"
+  [specialty]="getSelectedSpecialty()"
+  [date]="appointment.appointment_date"
+  [time]="appointment.appointment_time"
+  [dayOfWeek]="getFormattedDayOfWeek()"
 >
 </app-appointment-assigned>
+
 
 }

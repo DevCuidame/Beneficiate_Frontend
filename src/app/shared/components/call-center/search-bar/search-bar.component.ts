@@ -27,7 +27,10 @@ export class SearchBarComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log("🚀 ~ SearchBarComponent ~ ngOnInit ~ as:", this.highlighted)
+    
+  }
 
   toggleDropdown() {
     this.showDropdown = !this.showDropdown;

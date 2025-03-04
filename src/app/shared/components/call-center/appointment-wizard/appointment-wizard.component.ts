@@ -13,13 +13,12 @@ import { identificationOptions } from 'src/app/core/constants/indentifications';
 import { AppointmentAssignedComponent } from '../appointment-assigned/appointment-assigned.component';
 import { SpecialityCardComponent } from '../specialty-card/speciality-card.component';
 import { PatientSearchBarComponent } from '../patient-search-bar/patient-search-bar.component';
-import { personaData } from 'src/app/core/interfaces/personaData.interface';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
 import { User } from 'src/app/core/interfaces/auth.interface';
 import { Appointment } from 'src/app/core/interfaces/appointment.interface';
 import { MedicalSpecialtyService } from 'src/app/core/services/medicalSpecialty.service';
 import { MedicalProfessionalService } from 'src/app/core/services/medicalProfessional.service';
-import { UserService } from 'src/app/modules/auth/services/user.service';
+import { AppointmentService } from 'src/app/core/services/appointment.service';
 
 @Component({
   selector: 'app-appointment-wizard',
@@ -46,12 +45,13 @@ export class AppointmentWizardComponent implements OnInit {
   public selectedDayIndex = -1;
   public selectedHour = '';
   public selectedProfessionalAvailability = signal<
-    { day: string; hours: string[] }[]
+    { day: string; date: string; hours: string[] }[]
   >([]);
 
   constructor(
     private medicalSpecialtyService: MedicalSpecialtyService,
     private medicalProfessionalService: MedicalProfessionalService,
+    private appointmentService: AppointmentService
   ) {}
 
   public specialties = computed(() => {
@@ -84,13 +84,16 @@ export class AppointmentWizardComponent implements OnInit {
     id: 0,
     user_id: '',
     beneficiary_id: '',
+    professional_id: '',
     appointment_date: '',
+    appointment_time: '',
     status: 'PENDING',
     notes: '',
     specialty: '',
     created_at: '',
+    created_at_formatted: '',
     is_for_beneficiary: false,
-    firstTime: false,
+    first_time: false,
     control: false,
     userData: {} as User | Beneficiary,
   };
@@ -144,12 +147,13 @@ export class AppointmentWizardComponent implements OnInit {
 
   isStep1Valid(): boolean {
     return (
-      !!this.appointment.userData.identification_type &&
-      !!this.appointment.userData.identification_number &&
-      !!this.appointment.userData.first_name &&
-      !!this.appointment.userData.phone &&
-      !!this.appointment.userData.email && 
-      !!this.appointment.firstTime || !!this.appointment.control
+      (!!this.appointment.userData.identification_type &&
+        !!this.appointment.userData.identification_number &&
+        !!this.appointment.userData.first_name &&
+        !!this.appointment.userData.phone &&
+        !!this.appointment.userData.email &&
+        !!this.appointment.first_time) ||
+      !!this.appointment.control
     );
   }
 
@@ -167,24 +171,71 @@ export class AppointmentWizardComponent implements OnInit {
   // Navegación entre pasos
   nextStep() {
     if (this.isStepValid()) {
+      // Actualizar la información antes de enviarla
+      this.updateAppointmentData();
+
+      console.log('📌 Datos actualizados antes de enviar:', this.appointment);
+
       if (this.currentStep < 4) {
         this.currentStep++;
       } else {
         alert('Cita agendada con éxito');
         this.success = true;
+        this.sendAppointmentData(); // Llamada para enviar la cita al backend
       }
     } else {
       alert('Por favor, complete todos los campos antes de continuar.');
     }
   }
 
+  updateAppointmentData() {
+    if (this.currentStep === 3) {
+      // Validar que haya un índice seleccionado antes de acceder al array
+      const selectedIndex = this.selectedProfessionalIndex();
+      if (selectedIndex !== null) {
+        const selectedProfessional = this.professionals()[selectedIndex];
+        if (selectedProfessional) {
+          this.appointment.professional_id = selectedProfessional.id.toString();
+        }
+      }
+    }
+
+    if (this.currentStep === 4) {
+      if (this.selectedDayIndex !== -1) {
+        const selectedDayAvailability =
+          this.selectedProfessionalAvailability()[this.selectedDayIndex];
+
+        if (selectedDayAvailability) {
+          this.appointment.appointment_date = selectedDayAvailability.date;
+          this.appointment.appointment_time = this.selectedHour || '';
+          this.appointment.status = 'CONFIRMED';
+        }
+      }
+    }
+  }
+
+  sendAppointmentData() {
+    console.log('🚀 Enviando cita al backend:', this.appointment);
+
+    this.appointmentService
+      .updateAppointment(this.appointment.id, this.appointment)
+      .subscribe(
+        (response) => {
+          console.log('✅ Respuesta del servidor:', response);
+        },
+        (error) => {
+          console.error('❌ Error al enviar la cita:', error);
+        }
+      );
+  }
+
   toggleSelection(selected: string) {
     if (selected === 'firstTime') {
-      this.appointment.firstTime = true;
+      this.appointment.first_time = true;
       this.appointment.control = false;
     } else if (selected === 'control') {
       this.appointment.control = true;
-      this.appointment.firstTime = false;
+      this.appointment.first_time = false;
     }
   }
 
@@ -219,23 +270,28 @@ export class AppointmentWizardComponent implements OnInit {
   selectProfessional(index: number) {
     this.selectedProfessionalIndex.set(index);
     const selectedProfessional = this.professionals()[index];
-  
+
     if (selectedProfessional && selectedProfessional.availability) {
-      const availabilityArray = Object.entries(selectedProfessional.availability)
+      const availabilityArray = Object.entries(
+        selectedProfessional.availability
+      )
         .filter(([_, range]) => range.start && range.end) // Validación adicional
         .map(([day, range]) => ({
-          day: range.formatted_date, // Usamos la fecha formateada
+          day: range.formatted_date,
+          date: range.date,
           hours: this.generateTimeSlots(range.start, range.end),
         }));
-  
-      console.log("Disponibilidad estructurada:", availabilityArray);
+
+      console.log(
+        '📌 Disponibilidad estructurada con `date`:',
+        availabilityArray
+      );
       this.selectedProfessionalAvailability.set(availabilityArray);
     } else {
-      console.warn("No hay disponibilidad para este profesional.");
+      console.warn('⚠️ No hay disponibilidad para este profesional.');
       this.selectedProfessionalAvailability.set([]); // Asegura que se limpie la data anterior
     }
   }
-  
 
   /**
    * Genera intervalos de 30 minutos entre una hora de inicio y fin.
@@ -246,20 +302,19 @@ export class AppointmentWizardComponent implements OnInit {
     const slots: string[] = [];
     const start = new Date(`2025-01-01T${startTime}`);
     const end = new Date(`2025-01-01T${endTime}`);
-  
+
     if (start >= end) {
       console.warn(`Rango de tiempo inválido: ${startTime} - ${endTime}`);
       return slots;
     }
-  
+
     while (start < end) {
       slots.push(start.toTimeString().split(' ')[0].slice(0, 5)); // HH:mm
       start.setMinutes(start.getMinutes() + 30);
     }
-  
+
     return slots;
   }
-  
 
   // Seleccionar día y hora
   selectDay(index: number) {
@@ -293,5 +348,36 @@ export class AppointmentWizardComponent implements OnInit {
 
   scrollHours(timeList: HTMLElement) {
     timeList.scrollBy({ top: 100, behavior: 'smooth' });
+  }
+
+  // Obtener el nombre completo del profesional seleccionado
+  getSelectedProfessionalName(): string {
+    if (this.selectedProfessionalIndex() !== null) {
+      const selectedProfessional =
+        this.professionals()[this.selectedProfessionalIndex()!];
+      return selectedProfessional
+        ? `${selectedProfessional.user.first_name} ${selectedProfessional.user.last_name}`
+        : '';
+    }
+    return '';
+  }
+
+  // Obtener el nombre de la especialidad seleccionada
+  getSelectedSpecialty(): string {
+    if (this.selectedSpecialtyIndex() !== null) {
+      return this.specialties()[this.selectedSpecialtyIndex()!].name;
+    }
+    return '';
+  }
+  
+
+  // Formatear el día de la semana para la cita
+  getFormattedDayOfWeek(): string {
+    if (this.selectedDayIndex !== -1) {
+      const selectedDayAvailability =
+        this.selectedProfessionalAvailability()[this.selectedDayIndex];
+      return selectedDayAvailability ? selectedDayAvailability.day : '';
+    }
+    return '';
   }
 }
