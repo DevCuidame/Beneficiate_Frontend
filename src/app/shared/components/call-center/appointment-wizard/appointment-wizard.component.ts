@@ -19,6 +19,8 @@ import { Appointment } from 'src/app/core/interfaces/appointment.interface';
 import { MedicalSpecialtyService } from 'src/app/core/services/medicalSpecialty.service';
 import { MedicalProfessionalService } from 'src/app/core/services/medicalProfessional.service';
 import { AppointmentService } from 'src/app/core/services/appointment.service';
+import { MedicalProfessional } from 'src/app/core/interfaces/medicalProfessional.interface';
+import { MedicalSpecialty } from 'src/app/core/interfaces/medicalSpecialty.interface';
 
 @Component({
   selector: 'app-appointment-wizard',
@@ -97,6 +99,8 @@ export class AppointmentWizardComponent implements OnInit {
     first_time: false,
     control: false,
     userData: {} as User | Beneficiary,
+    professionalData: {} as MedicalProfessional,
+    specialtyData: {} as MedicalSpecialty,
   };
 
   ngOnInit() {

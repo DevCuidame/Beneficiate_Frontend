@@ -2,11 +2,11 @@
   <div class="messages">
     @for(msg of messages; track msg){
 
-    <app-message
-      [message]="msg"
-      [specialtySelected]="specialtySelected"
-      (optionSelected)="handleOptionSelected($event)">
-    ></app-message>
+      <app-message 
+    [message]="msg" 
+    [optionDisabled]="currentStep === 'specialty' ? specialtySelected : confirmationSelected"
+    (optionSelected)="handleOptionSelected($event)">
+  </app-message>
 
     }
   </div>

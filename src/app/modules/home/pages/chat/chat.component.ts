@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, NavController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { TabBarComponent } from 'src/app/shared/components/tab-bar/tab-bar.component';
 import { MessageComponent } from 'src/app/shared/components/message/message.component';
@@ -35,20 +35,24 @@ export class ChatComponent implements OnInit, OnDestroy {
   private user!: User | null;
   public professionalId!: number | null;
   public specialtySelected: boolean = false;
+  public confirmationSelected: boolean = false;
+  public currentStep: 'specialty' | 'confirmation' = 'specialty';
 
   constructor(
     private websocketService: WebsocketService,
     private toastService: ToastService,
     private userService: UserService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private navCtrl: NavController
   ) {}
 
   ngOnInit() {
-    // Primero, obtener el professionalId desde los query parameters
-    this.activatedRoute.queryParams.subscribe(params => {
-      this.professionalId = params['professionalId'] ? +params['professionalId'] : null;
+    // Obtenemos el professionalId de los query params
+    this.activatedRoute.queryParams.subscribe((params) => {
+      this.professionalId = params['professionalId']
+        ? +params['professionalId']
+        : null;
       console.log('Professional ID recibido:', this.professionalId);
-      // Una vez obtenido, iniciamos la conexión WebSocket
       this.connectWebSocket();
     });
 
@@ -56,27 +60,42 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   connectWebSocket() {
-    this.wsSubscription = this.websocketService.connect().subscribe(
-      (data) => {
-        if (data.event === 'chatbot_message') {
-          console.log('Mensaje del bot recibido:', data);
-        }
-        this.messages.push(data);
-      },
-      (error) => {
-        console.error('WebSocket error:', error);
-        this.toastService.presentToast('Error en la conexión WebSocket', 'danger');
-      },
-      () => {
-        console.log('Conexión WebSocket cerrada');
-        this.toastService.presentToast('Conexión cerrada', 'warning');
-      }
-    );
+    // Se pasa el professionalId al método connect para que se envíe en onopen
+    this.wsSubscription = this.websocketService
+      .connect(this.professionalId!)
+      .subscribe(
+        (data) => {
+          if (data.event === 'chatbot_message') {
+            console.log('Mensaje del bot recibido:', data);
+            if (
+              data.options &&
+              data.options.includes('si') &&
+              data.options.includes('no')
+            ) {
+              this.currentStep = 'confirmation';
+              this.confirmationSelected = false; // Aseguramos que esté habilitado para confirmar.
+            }
+            if (data.redirectUrl) {
+              setTimeout(() => {
+                this.navCtrl.navigateRoot(data.redirectUrl);
+              }, 5000);
+            }
+          }
 
-    // Enviar mensaje de inicialización tan pronto se conecte
-    if (this.professionalId) {
-      this.websocketService.send({ event: 'init', professionalId: this.professionalId });
-    }
+          this.messages.push(data);
+        },
+        (error) => {
+          console.error('WebSocket error:', error);
+          this.toastService.presentToast(
+            'Error en la conexión WebSocket',
+            'danger'
+          );
+        },
+        () => {
+          console.log('Conexión WebSocket cerrada');
+          this.toastService.presentToast('Conexión cerrada', 'warning');
+        }
+      );
   }
 
   sendMessage() {
@@ -96,7 +115,6 @@ export class ChatComponent implements OnInit, OnDestroy {
       };
 
       this.messages.push(newMessage);
-      console.log('🚀 ~ ChatComponent ~ sendMessage ~ newMessage:', newMessage);
       this.websocketService.send(newMessage);
       this.messageText = '';
     }
@@ -109,10 +127,18 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   handleOptionSelected(option: string) {
-    if (this.specialtySelected) {
-      return;
+    // Si el mensaje actual es para la especialidad, usa specialtySelected.
+    if (this.currentStep === 'specialty') {
+      if (this.specialtySelected) return;
+      this.specialtySelected = true;
     }
-    this.specialtySelected = true;
+
+    // Si es para confirmación, usamos confirmationSelected.
+    if (this.currentStep === 'confirmation') {
+      if (this.confirmationSelected) return;
+      this.confirmationSelected = true;
+    }
+
     console.log('Opción seleccionada:', option);
     this.messageText = option;
     this.sendMessage();

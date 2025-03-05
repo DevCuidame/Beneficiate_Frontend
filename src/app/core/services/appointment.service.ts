@@ -32,6 +32,20 @@ export class AppointmentService {
   }
 
 
+  cancelAppointment(id: number): Observable<any> {
+    return this.http.delete(`${this.api}${this.version}medical-appointment/cancel/${id}`).pipe(
+      tap(() => {
+        const updatedAppointments = this.appointments().filter(appt => appt.id !== id);
+        this.appointments.set(updatedAppointments);
+      }),
+      catchError(error => {
+        console.error('Error al cancelar la cita:', error);
+        return of(null);
+      })
+    );
+  }
+
+
   createAppointment(appointment: Appointment): Observable<Appointment> {
     return this.http.post<Appointment>(`${this.api}${this.version}appointments/create`, appointment).pipe(
       tap((newAppointment) => {

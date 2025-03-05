@@ -1,0 +1,67 @@
+<div class="plan-selection-container">
+  <h2 class="section-title">Selecciona tu plan</h2>
+  
+  <div class="plans-wrapper">
+    <div *ngIf="isLoading" class="loading-container">
+      <ion-spinner name="circular"></ion-spinner>
+      <p>Cargando planes disponibles...</p>
+    </div>
+    
+    <div *ngIf="!isLoading && plans.length === 0" class="no-plans">
+      <p>No hay planes disponibles en este momento.</p>
+    </div>
+    
+    <div *ngIf="!isLoading && plans.length > 0" class="plans-grid">
+      <div *ngFor="let plan of plans" 
+           class="plan-card" 
+           [class.selected]="selectedPlanId === plan.id"
+           (click)="selectPlan(plan)">
+        
+        <div class="plan-header">
+          <h3>{{ plan.name }}</h3>
+          <div class="plan-icon">
+            <fa-icon *ngIf="plan.name === 'Individual' || plan.name === 'Básico'" [icon]="faUser"></fa-icon>
+            <fa-icon *ngIf="plan.name === 'Familiar' || plan.name === 'Premium'" [icon]="faCrown"></fa-icon>
+          </div>
+        </div>
+        
+        <div class="plan-price">
+          <span class="currency">$</span>
+          <span class="amount">{{ +plan.price | currency:'':'':'1.0-0' }}</span>
+          <span class="period">/ año</span>
+        </div>
+        
+        <div class="plan-details">
+          <div class="detail-item">
+            <fa-icon [icon]="faCalendarAlt"></fa-icon>
+            <span>{{ plan.duration_days }} días</span>
+          </div>
+          <div class="detail-item">
+            <fa-icon [icon]="faUser"></fa-icon>
+            @if(plan.max_beneficiaries > 0){
+              <span>{{ plan.max_beneficiaries }} beneficiarios + uso personal</span>
+            } @else {
+              <span>Uso personal</span>
+            }
+          </div>
+        </div>
+        
+        <p class="plan-description">{{ plan.description }}</p>
+        
+        <div class="selection-indicator" *ngIf="selectedPlanId === plan.id">
+          <fa-icon [icon]="faCheckCircle"></fa-icon>
+          <span>Seleccionado</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="payment-actions">
+      <ion-button expand="block" 
+                  [disabled]="!selectedPlanId || isProcessing" 
+                  (click)="initiatePayment()">
+        <span *ngIf="!isProcessing">Continuar a pago</span>
+        <ion-spinner *ngIf="isProcessing" name="dots"></ion-spinner>
+      </ion-button>
+    </div>
+  </div>
+</div>
