@@ -5,6 +5,10 @@ import { HeaderDashComponent } from '../header-dash/header-dash.component';
 import { SidebarDashComponent } from '../sidebar-dash/sidebar-dash.component';
 import { ChatFloatingComponent } from 'src/app/shared/components/call-center/chat-floating/chat-floating.component';
 import { filter } from 'rxjs';
+import { UserService } from 'src/app/modules/auth/services/user.service';
+import { User } from 'src/app/core/interfaces/auth.interface';
+import { environment } from 'src/environments/environment';
+
 
 @Component({
   selector: 'app-containter-dash',
@@ -14,10 +18,29 @@ import { filter } from 'rxjs';
 })
 export class ContainterDashComponent  implements OnInit {
   public isVisible: boolean = false;
+  public user: User | any = null;
+  public profileImage: string = '';
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, 
+    private userService: UserService,
+
+  ) { }
 
   ngOnInit() {
+
+    this.userService.user$.subscribe((userData) => {
+      this.user =
+        Array.isArray(userData) && userData.length > 0 ? userData[0] : userData;
+      if (this.user?.image?.image_path) {
+        this.profileImage = `${
+          environment.url
+        }${this.user.image.image_path.replace(/\\/g, '/')}`;
+      } else {
+        this.profileImage = 'assets/images/default-profile.png';
+      }
+    });
+
+
     this.router.events
           .pipe(filter(event => event instanceof NavigationEnd))
           .subscribe((event: NavigationEnd) => {

@@ -16,12 +16,14 @@
     <div style="display: flex; flex-direction: column; gap: 10px;">
     @for(appointment of appointments; track appointment){
         <app-appointment-card
+          [appointmentId]="appointment.id"
           [first_name]="appointment.professionalData?.user?.first_name"
           [last_name]="appointment.professionalData?.user?.last_name"
           [date]="appointment.appointment_date_formatted"
           [specialty]="appointment.specialty_name"
           [time]="appointment.appointment_time_formatted"
           [dayOfWeek]="appointment.day"
+          (appointmentCanceled)="onAppointmentCanceled($event)"
         >
         </app-appointment-card>
       }

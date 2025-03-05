@@ -13,6 +13,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCrown } from '@fortawesome/free-solid-svg-icons';
 import { PrimaryCardComponent } from 'src/app/shared/components/primary-card/primary-card.component';
 import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
+import { Plan } from 'src/app/core/interfaces/plan.interface';
+import { PlanSelectionComponent } from 'src/app/shared/components/plan-selection/plan-selection/plan-selection.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,6 +27,7 @@ import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
     BeneficiaryCardComponent,
     FontAwesomeModule,
     PrimaryCardComponent,
+    PlanSelectionComponent
   ], // Advertencia
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
@@ -95,6 +98,12 @@ export class DashboardComponent implements OnInit {
   setActiveTab(tab: string) {
     this.activeTab = tab;
   }
+
+    // Método para manejar la selección de plan
+    onPlanSelected(plan: any) {
+      console.log('Plan seleccionado:', plan);
+      // Puedes agregar lógica adicional aquí si es necesario
+    }
 
   selectButton(buttonType: string) {
     if(this.user.plan ){

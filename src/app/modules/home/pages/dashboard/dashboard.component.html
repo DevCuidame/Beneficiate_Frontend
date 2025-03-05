@@ -21,13 +21,11 @@
             style="color: var(--ion-color-secondary)"
             [icon]="faCrown"
           ></fa-icon>
+          } @if(user.plan){
+          <div class="plan-name">
+            {{ user?.plan?.name }}
+          </div>
           }
-          @if(user.plan){
-            <div class="plan-name">
-              {{ user?.plan?.name }}
-            </div>
-          }
-         
         </div>
       </div>
     </div>
@@ -63,24 +61,22 @@
       <app-primary-card maxHeight="240px">
         <div class="plan-desc">
           @if(user.plan){
-            <p style="padding-left: 20px;">Tu plan actual</p>
+          <p style="padding-left: 20px">Tu plan actual</p>
           }@else {
-            <p>Actualmente no cuentas con un plan.</p>
-          }
-          @if(user.plan){
-            <div class="plan-container">
-              <p>{{ user?.plan?.name }}</p>
-              <p>{{ user?.plan?.description }}</p>
-            </div>
+          <p>Actualmente no cuentas con un plan.</p>
+          } @if(user.plan){
+          <div class="plan-container">
+            <p>{{ user?.plan?.name }}</p>
+            <p>{{ user?.plan?.description }}</p>
+          </div>
           }
         </div>
       </app-primary-card>
 
       }@else {
-      <div class="plan-box">
-        <div>Plan Familiar</div>
-        <div>Plan Individual</div>
-      </div>
+      <app-plan-selection
+        (planSelected)="onPlanSelected($event)"
+      ></app-plan-selection>
       }
     </div>
 
@@ -102,19 +98,19 @@
         >
           <span>Beneficiarios</span>
         </div>
-          <div class="button" id="secondOption" (click)="selectButton('Agenda')">
-            <span>Agenda</span>
-          </div>
+        <div class="button" id="secondOption" (click)="selectButton('Agenda')">
+          <span>Agenda</span>
+        </div>
       </div>
     </div>
 
     <!-- Beneficiary Cards -->
 
-   @if(user.plan){
+    @if(user.plan){
     <app-beneficiary-card
-    [beneficiaries]="beneficiaries"
-  ></app-beneficiary-card>
-   }
+      [beneficiaries]="beneficiaries"
+    ></app-beneficiary-card>
+    }
   </div>
 </ion-content>
 

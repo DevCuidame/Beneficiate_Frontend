@@ -1,5 +1,7 @@
 import { User } from "./auth.interface";
 import { Beneficiary } from "./beneficiary.interface";
+import { MedicalProfessional } from "./medicalProfessional.interface";
+import { MedicalSpecialty, MedicalSpecialtyResponse } from "./medicalSpecialty.interface";
 
 export interface Appointment {
   id: number;
@@ -18,6 +20,8 @@ export interface Appointment {
   first_time: boolean;
   control: boolean;
   userData: User | Beneficiary; 
+  specialtyData: MedicalSpecialty;
+  professionalData: MedicalProfessional;
 }
 
 export interface appointmentCounts {

@@ -5,10 +5,9 @@
       <button *ngFor="let option of message.options" 
         (click)="onSelectOption(option)" 
         class="option-button"
-        [disabled]="specialtySelected">
-  {{ option }}
-</button>
-
+        [disabled]="optionDisabled">
+        {{ option }}
+      </button>
     </div>
   </div>
 </ng-container>

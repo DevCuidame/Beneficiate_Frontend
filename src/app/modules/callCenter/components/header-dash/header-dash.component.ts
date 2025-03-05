@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { User } from 'src/app/core/interfaces/auth.interface';
 
 @Component({
   selector: 'app-header-dash',
@@ -6,9 +7,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./header-dash.component.scss'],
 })
 export class HeaderDashComponent  implements OnInit {
+  @Input() user: User | any = null;
+  @Input() profileImage: string = '';
 
   constructor() { }
 
   ngOnInit() {}
+
 
 }

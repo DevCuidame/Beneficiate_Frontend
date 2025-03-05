@@ -10,7 +10,8 @@ export class WebsocketService {
   private userAppointments = new BehaviorSubject<Appointment[]>([]);
   public userAppointments$ = this.userAppointments.asObservable();
 
-  public connect(): Observable<any> {
+  // Ahora se acepta un parámetro opcional professionalId
+  public connect(professionalId?: number): Observable<any> {
     const token = localStorage.getItem('token');
     if (!token) {
       throw new Error('No se encontró token en local storage');
@@ -22,6 +23,11 @@ export class WebsocketService {
     return new Observable((observer: Observer<any>) => {
       this.ws.onopen = () => {
         console.log('Conexión WebSocket establecida');
+        // Envía el mensaje init desde onopen para garantizar que la conexión esté lista.
+        if (professionalId) {
+          console.log('Enviando init desde onopen con professionalId:', professionalId);
+          this.ws.send(JSON.stringify({ event: 'init', professionalId }));
+        }
       };
 
       this.ws.onmessage = (event) => {
@@ -58,7 +64,7 @@ export class WebsocketService {
   public send(data: any): void {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(data));
-      console.log("🚀 ~ ChatWebsocketService ~ send ~ data:", data)
+      console.log("🚀 ~ WebsocketService ~ send ~ data:", data);
     } else {
       console.error('WebSocket no está conectado.');
     }

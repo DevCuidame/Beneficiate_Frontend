@@ -81,6 +81,16 @@ export class AppointmentBookingComponent implements OnInit {
       }
     );
   }
+
+  onAppointmentCanceled(canceledId: number) {
+    this.appointments = this.appointments.filter(
+      (appointment) => appointment.id !== canceledId
+    );
+  }
+
+  trackByAppointmentId(index: number, appointment: Appointment): number {
+    return appointment.id;
+  }
   onScroll(event: any) {
     const element = event.target;
     const cardWidth = element.offsetWidth;
