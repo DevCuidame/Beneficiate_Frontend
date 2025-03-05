@@ -1,83 +1,170 @@
-<div class="basic-data-box">
-  <div class="data-header">
-    <p>Información Personal</p>
+<app-primary-card [maxHeight]="maxHeight">
+  <div class="data-header" [ngStyle]="{ color: fontColor }">
+    <p style="text-align: center">Información Personal</p>
   </div>
-  <div class="parent">
+  <div class="parent" [ngStyle]="{ color: fontColor }">
     <div class="parent-column">
       <!-- Identity Card -->
       <div class="item">
         <div class="item-icon icon-1">
-          <fa-icon [icon]="faAddressCard"></fa-icon>
+          <fa-icon
+            [icon]="faAddressCard"
+            [ngStyle]="{ color: iconColor, opacity: opacity }"
+          ></fa-icon>
         </div>
         <div class="item-info">
-          <p>{{ user?.identification_number || 'No aplica' }}</p>
-          <p>{{ user?.identification_type || 'No aplica' }}</p>
+          <p>{{ selectedEntity?.identification_number || "No aplica" }}</p>
+          <p>{{ selectedEntity?.identification_type || "No aplica" }}</p>
         </div>
       </div>
       <!-- Happy Birthday -->
       <div class="item">
         <div class="item-icon icon-3">
-          <fa-icon [icon]="faCakeCandles"></fa-icon>
+          <fa-icon
+            [icon]="faCakeCandles"
+            [ngStyle]="{ color: iconColor, opacity: opacity }"
+          ></fa-icon>
         </div>
         <div class="item-info">
-          <p>{{ user?.birth_date || 'No aplica' }}</p>
+          <p>{{ selectedEntity?.birth_date || "No aplica" }}</p>
           <p>Fecha Nacimiento</p>
         </div>
       </div>
       <!-- Address -->
       <div class="item">
         <div class="item-icon icon-5">
-          <fa-icon [icon]="faHouse"></fa-icon>
+          <fa-icon
+            [icon]="faHouse"
+            [ngStyle]="{ color: iconColor, opacity: opacity }"
+          ></fa-icon>
         </div>
         <div class="item-info">
-          <p>{{ user?.address || 'No aplica' }}</p>
+          <p>{{ selectedEntity?.address || "No aplica" }}</p>
           <p>Dirección</p>
         </div>
       </div>
       <!-- Department -->
       <div class="item">
         <div class="item-icon icon-7">
-          <fa-icon [icon]="faMap"></fa-icon>
+          <fa-icon
+            [icon]="faMap"
+            [ngStyle]="{ color: iconColor, opacity: opacity }"
+          ></fa-icon>
         </div>
         <div>
           <div class="item-info">
-            <p>{{ user?.location?.department_name }}</p>
+            <p>
+              {{ selectedEntity?.location?.department_name || "No aplica" }}
+            </p>
             <p>Departamento</p>
           </div>
         </div>
       </div>
+
+      <!-- Tipo de Sangre -->
+      @if(beneficiary){
+      <div class="item">
+        <div class="item-icon icon-6">
+          <fa-icon
+            [icon]="faDroplet"
+            [ngStyle]="{ color: iconColor, opacity: opacity }"
+          ></fa-icon>
+        </div>
+        <div class="item-info">
+          <p>{{ beneficiary.blood_type || "No aplica" }}</p>
+          <p>ARL</p>
+        </div>
+      </div>
+
+      <!-- EPS -->
+      <div class="item">
+        <div class="item-icon icon-6">
+          <fa-icon
+            [icon]="faBriefcaseMedical"
+            [ngStyle]="{ color: iconColor, opacity: opacity }"
+          ></fa-icon>
+        </div>
+        <div class="item-info">
+          <p>{{ beneficiary.health_provider || "No aplica" }}</p>
+          <p>Seguro Funerario</p>
+        </div>
+      </div>
+      }
     </div>
     <div class="parent-column">
       <!-- Gender -->
       <div class="item">
         <div class="item-icon icon-4">
-          <fa-icon [icon]="faPersonHalfDress"></fa-icon>
+          <fa-icon
+            [icon]="faVenusMars"
+            [ngStyle]="{ color: iconColor, opacity: opacity }"
+          ></fa-icon>
         </div>
         <div class="item-info">
-          <p>{{ user?.gender || 'No aplica' }}</p>
+          <p>
+            @if (selectedEntity?.gender === 'F'){ Femenino }@else if
+            (selectedEntity?.gender === 'M') {Masculino}@else {Otro}
+          </p>
           <p>Género</p>
         </div>
       </div>
       <!-- Phone -->
       <div class="item">
         <div class="item-icon icon-2">
-          <fa-icon [icon]="faPhone"></fa-icon>
+          <fa-icon
+            [icon]="faPhone"
+            [ngStyle]="{ color: iconColor, opacity: opacity }"
+          ></fa-icon>
         </div>
         <div class="item-info">
-          <p>{{ user?.phone || 'No aplica' }}</p>
+          <p>{{ selectedEntity?.phone || "No aplica" }}</p>
           <p>Teléfono</p>
         </div>
       </div>
       <!-- City -->
       <div class="item">
         <div class="item-icon icon-6">
-          <fa-icon [icon]="faCity"></fa-icon>
+          <fa-icon
+            [icon]="faCity"
+            [ngStyle]="{ color: iconColor, opacity: opacity }"
+          ></fa-icon>
         </div>
         <div class="item-info">
-          <p>{{ user?.location?.township_name || 'No aplica' }}</p>
+          <p>{{ selectedEntity?.location?.township_name || "No aplica" }}</p>
           <p>Ciudad</p>
         </div>
       </div>
+
+      @if(beneficiary){
+
+      <!-- ARL -->
+      <div class="item">
+        <div class="item-icon icon-6">
+          <fa-icon
+            [icon]="faHospital"
+            [ngStyle]="{ color: iconColor, opacity: opacity }"
+          ></fa-icon>
+        </div>
+        <div class="item-info">
+          <p>{{ beneficiary.work_risk_insurance || "No aplica" }}</p>
+          <p>ARL</p>
+        </div>
+      </div>
+
+      <!-- Seguro Funerario -->
+      <div class="item">
+        <div class="item-icon icon-6">
+          <fa-icon
+            [icon]="faCross"
+            [ngStyle]="{ color: iconColor, opacity: opacity }"
+          ></fa-icon>
+        </div>
+        <div class="item-info">
+          <p>{{ beneficiary.funeral_insurance || "No aplica" }}</p>
+          <p>Seguro Funerario</p>
+        </div>
+      </div>
+      }
     </div>
   </div>
-</div>
+</app-primary-card>

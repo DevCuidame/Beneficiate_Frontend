@@ -10,13 +10,24 @@
         <img [src]="profileImage" [alt]="user?.first_name" />
       </div>
       <div class="content">
-        @if (user?.plan?.name === 'Básico') {
-        <ion-icon name="star-outline"></ion-icon>
-        }@else {
-        <fa-icon style="color: var(--ion-color-secondary);" [icon]="faCrown"></fa-icon>
-        }
-        <div class="plan-name">
-          {{ user?.plan?.name }}
+        <div class="user-name">
+          {{ user.first_name.split(" ")[0] }} {{ user.last_name.split(" ")[0] }}
+        </div>
+        <div class="plan-content">
+          @if (user?.plan?.name === 'Individual') {
+          <ion-icon name="star-outline"></ion-icon>
+          }@else if (user?.plan?.name === 'Familiar') {
+          <fa-icon
+            style="color: var(--ion-color-secondary)"
+            [icon]="faCrown"
+          ></fa-icon>
+          }
+          @if(user.plan){
+            <div class="plan-name">
+              {{ user?.plan?.name }}
+            </div>
+          }
+         
         </div>
       </div>
     </div>
@@ -49,10 +60,22 @@
       @if(activeTab === 'info'){
       <app-basic-data [user]="user"></app-basic-data>
       }@else if (activeTab === 'beneficios') {
-      <div class="basic-data-box">
-        <p>{{ user?.plan?.name }}</p>
-        <p>{{ user?.plan?.description }}</p>
-      </div>
+      <app-primary-card maxHeight="240px">
+        <div class="plan-desc">
+          @if(user.plan){
+            <p style="padding-left: 20px;">Tu plan actual</p>
+          }@else {
+            <p>Actualmente no cuentas con un plan.</p>
+          }
+          @if(user.plan){
+            <div class="plan-container">
+              <p>{{ user?.plan?.name }}</p>
+              <p>{{ user?.plan?.description }}</p>
+            </div>
+          }
+        </div>
+      </app-primary-card>
+
       }@else {
       <div class="plan-box">
         <div>Plan Familiar</div>
@@ -76,26 +99,22 @@
           class="button"
           id="firstOption"
           (click)="selectButton('Beneficiarios')"
-          [ngClass]="{ active: selectedButtonText === 'Beneficiarios' }"
         >
           <span>Beneficiarios</span>
         </div>
-        <div
-          class="button"
-          id="secondOption"
-          (click)="selectButton('Servicios')"
-          [ngClass]="{ active: selectedButtonText === 'Servicios' }"
-        >
-          <span>Servicios</span>
-        </div>
+          <div class="button" id="secondOption" (click)="selectButton('Agenda')">
+            <span>Agenda</span>
+          </div>
       </div>
     </div>
 
     <!-- Beneficiary Cards -->
 
+   @if(user.plan){
     <app-beneficiary-card
-      [beneficiaries]="beneficiaries"
-    ></app-beneficiary-card>
+    [beneficiaries]="beneficiaries"
+  ></app-beneficiary-card>
+   }
   </div>
 </ion-content>
 

@@ -1,0 +1,19 @@
+<div class="card-container">
+  <div class="background-gradient"></div>
+  <div class="card-image">
+    <img [src]="api + profileImage" [alt]="first_name">
+  </div>
+  
+  <div class="card-content">
+    <h2>{{ first_name.split(" ")[0] }} {{ last_name.split(" ")[0] }}</h2>
+    <p class="specialty">{{ specialty_name }}</p>
+
+    <div class="availability" [ngStyle]="{'color': agendaColor}">
+      Agenda disponible
+    </div>
+    
+    @if (buttonVisible) {
+      <button class="cta-button" (click)="onSolicitarCita()">Solicitar cita</button>
+    }
+  </div>
+</div>

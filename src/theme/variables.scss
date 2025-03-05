@@ -5,6 +5,7 @@
     --ion-color-success: #4EAA03;
     --ion-color-warning: #E8D641;
     --ion-color-danger: #D72638;
+    --ion-color-danger2: #F58418;
     --ion-color-light: #FFFFFF;
     --ion-color-medium: #D8E7EE;
     --ion-color-dark: #192A54;
@@ -16,8 +17,28 @@
     --ion-color-custom-yellow: #E8D641;
     --ion-color-custom-gray: #FFF9F9;
     --ion-color-custom-dark-blue: #275289;
+    --ion-color-boxshadow-green: 0px 1px 7px rgba(78, 170, 3, 0.5);
     --ion-color-custom-gradient: radial-gradient( #D8E7EE , #275289);
+
+
+    
+  // Colores call center
+  --color-background: #F2F2F2;
+  --color-sidebar: #F2F2F2;
+  --color-background-header: #192A54;
+  --color-button-background: #4EAA03;
+  --color-progress-dot: #4EAA03;
+  --color-arrows: #4EAA03;
+  --color-button-background-active: #192A54;
+  --color-highlighted-text: #E8D641;
+  --color-progress-bar: #E8D641;
+  --ion-color-text-primary: #192A54;
+  --ion-color-text-filter: #CBDAFF;
   }
+
+
+
+
   
   .ion-color-custom-blue {
     --ion-color-base: var(--ion-color-custom-blue);

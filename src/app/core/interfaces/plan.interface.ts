@@ -1,6 +1,7 @@
 export interface Plan {
     id: number;
     name: string;
+    code: string;
     description: string;
     price: string;
     duration_days: number;

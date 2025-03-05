@@ -1,0 +1,40 @@
+<div class="assigned-container">
+  <h2 class="title">CITA ASIGNADA</h2>
+
+  <div class="assigned-card">
+    <div class="icons">
+      <fa-icon [icon]="faCrown" class="crown-icon"></fa-icon>
+      <fa-icon [icon]="faCheckCircle" class="check-icon"></fa-icon>
+    </div>
+    @if(isPending) {
+    <p>
+      El profesional seleccionado no tiene su agenda disponible, se genera cita
+      pendiente por asignación que será confirmada máximo en 72 horas.
+    </p>
+    <p class="additional-info">
+      ¿Necesitas indicaciones para llegar a la clínica?
+      <a href="https://maps.google.com" target="_blank"
+        >Mira nuestro mapa en Google Maps.</a
+      >
+    </p>
+    }@else {
+    <p>
+      La hora de atención para <strong>{{ patientName }}</strong> ya está
+      reservada para el próximo <strong>{{ dayOfWeek }}, {{ date }}</strong> a
+      las <strong>{{ time }}</strong> Hrs. con la
+      <strong>{{ professionalName }}</strong> ({{ specialty }}).
+    </p>
+    <p>
+      Se ha enviado un correo con la confirmación de la cita al paciente y a la
+      agenda del profesional.
+    </p>
+    <p class="additional-info">
+      ¿Necesitas indicaciones para llegar a la clínica?
+      <a href="https://maps.google.com" target="_blank"
+        >Mira nuestro mapa en Google Maps.</a
+      >
+    </p>
+
+    }
+  </div>
+</div>

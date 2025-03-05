@@ -6,6 +6,8 @@ import { AuthGuard } from 'src/app/core/guards/auth.guard';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TabBarComponent } from 'src/app/shared/components/tab-bar/tab-bar.component';
+import { AppointmentBookingComponent } from './pages/appointment-booking/appointment-booking.component';
+import { ChatComponent } from './pages/chat/chat.component';
 
 const routes: Routes = [
   {
@@ -16,7 +18,19 @@ const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
-    canActivate: [AuthGuard], // 👈 Protegemos la ruta con el guard
+    canActivate: [AuthGuard], 
+  },
+
+  {
+    path: 'appointment-booking',
+    component: AppointmentBookingComponent,
+    canActivate: [AuthGuard], 
+  },
+
+  {
+    path: 'chat',
+    component: ChatComponent,
+    canActivate: [AuthGuard], 
   },
   {
     path: '**',
@@ -33,7 +47,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     IonicModule,
     RouterModule.forChild(routes),
-    TabBarComponent
+    TabBarComponent,
   ],
 })
 export class HomeModule {}

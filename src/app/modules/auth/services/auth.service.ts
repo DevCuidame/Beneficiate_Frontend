@@ -6,8 +6,9 @@ import { catchError, map } from 'rxjs/operators';
 import { RegisterData, User } from 'src/app/core/interfaces/auth.interface';
 import { environment } from 'src/environments/environment';
 import { UserService } from 'src/app/modules/auth/services/user.service';
-import { BeneficiaryService } from './beneficiary.service';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
+import { BeneficiaryService } from '../../../core/services/beneficiary.service';
+import { NavController } from '@ionic/angular';
 const apiUrl = environment.url;
 
 
@@ -16,7 +17,14 @@ export class AuthService {
 
   private authState = new BehaviorSubject<boolean>(this.hasToken());
 
-  constructor(private http: HttpClient,  private userService: UserService, private beneficiaryService: BeneficiaryService) {}
+  constructor(private http: HttpClient, private userService: UserService, private beneficiaryService: BeneficiaryService, private navController: NavController) {
+    this.authState.next(this.hasToken());
+  }
+
+  isAuthenticated$(): Observable<boolean> {
+    return this.authState.asObservable();
+  }
+
 
   login(credentials: { email: string; password: string }): Observable<any> {
     return this.http.post(`${apiUrl}api/v1/auth/login`, credentials).pipe(
@@ -25,6 +33,7 @@ export class AuthService {
         this.authState.next(true);
         localStorage.setItem('user', JSON.stringify(response.data.user));
         this.userService.setUser(response.data.user as User);
+
 
         if (response.data.plan?.max_beneficiaries) {
           this.beneficiaryService.maxBeneficiariesSubject.next(response.data.plan.max_beneficiaries);
@@ -35,6 +44,8 @@ export class AuthService {
           localStorage.setItem('beneficiaries', JSON.stringify(response.data.beneficiaries));
           this.beneficiaryService.setBeneficiaries(response.data.beneficiaries as Beneficiary[]);
         }
+        this.authState.next(true);
+        console.log('🔥 authState actualizado a TRUE');
 
         return response;
       })
@@ -47,8 +58,10 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('token');
+    localStorage.removeItem('refresh_token');
     localStorage.removeItem('user');
     localStorage.removeItem('beneficiaries');
+    localStorage.removeItem('activeBeneficiary');
     this.authState.next(false);
     this.userService.clearUser();
     this.beneficiaryService.clearBeneficiaries();
@@ -67,34 +80,40 @@ export class AuthService {
   }
 
   refreshToken(): Observable<any> {
-    return this.http.post(`${apiUrl}api/v1/auth/refresh-token`, {}).pipe(
+    const refreshToken = localStorage.getItem('refresh-token');
+    if (!refreshToken) {
+      return throwError(() => new Error('No refresh token available'));
+    }
+
+    return this.http.post(`${apiUrl}api/v1/auth/refresh-token`, { refreshToken }).pipe(
       map((response: any) => {
-        if (response.token) {
-          localStorage.setItem('token', response.token);
-          return response;
-        } else {
-          throw new Error('No se recibió un nuevo token');
-        }
+        localStorage.setItem('token', response.data.accessToken);
+        localStorage.setItem('refresh-token', response.data.refreshToken);
+        return response.data;
       }),
       catchError(error => {
         this.logout();
-        return throwError(error);
+        return throwError(() => error);
       })
     );
   }
 
-
   refreshUserData(): void {
     const user = this.getUserData();
+
     if (user) {
       this.userService.setUser(user);
+    } else {
+      console.warn('⚠️ No se encontró usuario en localStorage.');
     }
 
     const beneficiaries = this.getBeneficiariesData();
+
     if (beneficiaries.length > 0) {
       this.beneficiaryService.setBeneficiaries(beneficiaries);
     }
   }
+
 
   private hasToken(): boolean {
     return !!localStorage.getItem('token');

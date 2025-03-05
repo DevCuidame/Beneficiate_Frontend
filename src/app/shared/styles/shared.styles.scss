@@ -1,0 +1,40 @@
+.add {
+  background: transparent;
+  color: var(--ion-color-secondary);
+  font-size: 1.4rem;
+}
+
+.remove {
+  background: transparent;
+  color: var(--ion-color-primary);
+  font-size: 1.4rem;
+  position: relative;
+  z-index: 2;
+}
+
+h2 {
+  text-align: start;
+  width: 100%;
+  color: var(--ion-color-dark);
+}
+
+.add-box {
+  align-items: flex-end;
+  width: 100%;
+  text-align: end;
+  position: relative;
+  top: -35px;
+}
+
+.container-item {
+  padding: 20px 0;
+}
+
+
+
+.h-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-end;
+}

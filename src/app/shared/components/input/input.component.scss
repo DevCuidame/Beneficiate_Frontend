@@ -1,0 +1,38 @@
+.input-container {
+    display: flex;
+    flex-direction: column;
+    color: var(--ion-color-dark);
+    margin-bottom: 15px;
+  }
+  
+  label {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .field-wrapper {
+    display: flex;
+    align-items: center;
+  }
+  
+  input, select {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid var(--ion-color-dark);
+    padding: 5px 0;
+    font-size: 16px;
+    outline: none;
+    background: transparent;
+  }
+  
+  .counter {
+    margin-left: 10px;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .error {
+    color: red;
+    font-size: 12px;
+  }
+  

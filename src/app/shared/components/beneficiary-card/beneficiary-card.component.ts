@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonicModule, AlertController, NavController } from '@ionic/angular';
+import { User } from 'src/app/core/interfaces/auth.interface';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
+import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
 import { environment } from 'src/environments/environment';
-import { BeneficiaryService } from 'src/app/modules/auth/services/beneficiary.service';
 
 @Component({
   selector: 'app-beneficiary-card',
@@ -15,13 +16,13 @@ export class BeneficiaryCardComponent implements OnInit {
   @Input() beneficiaries: Beneficiary[] = [];
   public environment = environment.url;
   public beneficiaryCount: number = 0;
-  public maxBeneficiaries: number = 5; // 👈 Se actualizará dinámicamente
+  public maxBeneficiaries: number = 5; 
 
   constructor(
     private router: Router,
     private alertCtrl: AlertController,
     private beneficiaryService: BeneficiaryService,
-    private navCtrl: NavController
+    private navCtrl: NavController,
   ) {}
 
   ngOnInit() {
@@ -35,10 +36,17 @@ export class BeneficiaryCardComponent implements OnInit {
   }
 
   goToBeneficiary(beneficiary: Beneficiary) {
-    this.beneficiaryService.setActiveBeneficiary(beneficiary)
+    this.beneficiaryService.setActiveBeneficiary({...beneficiary})
     this.navCtrl.navigateForward(['/beneficiary/home'])
 
   }
+
+  get sortedBeneficiaries(): Beneficiary[] {
+    return [...this.beneficiaries].sort((a, b) =>
+      a.first_name.localeCompare(b.first_name)
+    );
+  }
+  
 
   async createBeneficiary() {
     if (this.beneficiaryCount >= this.maxBeneficiaries) {
@@ -50,7 +58,8 @@ export class BeneficiaryCardComponent implements OnInit {
       await alert.present();
       return;
     }
-
-    this.router.navigate(['/beneficiary/add']);
+  
+    this.router.navigate(['/beneficiary/add'], { queryParams: { new: true } });
   }
+  
 }

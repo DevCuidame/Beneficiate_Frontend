@@ -37,7 +37,9 @@
     <ion-label>Mostrar contraseña</ion-label>
   </ion-item>
 
-  <p routerLink="/resetpassword">¿Olvidaste tu contraseña?</p>
+  <p class="toggle-text" (click)="onForgotPassword()">
+    ¿Olvidaste tu contraseña?
+  </p>  
 
   <div class="button-container">
     <app-custom-button

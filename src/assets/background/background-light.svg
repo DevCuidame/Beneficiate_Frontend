@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="393" height="844" viewBox="0 0 393 844">
+  <defs>
+    <clipPath id="clip-agenda_1">
+      <rect width="393" height="844"/>
+    </clipPath>
+  </defs>
+  <g id="agenda_1" data-name="agenda – 1" clip-path="url(#clip-agenda_1)">
+    <rect width="393" height="844" fill="#fff"/>
+    <g id="Elipse_110" data-name="Elipse 110" transform="translate(36 -147)" fill="none" stroke="#eff3fd" stroke-width="100" style="mix-blend-mode: multiply;isolation: isolate">
+      <circle cx="223" cy="223" r="223" stroke="none"/>
+      <circle cx="223" cy="223" r="173" fill="none"/>
+    </g>
+    <g id="Elipse_109" data-name="Elipse 109" transform="translate(-51 295)" fill="none" stroke="#eff3fd" stroke-width="80" style="mix-blend-mode: multiply;isolation: isolate">
+      <circle cx="166" cy="166" r="166" stroke="none"/>
+      <circle cx="166" cy="166" r="126" fill="none"/>
+    </g>
+    <g id="Elipse_108" data-name="Elipse 108" transform="translate(136 587)" fill="none" stroke="#eff3fd" stroke-width="100" style="mix-blend-mode: multiply;isolation: isolate">
+      <circle cx="223" cy="223" r="223" stroke="none"/>
+      <circle cx="223" cy="223" r="173" fill="none"/>
+    </g>
+  </g>
+</svg>

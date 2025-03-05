@@ -1,0 +1,52 @@
+<app-primary-card maxHeight="500px">
+  <div class="medical_history-box">
+    <h2>Medicamentos</h2>
+    <div class="h-container">
+      @if (activeBeneficiary?.medications?.length ?? 0 > 0) { @for (item of
+      activeBeneficiary?.medications; track item){
+      <app-secondary-card style="width: 100%;">
+        <div class="medicament-box
+        ">
+          <div>
+            <fa-icon [icon]="faPills"></fa-icon>
+          </div>
+          <div class="h-card">
+            <p>{{ item.medication }}</p>
+            <p>{{ item.laboratory }}</p>
+            <p>{{ item.dosage }}</p>
+          </div>
+        </div>
+      </app-secondary-card>
+      } }@else {
+      <p style="text-align: start; width: 100%">
+        No hay medicamentos registrados.
+      </p>
+      }
+    </div>
+    <div class="h-container" style="align-items: flex-start !important">
+      <h2>Alergias</h2>
+      <div class="allergies-box">
+        @if(activeBeneficiary?.allergies?.length ?? 0 > 0){ @for (item of
+        activeBeneficiary?.allergies; track item){
+        <app-secondary-card class="allergy-card">
+          <div class="h-card-left">
+            <p>{{ item.allergy_type }}</p>
+            <p>{{ item.description }}</p>
+            <p [ngSwitch]="item.severity">
+              <span *ngSwitchCase="'MILD'">Leve</span>
+              <span *ngSwitchCase="'MODERATE'">Moderado</span>
+              <span *ngSwitchCase="'SEVERE'">Severo</span>
+            </p>
+          </div>
+        </app-secondary-card>
+
+        } }@else {
+        <p>No hay alergias registradas.</p>
+        }
+      </div>
+    </div>
+  </div>
+</app-primary-card>
+<app-edit-button
+  route="/beneficiary/home/medicaments-allergies/form"
+></app-edit-button>

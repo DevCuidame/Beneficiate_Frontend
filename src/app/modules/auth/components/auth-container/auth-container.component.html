@@ -3,15 +3,23 @@
     <ion-img class="logo" src="assets/logo/beneficiate_logo.svg"></ion-img>
   </div>
   <div class="card">
-    @if (isLoginView){
-    <app-login></app-login>
+    @if (currentView === 'login') {
+    <app-login (forgotPassword)="switchView('reset-password')"></app-login>
     <p class="toggle-text">
-      ¿No tienes cuenta? <a (click)="toggleView()">Regístrate aquí</a>
+      ¿No tienes cuenta? <a (click)="switchView('register')">Regístrate aquí</a>
     </p>
     }<!--@else {
     <app-register (registerSuccess)="switchToLogin()"></app-register>
     <p class="toggle-text">
-      ¿Ya tienes cuenta? <a (click)="toggleView()">Inicia sesión</a>
+      ¿Ya tienes cuenta? <a (click)="switchView('login')">Inicia sesión</a>
+    </p>
+    } @else {
+    <app-reset-password
+      (resetSuccess)="switchView('login')"
+    ></app-reset-password>
+    <p class="toggle-text">
+      ¿Recordaste tu contraseña?
+      <a (click)="switchView('login')">Inicia sesión</a>
     </p>
   }-->@else {
       <app-reset-password></app-reset-password>

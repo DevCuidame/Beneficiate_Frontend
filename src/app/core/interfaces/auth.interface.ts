@@ -1,6 +1,6 @@
 import { City, Location } from './city.interface';
 import { Plan } from './plan.interface';
-import { UserImage } from './user.interface';
+import { UserEmergencyContact, UserImage } from './user.interface';
 
 // Interfaz para el registro del usuario
 export interface RegisterData {
@@ -26,4 +26,7 @@ export interface User extends RegisterData {
   plan: Plan;     
   image: UserImage; 
   location: Location;
+  contacts: UserEmergencyContact,
+  isAgent?: boolean,
+  agentActive?: boolean
 }

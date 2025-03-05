@@ -1,0 +1,81 @@
+ion-content {
+  --background: url("../../../../../assets/background/background-light.svg")
+    no-repeat center center / cover;
+}
+
+.appointment-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30px;
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+}
+
+.appointment-header .header-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--ion-color-dark);
+  margin: 0;
+}
+
+.appointment-header .profile-image {
+  width: 73px;
+  height: 73px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+
+.content-container {
+  position: relative;
+  height: 80vh;
+  padding: 0 30px 300px;
+  overflow-y: auto;
+}
+
+.profesional-scroll {
+  position: fixed;
+  bottom: 55px;
+  left: 0;
+  right: 0;
+  padding: 0 20px;
+}
+
+.professional-card {
+  overflow-x: auto;
+  display: flex;
+  gap: 40px;
+  width: 100%;
+  scroll-snap-type: x mandatory;
+}
+
+.empty-message{
+  color: var(--ion-color-dark);
+}
+
+app-health-professional-card {
+  scroll-snap-align: start;
+}
+
+.professional-indicators {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.indicator {
+  width: 10px;
+  height: 10px;
+  background-color: #ccc;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.indicator.active {
+  width: 20px;
+  border-radius: 5px;
+  background-color: var(--ion-color-dark);
+}

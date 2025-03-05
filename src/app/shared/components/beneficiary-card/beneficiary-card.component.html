@@ -1,5 +1,5 @@
 <div class="card-container">
-  @for (beneficiary of beneficiaries; track beneficiary.id) {
+  @for (beneficiary of sortedBeneficiaries; track beneficiary.id ) {
   <div class="card" (click)="goToBeneficiary(beneficiary)">
     @if(beneficiary.image && beneficiary.image.image_path) {
     <img

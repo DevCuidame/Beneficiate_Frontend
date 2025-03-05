@@ -1,0 +1,106 @@
+<div class="appointment-card">
+  <div class="appointment-header">
+    <div class="status-patient">
+      <div class="patient-status">
+        <span class="status-badge">{{
+          appointment.is_for_beneficiary
+            ? "Activo Beneficiario"
+            : "Activo Titular"
+        }}</span>
+      </div>
+      @if(appointment.status === 'EXPIRED'){
+      <div class="patient-status">
+        <span
+          class="status-badge"
+          style="background-color: var(--ion-color-danger)"
+          >Vencida</span
+        >
+      </div>
+      }@else if(appointment.status === 'CANCELLED'){
+      <div class="patient-status">
+        <span
+          class="status-badge"
+          style="background-color: var(--ion-color-danger)"
+          >Cancelada</span
+        >
+      </div>
+      }@else if(appointment.status === 'TO_BE_CONFIRMED'){
+        <div class="patient-status">
+          <span
+            class="status-badge"
+            style="background-color: var(--ion-color-secondary)"
+            >Pendiente por Confirmar</span
+          >
+        </div>
+        } @else if(appointment.status === 'CONFIRMED'){
+      <div class="patient-status">
+        <span
+          class="status-badge"
+          style="background-color: var(--ion-color-primary)"
+          >Confirmada</span
+        >
+      </div>
+      } @else if(appointment.status === 'RESCHEDULED'){
+      <div class="patient-status">
+        <span
+          class="status-badge"
+          style="background-color: var(--ion-color-secondary)"
+          >Reagendada</span
+        >
+      </div>
+      }@else if(appointment.status === 'PENDING'){
+      <div class="patient-status">
+        <span
+          class="status-badge"
+          style="
+            background-color: var(--ion-color-secondary);
+            color: var(--ion-color-dark);
+          "
+          >Pendiente</span
+        >
+      </div>
+      }
+    </div>
+   @if(appointment.status !== 'CONFIRMED'){
+    <fa-icon [icon]="faClock" [ngStyle]="{ color: getClockColor(appointment) }">
+    </fa-icon>
+   }
+  </div>
+  <div class="appointment-body">
+    <div class="patient-info">
+      <img
+        [src]="environment + appointment.userData.image.image_path"
+        alt="Foto de perfil"
+      />
+      <div>
+        <p class="patient-name">
+          {{ appointment.userData.first_name }}
+          {{ appointment.userData.last_name }}
+        </p>
+        <p class="patient-specialty">
+          <!-- {{ appointment.specialty || "Sin especialidad" }} -->
+        </p>
+      </div>
+    </div>
+    @if(appointment.status === 'CONFIRMED'){
+      <p class="professional">Profesional: {{appointment.userData.first_name.split(" ")[0]}} {{appointment.userData.last_name.split(" ")[0]}}</p>
+    }
+    <div class="appointment-footer">
+      <p class="request-date">
+        {{ appointment.created_at_formatted }}
+      </p>
+      @if (appointment.status === 'PENDING') {
+      <app-custom-button
+        label="Asignar"
+        fontSize="1.5rem"
+        padding="5px 10px"
+        [disabled]="false"
+        [textColor]="'var(--ion-color-dark)'"
+        [backgroundImage]="buttonBackground"
+        (click)="goToAppointment(appointment)"
+      ></app-custom-button>
+
+      }
+    </div>
+  </div>
+</div>

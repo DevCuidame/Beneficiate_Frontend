@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 @Component({
@@ -15,5 +16,5 @@ export class CustomButtonComponent {
   @Input() type: 'button' | 'submit' = 'button';
   @Input() color: string = 'var(--ion-color-primary)';
   @Input() textColor: string = 'var(--ion-color-light)';  // Nuevo input para color de texto
-  @Input() backgroundImage: string = ''; 
+  @Input() backgroundImage: string = '';
 }

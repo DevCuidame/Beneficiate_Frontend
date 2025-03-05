@@ -16,8 +16,8 @@ import { TabBarComponent } from 'src/app/shared/components/tab-bar/tab-bar.compo
 export class AuthContainerComponent {
   isLoginView = true;
 
-  toggleView() {
-    this.isLoginView = !this.isLoginView;
+  switchView(view: 'login' | 'register' | 'reset-password') {
+    this.currentView = view;
   }
 
   switchToLogin() {
