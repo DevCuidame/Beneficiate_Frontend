@@ -2,6 +2,7 @@
 ionic capacitor copy android
 ionic capacitor sync android
 npx cap open android
+
 # First time setup - copies Android folder to Android Studio workspace
 
 # Icon generation
