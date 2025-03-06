@@ -14,7 +14,7 @@ const routes: Routes = [
   {
     path: '',
     component: HomePageComponent,
-
+    canActivate: [AuthGuard], 
   },
   {
     path: 'beneficiary-info',
