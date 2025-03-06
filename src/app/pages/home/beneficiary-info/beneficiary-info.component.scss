@@ -1,0 +1,144 @@
+main {
+  background-color: white;
+  height: 100vh;
+  width: 100vw;
+  padding: 0 10vw;
+  position: relative;
+
+  .fixxed {
+    height: 100%;
+    position: fixed;
+    right: 10%;
+    top: 15vh; /* Ajuste para que no se superponga al contenido */
+    z-index: 10;
+  }
+
+  .beneficiary-info-container {
+    height: 100%;
+    width: 63%;
+    padding: 20vh 50px 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;  /* Habilitamos el scroll vertical */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .cards-container {
+      flex: 1; /* Esto asegura que el contenedor de las tarjetas ocupe todo el espacio disponible */
+      margin-bottom: 15vh;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 20px; /* Agregar espacio entre las tarjetas */
+      padding: 10px;
+    }
+
+    .card {
+      background: radial-gradient(circle, rgb(211, 226, 235) 0%, rgb(198, 216, 228) 25%, rgb(184, 204, 220) 50%, rgb(159, 183, 206) 75%, rgb(148, 174, 199) 100%);
+      height: 40rem;
+      padding: 14px 25px 30px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      border-radius: 30px;
+      box-shadow: 5px 5px 5px 0px rgba(78, 170, 3, 0.7);
+      overflow-y: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    .btn {
+      height: 2.5rem;
+      width: 2.5rem;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      border-radius: 5px;
+    }
+
+    .btn-edit {
+      background-color: var(--ion-color-primary);
+    }
+
+    .btn-cancel {
+      background-color: var(--ion-color-secondary);
+    }
+
+    .title {
+      color: var(--ion-color-dark);
+      align-self: flex-start;
+      font-weight: bold;
+    }
+
+    .scroll-x {
+      height: 10rem;
+      width: 100%;
+      padding: 5px;
+      display: flex;
+      overflow-x: auto;
+      overflow-y: hidden;
+      gap: 25px;
+
+      .card-info {
+        background-color: white;
+        height: 8rem;
+        width: 100%;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items: end;
+        border: 1px solid var(--ion-color-primary);
+        border-radius: 15px;
+        box-shadow: 5px 5px 5px 0px rgba(78,170,3,0.7);
+
+        .f-big, .f-small {
+          color: var(--ion-color-dark);
+          margin: 0;
+          font-size: 1rem;
+        }
+
+        .f-big {
+          font-weight: bold;
+        }
+
+        .f-small {
+          font-weight: 300;
+        }
+      }
+    }
+  }
+
+  .footer {
+    background-color: white;
+    height: 12vh;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    z-index: 10;
+
+    app-footer-component {
+      margin-left: 25px;
+      position: absolute;
+      bottom: 4vh;
+    }
+  }
+}
+
+@media (max-width: 1350px) {
+  main {
+    padding: 0;
+
+    .fixxed {
+      right: 0%;
+    }
+  }
+}

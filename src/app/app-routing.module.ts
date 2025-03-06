@@ -4,15 +4,23 @@ import { AutoRedirectGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
-  { 
-    path: 'auth', 
+
+  {
+    path: 'desktop',
+    loadChildren: () => import('./pages/welcome/welcome.module').then(m => m.WelcomeModule)
+  },
+  {
+    path: 'home-desktop',
+    loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule)
+  },
+  {
+    path: 'auth',
     loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule),
-    canActivate: [AutoRedirectGuard] 
+    canActivate: [AutoRedirectGuard]
   },
   { path: 'home', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule) },
   { path: 'beneficiary', loadChildren: () => import('./modules/beneficiary/beneficiary.module').then(m => m.BeneficiaryModule) },
-  { path: 'call-center', loadChildren: () => import('./modules/callCenter/call-center.module').then(m => m.CallCenterModule) },
-  { path: '**', redirectTo: 'auth/login' } 
+  { path: '**', redirectTo: 'auth/login' }
 ];
 
 @NgModule({

@@ -1,0 +1,107 @@
+<div class="home-container">
+
+  <section class="banner-container">
+    <app-header [addBackground]="false"></app-header>
+
+    <div class="banner">
+      <svg class="banner-svg" width="100%" height="100%" viewBox="0 0 100 62" preserveAspectRatio="none">
+        <defs>
+          <clipPath id="banner-clip">
+            <path d="M3 0 97 0C99 0 100 1 100 3L100 35C100 37 99 38 97 38L81 38C79 38 78 39 78 41L78 47C78 49 77 50 75 50L65 50C63 50 62 52 62 53L62 59C62 61 61 62 59 62L3 62C1 62 0 61 0 59L0 3C0 1 1 0 3 0Z"/>
+          </clipPath>
+        </defs>
+
+        <!-- Imágenes con recorte -->
+        <image *ngFor="let image of imagesBanner; let i = index"
+                [attr.href]="image"
+                x="0"
+                y="0"
+                width="100%"
+                height="100%"
+                preserveAspectRatio="none"
+                [class.active]="i === activeIndex"
+                clip-path="url(#banner-clip)"
+                class="banner-image"
+        />
+
+        <!-- Capa de color encima de la imagen -->
+        <rect width="100%" height="100%" fill="rgba(162, 245, 37, 0.6)" clip-path="url(#banner-clip)" />
+      </svg>
+
+      <svg class="img-progress-bar" xmlns="http://www.w3.org/2000/svg" width="34" height="313" viewBox="0 0 34 313">
+        <g id="control_slider" class="control-slider" data-name="control slider" transform="translate(-86 -244)">
+
+          <g id="Grupo_472" data-name="Grupo 472" transform="translate(49 166)" (click)="changeImage(0)">
+            <circle *ngIf="activeIndex === 0" id="Elipse_152" data-name="Elipse 152" cx="10" cy="10" r="10" transform="translate(44 85)" fill="#fff"/>
+            <g id="Elipse_153" data-name="Elipse 153" transform="translate(37 78)" fill="none" stroke="#fff" stroke-width="1">
+              <circle cx="17" cy="17" r="17" stroke="none"/>
+              <circle cx="17" cy="17" r="16.5" fill="none"/>
+            </g>
+          </g>
+
+          <g id="Grupo_471" data-name="Grupo 471" transform="translate(49 174)" (click)="changeImage(1)">
+            <circle *ngIf="activeIndex === 1" id="Elipse_151" data-name="Elipse 151" cx="10" cy="10" r="10" transform="translate(44 217)" fill="#fff"/>
+            <g id="Elipse_154" data-name="Elipse 154" transform="translate(37 210)" fill="none" stroke="#fff" stroke-width="1">
+              <circle cx="17" cy="17" r="17" stroke="none"/>
+              <circle cx="17" cy="17" r="16.5" fill="none"/>
+            </g>
+          </g>
+
+          <g id="Grupo_470" data-name="Grupo 470" transform="translate(49 166)" (click)="changeImage(2)">
+            <circle *ngIf="activeIndex === 2" id="Elipse_150" data-name="Elipse 150" cx="10" cy="10" r="10" transform="translate(44 364)" fill="#fff"/>
+            <g id="Elipse_155" data-name="Elipse 155" transform="translate(37 357)" fill="none" stroke="#fff" stroke-width="1">
+              <circle cx="17" cy="17" r="17" stroke="none"/>
+              <circle cx="17" cy="17" r="16.5" fill="none"/>
+            </g>
+          </g>
+
+          <line id="Línea_20" data-name="Línea 20" y2="279" transform="translate(103.5 261.5)" fill="none" stroke="#fff" stroke-width="1"/>
+        </g>
+      </svg>
+
+      <div class="inside-banner">
+        <div class="left-banner">
+          <h1 *ngIf="showText" [innerHTML]="textoBanner[activeIndex]" [ngClass]="{ 'texto-banner': showText }"></h1>
+        </div>
+
+        <div class="right-banner">
+          <div class="banner-image">
+            <img src="../../../../assets/images/Desktop/inicio-docs.png" alt="Cuidador en acción" />
+          </div>
+          <div class="auth-section">
+            <p>No tienes cuenta? <strong style="cursor: pointer;" (click)="navigateToRegister()"><br>Regístrate</strong></p>
+            <button class="login-button" (click)="navigateToLogin()">Iniciar sesión</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <app-footer-component />
+  </section>
+
+  <section class="plan-info-container">
+
+    <h2>Tu bienestar es nuestra prioridad. Descubre opciones que se adaptan a ti.</h2>
+
+    <div class="plan-container">
+      <app-plan-card
+      [imagen]="imgPlanFamiliar"
+      titulo="PLAN FAMILIAR"
+      precio="$480.000 COP/año"
+      descripcion="Cuota única anual Titular + 4 familiares"
+      botonTexto="Adquirir"
+      customStyle="margin: 0 8rem; transform: scale(1.75);"
+    />
+
+    <app-plan-card
+      [imagen]="imgPlanIndividual"
+      titulo="PLAN INDIVIDUAL"
+      precio="$250.000 COP/año"
+      descripcion="Cuota única anual"
+      botonTexto="Adquirir"
+      customStyle="margin: 0 8rem; transform: scale(1.75);"
+    />
+    </div>
+
+  </section>
+</div>

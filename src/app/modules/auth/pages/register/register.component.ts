@@ -58,6 +58,7 @@ export class RegisterComponent implements OnInit {
     password:
       'La contraseña debe contener al menos 8 caracteres, una mayúscula y un número.',
     confirmPassword: 'Las contraseñas no coinciden.',
+    base_64: 'Debe subir una imagen de perfil.'
   };
 
   constructor(
@@ -101,7 +102,7 @@ export class RegisterComponent implements OnInit {
         ],
         confirmPassword: ['', [Validators.required]],
         public_name: [''],
-        base_64: [''],
+        base_64: ['', Validators.required],
         privacy_policy: [false, Validators.requiredTrue],
       },
       { validator: this.passwordMatchValidator }
@@ -112,15 +113,16 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit() {
     this.loadDepartments();
+    console.log(this.departments);
 
   this.registerForm.get('password')?.valueChanges
-  .pipe(debounceTime(300), distinctUntilChanged()) 
+  .pipe(debounceTime(300), distinctUntilChanged())
   .subscribe(() => {
     this.registerForm.get('confirmPassword')?.updateValueAndValidity({ onlySelf: true });
   });
 
 this.registerForm.get('confirmPassword')?.valueChanges
-  .pipe(debounceTime(300), distinctUntilChanged()) 
+  .pipe(debounceTime(300), distinctUntilChanged())
   .subscribe(() => {
     this.registerForm.get('confirmPassword')?.updateValueAndValidity({ onlySelf: true });
   });
@@ -156,19 +158,19 @@ this.registerForm.get('confirmPassword')?.valueChanges
   passwordMatchValidator(formGroup: FormGroup): null {
     const password = formGroup.get('password')?.value;
     const confirmPassword = formGroup.get('confirmPassword');
-  
+
     if (!confirmPassword) return null;
-  
+
     if (confirmPassword.value && confirmPassword.value !== password) {
       confirmPassword.setErrors({ mismatch: true });
     } else {
       confirmPassword.setErrors(null);
     }
-  
+
     return null;
   }
-  
-  
+
+
 
   togglePasswordVisibility() {
     this.passwordVisible = !this.passwordVisible;

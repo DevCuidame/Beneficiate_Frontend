@@ -21,15 +21,15 @@ form {
 
 .custom-input input {
   background: transparent;
-  border: 1px solid var(--ion-color-dark); 
+  border: 1px solid var(--ion-color-dark);
   border-radius: 20px;
   padding: 10px;
-  transition: border-color 0.3s ease-in-out; 
-  outline: none; 
+  transition: border-color 0.3s ease-in-out;
+  outline: none;
 }
 
 .custom-input input:focus {
-  border-color: var(--ion-color-primary);   
+  border-color: var(--ion-color-primary);
 }
 
 
@@ -58,10 +58,20 @@ ion-item.show-pass {
   box-shadow: none !important;
   border: none !important;
   padding: 0 !important;
-  color: var(--ion-color-blue-dark) !important;
+
+  ion-label{
+    color: #192a54;
+
+    &:hover{
+      color:  #192a54;
+    }
+  }
+
+  &:hover{
+    background-color: white;
+  }
 }
 
-
 ion-checkbox {
-  --border-color: var(--ion-color-blue-dark) !important;
+  --border-color: #192a54  !important;
 }

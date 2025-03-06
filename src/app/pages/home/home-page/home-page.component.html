@@ -1,0 +1,59 @@
+<main>
+  <app-header [addBackground]="false"></app-header>
+
+  <div class="beneficiarios-container">
+    <div class="beneficiarios-nav">
+      <button
+        class="btn-nav"
+        [class.selected]="selectedButton === 'beneficiarios'"
+        (click)="selectButton('beneficiarios')">
+        <p>Beneficiarios</p>
+      </button>
+
+      <button
+        class="btn-nav"
+        [class.selected]="selectedButton === 'detalles'"
+        (click)="selectButton('detalles')">
+        <p>Detalles del plan</p>
+      </button>
+
+      <button
+        class="btn-nav"
+        [class.selected]="selectedButton === 'planes'"
+        (click)="selectButton('planes')">
+        <p>Planes</p>
+      </button>
+    </div>
+
+    <div class="paneles-container">
+      <div class="beneficiarios-panel" *ngIf="selectedPanel === 'beneficiarios'">
+        <app-beneficiary-card ></app-beneficiary-card>
+      </div>
+
+      <div class="detalles-panel" *ngIf="selectedPanel === 'detalles'">
+
+
+      </div>
+
+      <div class="planes-panel" *ngIf="selectedPanel === 'planes'">
+        <h2>Tu bienestar es nuestra prioridad. Descubre opciones que se adaptan a ti.</h2>
+
+        <div class="plan-container">
+          <app-plan-card
+            *ngFor="let plan of plans"
+            [selectedPlanId]="plan.id"
+            [imagen]="imgPlanFamiliar"
+            [titulo]="'Plan ' + plan.name"
+            [precio]="plan.price + ' COP/año'"
+            [descripcion]="plan.duration_days.toString() + ' Dias'"
+            [positionSide]="plan.name === 'Individual' ? { left: '50%' } : { right: '50%' }"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-info-user></app-info-user>
+
+  <app-footer-component></app-footer-component>
+</main>

@@ -1,0 +1,27 @@
+<div class="card-info">
+  <div *ngIf="!isEditing">
+    <!-- Modo visualización -->
+    <h3 class="f-big">{{ title }}</h3>
+    <h4 class="f-small">{{ info }}</h4>
+    <h4 class="f-small">{{ optionalInfo }}</h4>
+  </div>
+
+  <div *ngIf="isEditing">
+    <!-- Modo edición -->
+    <h3 class="f-big">
+      <input [(ngModel)]="title" /> <!-- Permitimos editar el título -->
+    </h3>
+    <h4 class="f-small">
+      <input [(ngModel)]="info" /> <!-- Permitimos editar la info principal -->
+    </h4>
+    <h4 class="f-small">
+      <input [(ngModel)]="optionalInfo" /> <!-- Permitimos editar la info adicional -->
+    </h4>
+    <button class="btn btn-cancel" (click)="toggleEdit()">
+      <fa-icon [icon]="faTimes"></fa-icon>
+    </button>
+    <button class="btn btn-save" type="submit">
+      <fa-icon [icon]="faSave"></fa-icon>
+    </button>
+  </div>
+</div>

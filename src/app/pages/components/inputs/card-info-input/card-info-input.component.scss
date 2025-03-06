@@ -1,0 +1,60 @@
+.card-info {
+  background-color: white;
+  height: 8rem;
+  width: 15rem;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  text-align: end;
+  align-self: flex-end;
+  position: relative;
+  border: 1px solid var(--ion-color-primary);
+  border-radius: 15px;
+  box-shadow: 5px 5px 5px 0px rgba(78,170,3,0.7);
+
+  .btn {
+    height: 1.5rem;
+    width: 1.5rem;
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    border-radius: 5px;
+  }
+
+  .btn-edit {
+    background-color: var(--ion-color-primary);
+  }
+
+  .btn-cancel {
+    background-color: var(--ion-color-secondary);
+  }
+
+  .btn-save {
+    background-color: var(--ion-color-tertiary);
+    left: 25px;
+  }
+
+  input {
+    background: transparent;
+    color: var(--ion-color-primary);
+    margin: 2px 0;
+    border: none;
+    border-bottom: 2px solid var(--ion-color-primary);
+  }
+
+  .f-big, .f-small {
+    color: var(--ion-color-dark);
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .f-big {
+    font-weight: bold;
+  }
+
+  .f-small {
+    font-weight: 300;
+  }
+}
+

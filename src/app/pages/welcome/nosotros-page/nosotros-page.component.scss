@@ -1,0 +1,115 @@
+.nosotros-page {
+  background-color: #fff;
+  overflow-y: scroll;
+
+  .info-section{
+    width: 100%;
+    height: 100vh;
+    padding: 12vh 10%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+    .logo {
+      width: 20vw;
+      margin-bottom: 5%;
+    }
+
+    .info-contain {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+
+      .banner {
+        height: 45vh;
+        width: 40vw;
+      }
+
+      .text {
+        color: var(--ion-color-primary);
+        width: 50%;
+        margin-left: 3vw;
+        font-size: 1.5rem;
+        line-height: 4vh;
+        text-align: start;
+      }
+    }
+  }
+
+  .card-section {
+    width: 100%;
+    height: 100vh;
+    padding: 12vh 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    &::after {
+      content: "a";
+      background-color: var(--ion-color-secondary);
+      color: var(--ion-color-secondary);
+      height: 35%;
+      width: 100%;
+      position: absolute;
+      top: 32%;
+    }
+
+    .card-container {
+      width: 85%;
+      padding: 5%;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 25px;
+
+      .card {
+        max-width: calc(25% - 15px);
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        position: relative;
+        flex: 1 1 calc(25% - 25px);
+        box-sizing: border-box;
+
+        /* Fondo de la tarjeta (imagen de fondo) */
+        .bg {
+          height: 100%;
+          width: 100%;
+          border-radius: 50px;
+          z-index: 1;
+          object-fit: cover;
+        }
+
+        /* Icono dentro de la tarjeta */
+        .icono {
+          position: absolute;
+          top: 25px;
+          right: 25px;
+          transform: scale(1.25);
+          z-index: 2;
+        }
+
+        /* Texto dentro de la tarjeta */
+        .text {
+          color: white;
+          width: 80%;
+          position: absolute;
+          bottom: 5px;
+          font-size: 1.5rem;
+          font-weight: 700;
+          text-align: center;
+          z-index: 3;
+          padding: 0 10px;
+        }
+
+        .change-c {
+          color: var(--ion-color-primary);
+        }
+      }
+    }
+  }
+}

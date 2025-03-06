@@ -15,9 +15,9 @@ export class CustomButtonComponent {
   @Input() disabled: boolean = false;
   @Input() type: 'button' | 'submit' = 'button';
   @Input() color: string = 'var(--ion-color-primary)';
-  @Input() textColor: string = 'var(--ion-color-light)';  
-  @Input() backgroundImage: string = ''; 
-  @Input() background: string = ''; 
+  @Input() textColor: string = 'var(--ion-color-light)';
+  @Input() backgroundImage: string = '';
+  @Input() background: string = '';
 
   @Input() routerLink?: string;
   @Input() fontSize: string = '1.25rem';

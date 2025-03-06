@@ -1,0 +1,84 @@
+<main>
+  <app-header [addBackground]="false"></app-header>
+
+  <div class="schedule-container">
+    <section class="register-schedule">
+
+      <div [ngClass]="isEditing ? 'schedule-card-edit' : 'schedule-card'">
+
+        <div class="top-side">
+          <img src="../../../../assets/images/Desktop/home/doc-card-bg.jpg" alt="doc-bg">
+
+          <div class="doc-name">
+            <h2 class="f-big">Medicina General</h2>
+            <h4 class="f-small">Dr. Miguel Ojeda</h4>
+          </div>
+
+          <ion-icon
+            name="close"
+            *ngIf="isEditing"
+            style="font-size: 30px; color: rgb(255, 104, 50); margin-left: 25px; cursor: pointer;"
+            (click)="toggleEdit()"
+          >
+          </ion-icon>
+        </div>
+
+        <div class="doc-info">
+          <div class="appointment-date">
+            <i>
+              <ion-icon name="time-outline" style="font-size: 50px;"></ion-icon>
+            </i>
+            <h4 class="date f-small"> Viernes, 13 abril de 2025 01:30 p.m.</h4>
+          </div>
+
+          <!-- Mostrar solo cuando no esté en modo de edición -->
+          <div class="buttons" *ngIf="!isEditing">
+            <button class="edit-date" (click)="toggleEdit()">
+              <h3 class="f-big">Editar</h3>
+            </button>
+          </div>
+
+          <!-- Mostrar solo cuando esté en modo de edición -->
+          <div class="buttons" *ngIf="isEditing">
+            <button class="btn cancel-date">
+              <h3 class="f-big">Cancelar</h3>
+            </button>
+            <button class="btn reprogram-date" (click)="toggleCard()">
+              <h3 class="f-big">Reprorgamar</h3>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <h5 class="msg-end">No tienes más citas programadas</h5>
+
+    </section>
+
+    <section class="doc-schedule">
+        <h4 class="msg-start">Profesionales con agenda disponible</h4>
+
+        <div class="doc-card">
+
+          <img src="../../../../assets/images/Desktop/home/doc-card-bg.jpg" alt="doc-bg">
+
+          <div class="doc-info">
+            <h3 class="f-big">Dr. Miguel Ojeda</h3>
+            <h4 class="f-small">Cardiólogo</h4>
+            <h3 class="f-big f-green">Agenda disponible</h3>
+
+            <button class="get-date" (click)="toggleCard()"><h3 class="f-big">Solicitar cita</h3></button>
+          </div>
+
+        </div>
+
+    </section>
+  </div>
+
+  <div class="do-date-container" [ngClass]="{ 'disable': isDisabled }" (click)="closeCard()">
+    <app-do-date [phoneNumber]="phoneNumber" [message]="message"></app-do-date>
+  </div>
+
+  <app-footer-component></app-footer-component>
+</main>

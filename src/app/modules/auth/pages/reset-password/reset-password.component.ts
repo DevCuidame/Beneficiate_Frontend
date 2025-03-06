@@ -1,5 +1,5 @@
 // src/app/modules/auth/pages/reset-password/reset-password.page.ts
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation  } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -11,6 +11,7 @@ import {
   LoadingController,
   IonicModule,
 } from '@ionic/angular';
+import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { CustomButtonComponent } from 'src/app/shared/components/custom-button/custom-button.component';
 
@@ -26,6 +27,7 @@ import { CustomButtonComponent } from 'src/app/shared/components/custom-button/c
   ],
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class ResetPasswordComponent {
   public buttonBackground: string = 'assets/background/primary_button_bg.svg';
