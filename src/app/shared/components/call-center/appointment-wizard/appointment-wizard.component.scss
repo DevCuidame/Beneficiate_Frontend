@@ -397,3 +397,136 @@ app-health-professional-card.selected {
     }
   }
 }
+
+/* Add these styles to your appointment-wizard.component.scss file */
+
+.search-button {
+  padding: 8px 12px;
+  background-color: var(--ion-color-primary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  transition: background-color 0.3s;
+  
+  i {
+    margin-right: 4px;
+  }
+  
+  &:hover {
+    background-color: var(--ion-color-primary-shade);
+  }
+  
+  &:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+}
+
+/* Make sure inputs look consistent */
+.form-group {
+  input, select {
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    
+    &:focus {
+      border-color: var(--ion-color-primary);
+      outline: none;
+    }
+  }
+  
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+}
+
+/* Add some subtle loading indicator styles */
+.loading-indicator {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-top-color: var(--ion-color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-left: 10px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+
+/* Add these styles to your appointment-wizard.component.scss file */
+
+.search-row {
+  align-items: center;
+}
+
+.search-status {
+  margin-top: 8px;
+  min-height: 24px;
+  
+  .status-message {
+    display: flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-bottom: 8px;
+    
+    i {
+      margin-right: 8px;
+    }
+    
+    &.loading {
+      background-color: #e1f5fe;
+      color: #0288d1;
+    }
+    
+    &.not-found {
+      background-color: #fff3e0;
+      color: #e65100;
+    }
+    
+    &.success {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+    }
+    
+    &.error {
+      background-color: #ffebee;
+      color: #c62828;
+    }
+  }
+}
+
+/* Make sure fields are read-only when results are displayed */
+.form-group.user-data-fields {
+  &.found-user {
+    input {
+      background-color: #f9f9f9;
+      border-color: #e0e0e0;
+    }
+  }
+}
+
+/* Apply transition effects */
+.form-transition {
+  transition: all 0.3s ease;
+  
+  &.highlight {
+    background-color: rgba(var(--ion-color-primary-rgb), 0.1);
+    padding: 10px;
+    border-radius: 4px;
+    border-left: 3px solid var(--ion-color-primary);
+  }
+}

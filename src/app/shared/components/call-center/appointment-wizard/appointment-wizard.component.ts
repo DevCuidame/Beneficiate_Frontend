@@ -1,3 +1,4 @@
+import { BeneficiaryImage, Image, UserImage } from './../../../../core/interfaces/user.interface';
 import { HealthProfessionalCardComponent } from 'src/app/shared/components/health-professional-card/health-professional-card.component';
 import { CommonModule } from '@angular/common';
 import {
@@ -21,6 +22,7 @@ import { MedicalProfessionalService } from 'src/app/core/services/medicalProfess
 import { AppointmentService } from 'src/app/core/services/appointment.service';
 import { MedicalProfessional } from 'src/app/core/interfaces/medicalProfessional.interface';
 import { MedicalSpecialty } from 'src/app/core/interfaces/medicalSpecialty.interface';
+import { UserService } from 'src/app/modules/auth/services/user.service';
 
 @Component({
   selector: 'app-appointment-wizard',
@@ -50,10 +52,21 @@ export class AppointmentWizardComponent implements OnInit {
     { day: string; date: string; hours: string[] }[]
   >([]);
 
+  // Add to your component class:
+public searchState = {
+  loading: false,
+  notFound: false,
+  success: false,
+  error: false
+};
+
+debounceIdentificationSearch: any;
+
   constructor(
     private medicalSpecialtyService: MedicalSpecialtyService,
     private medicalProfessionalService: MedicalProfessionalService,
-    private appointmentService: AppointmentService
+    private appointmentService: AppointmentService,
+    private userService: UserService
   ) {}
 
   public specialties = computed(() => {
@@ -98,7 +111,7 @@ export class AppointmentWizardComponent implements OnInit {
     is_for_beneficiary: false,
     first_time: false,
     control: false,
-    userData: {} as User | Beneficiary,
+    userData: {} as any,
     professionalData: {} as MedicalProfessional,
     specialtyData: {} as MedicalSpecialty,
   };
@@ -392,4 +405,151 @@ export class AppointmentWizardComponent implements OnInit {
     }
     return '';
   }
+  
+  // Fix for the user search functionality with proper type handling
+
+searchUserByIdentification() {
+  const idType = this.appointment.userData.identification_type;
+  const idNumber = this.appointment.userData.identification_number;
+  
+  // Reset search state
+  this.searchState = {
+    loading: false,
+    notFound: false,
+    success: false,
+    error: false
+  };
+  
+  if (!idType || !idNumber) {
+    return;
+  }
+  
+  // Set loading state
+  this.searchState.loading = true;
+  
+  this.userService.findByIdentification(idType, idNumber).subscribe(
+    (userData) => {
+      this.searchState.loading = false;
+      
+      if (userData) {
+        // Create a properly typed copy of the userData
+        // Check if the returned userData is a User or Beneficiary and handle accordingly
+        
+        if ('user_id' in userData) {
+          // It's a Beneficiary
+          this.appointment.userData = {
+            ...this.appointment.userData,
+            first_name: userData.first_name || '',
+            last_name: userData.last_name || '',
+            phone: userData.phone || '',
+            email: userData.email || '',
+            // Handle the image properly based on its type
+            image: userData.image ? {
+              id: userData.image.id || 0,
+              public_name: userData.image.public_name || '',
+              private_name: userData.image.private_name || '',
+              image_path: userData.image.image_path || '',
+              uploaded_at: userData.image.uploaded_at || '',
+              // beneficiary_id: (userData.image as BeneficiaryImage).beneficiary_id || ''
+            } as BeneficiaryImage : {} as BeneficiaryImage
+          };
+        } else {
+          // It's a User
+          this.appointment.userData = {
+            ...this.appointment.userData,
+            first_name: userData.first_name || '',
+            last_name: userData.last_name || '',
+            phone: userData.phone || '',
+            email: userData.email || '',
+            // Handle the image properly based on its type
+            image: userData.image ? {
+              id: userData.image.id || 0,
+              public_name: userData.image.public_name || '',
+              private_name: userData.image.private_name || '',
+              image_path: userData.image.image_path || '',
+              uploaded_at: userData.image.uploaded_at || '',
+              user_id: (userData.image as UserImage).user_id || ''
+            } as UserImage : {} as UserImage
+          };
+        }
+        
+        // Set success state
+        this.searchState.success = true;
+        
+        // Reset success state after 3 seconds
+        setTimeout(() => {
+          this.searchState.success = false;
+        }, 3000);
+      } else {
+        // Set not found state
+        this.searchState.notFound = true;
+        
+        // Clear user fields if no user is found
+        // Create an empty user object with the correct structure
+        const isUserBeneficiary = 'user_id' in this.appointment.userData;
+        
+        if (isUserBeneficiary) {
+          // It's a Beneficiary
+          this.appointment.userData = {
+            ...this.appointment.userData,
+            first_name: '',
+            last_name: '',
+            phone: '',
+            email: '',
+            image: {
+              id: 0,
+              public_name: '',
+              private_name: '',
+              image_path: '',
+              uploaded_at: '',
+              beneficiary_id: ''
+            } as BeneficiaryImage
+          };
+        } else {
+          // It's a User
+          this.appointment.userData = {
+            ...this.appointment.userData,
+            first_name: '',
+            last_name: '',
+            phone: '',
+            email: '',
+            image: {
+              id: 0,
+              public_name: '',
+              private_name: '',
+              image_path: '',
+              uploaded_at: '',
+              user_id: ''
+            } as UserImage
+          };
+        }
+      }
+    },
+    (error) => {
+      // Set error state
+      this.searchState.loading = false;
+      this.searchState.error = true;
+      console.error('Error al buscar usuario:', error);
+    }
+  );
 }
+  
+  onIdentificationNumberChange() {
+    // Clear any existing timeout
+    if (this.debounceIdentificationSearch) {
+      clearTimeout(this.debounceIdentificationSearch);
+    }
+    
+    // Set a new timeout
+    this.debounceIdentificationSearch = setTimeout(() => {
+      this.searchUserByIdentification();
+    }, 500); // 500ms debounce time
+  }
+  
+  getFullName(): string {
+    const firstName = this.appointment.userData.first_name || '';
+    const lastName = this.appointment.userData.last_name || '';
+    return firstName && lastName ? `${firstName} ${lastName}` : '';
+  }
+}
+                        

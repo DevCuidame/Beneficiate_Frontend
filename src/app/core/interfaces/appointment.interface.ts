@@ -19,7 +19,7 @@ export interface Appointment {
   is_for_beneficiary: boolean;
   first_time: boolean;
   control: boolean;
-  userData: User | Beneficiary; 
+  userData: any; 
   specialtyData: MedicalSpecialty;
   professionalData: MedicalProfessional;
 }

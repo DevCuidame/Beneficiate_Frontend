@@ -25,6 +25,10 @@
           <div class="plan-name">
             {{ user?.plan?.name }}
           </div>
+          }@else {
+          <div class="plan-name" style="color: var(--ion-color-dark)">
+            No tienes un plan
+          </div>
           }
         </div>
       </div>
@@ -85,8 +89,7 @@
     <div class="buttons-container">
       <div
         class="selected-indicator"
-        [ngStyle]="{ 'border-radius': selectedIndicatorBorder }"
-        id="selectedIndicator"
+        [ngStyle]="{ 'border-radius': selectedIndicatorBorder, 'left': selectedButtonText === 'Beneficiarios' ? '0' : '50%' }"
       >
         <p>{{ selectedButtonText }}</p>
       </div>
@@ -94,16 +97,21 @@
         <div
           class="button"
           id="firstOption"
+          [ngClass]="{'active': selectedButtonText === 'Beneficiarios'}"
           (click)="selectButton('Beneficiarios')"
         >
           <span>Beneficiarios</span>
         </div>
-        <div class="button" id="secondOption" (click)="selectButton('Agenda')">
+        <div 
+          class="button" 
+          id="secondOption" 
+          [ngClass]="{'active': selectedButtonText === 'Agenda'}"
+          (click)="selectButton('Agenda')"
+        >
           <span>Agenda</span>
         </div>
       </div>
     </div>
-
     <!-- Beneficiary Cards -->
 
     @if(user.plan){

@@ -59,7 +59,7 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('token');
-    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('refresh-token');
     localStorage.removeItem('user');
     localStorage.removeItem('beneficiaries');
     localStorage.removeItem('activeBeneficiary');
