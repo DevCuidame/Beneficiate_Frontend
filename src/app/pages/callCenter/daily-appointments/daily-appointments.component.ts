@@ -6,7 +6,7 @@ import { SearchBarComponent } from 'src/app/shared/components/call-center/search
 
 @Component({
   selector: 'app-daily-appointments',
-  imports: [FontAwesomeModule, CommonModule, SearchBarComponent, PendingCardComponent],
+  imports: [FontAwesomeModule, CommonModule, SearchBarComponent],
 
   templateUrl: './daily-appointments.component.html',
   styleUrls: ['./daily-appointments.component.scss'],

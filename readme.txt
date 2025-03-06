@@ -43,3 +43,6 @@ ng generate component modules/beneficiary/components/health-condition-form
 ng generate component modules/beneficiary/components/medicaments_allergies-form
 ng generate component modules/beneficiary/components/medical_history-form
 ng generate component modules/beneficiary/components/vacinations-form
+
+
+
