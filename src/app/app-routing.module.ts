@@ -18,6 +18,10 @@ const routes: Routes = [
     loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule),
     canActivate: [AutoRedirectGuard]
   },
+  {
+    path: 'call-center',
+    loadChildren: () => import('./modules/callCenter/call-center.module').then(m => m.CallCenterModule),
+  },
   { path: 'home', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule) },
   { path: 'beneficiary', loadChildren: () => import('./modules/beneficiary/beneficiary.module').then(m => m.BeneficiaryModule) },
   { path: '**', redirectTo: 'auth/login' }

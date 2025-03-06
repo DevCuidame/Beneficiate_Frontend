@@ -80,7 +80,11 @@ export class LoginComponent {
         async (response) => {
           await loading.dismiss();
           setTimeout(() => {
-            this.router.navigateByUrl('/home-desktop');
+            if (response.data.useragentActive) {
+              this.router.navigateByUrl('/home-desktop');
+            } else {
+              this.router.navigateByUrl('/call-center/dash/assigment');
+            }
           }, 100);
         },
         async (error) => {
