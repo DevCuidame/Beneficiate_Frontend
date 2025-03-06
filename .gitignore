@@ -12,8 +12,8 @@ $RECYCLE.BIN/
 *.log
 log.txt
 
-.android
-.resources
+/android
+/resources
 
 /.sourcemaps
 /.versions

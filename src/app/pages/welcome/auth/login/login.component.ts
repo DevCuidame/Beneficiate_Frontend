@@ -85,6 +85,8 @@ export class LoginComponent {
               this.router.navigateByUrl('/home-desktop');
             } else {
               this.router.navigateByUrl('/call-center/dash/assigment');
+            } else {
+              this.router.navigateByUrl('/home-desktop');
             }
           }, 100);
         },

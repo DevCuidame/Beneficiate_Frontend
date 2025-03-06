@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CoreModule } from './core/core.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FormsModule } from '@angular/forms';
+import { BrowserRedirectGuard } from './core/guards/redirect.guard';
 
 @NgModule({
   declarations: [AppComponent],
@@ -17,11 +18,15 @@ import { FormsModule } from '@angular/forms';
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
+    HttpClientModule, // Añadí HttpClientModule aquí ya que lo estás importando
     CoreModule,
     FontAwesomeModule,
     FormsModule,
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    BrowserRedirectGuard // Movido a providers, ya que es un servicio
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
