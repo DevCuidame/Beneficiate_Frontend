@@ -1,5 +1,5 @@
 <main>
-  <app-header [addBackground]="true"></app-header>
+  <app-header [addBackground]="false"></app-header>
 
   <div class="beneficiarios-container">
     <div class="beneficiarios-nav">
@@ -40,20 +40,14 @@
 
         <div class="plan-container">
           <app-plan-card
-          [imagen]="imgPlanFamiliar"
-          titulo="PLAN FAMILIAR"
-          precio="$480.000 COP/año"
-          descripcion="Cuota única anual Titular + 4 familiares"
-          botonTexto="Adquirir"
-        />
-
-        <app-plan-card
-          [imagen]="imgPlanIndividual"
-          titulo="PLAN INDIVIDUAL"
-          precio="$250.000 COP/año"
-          descripcion="Cuota única anual"
-          botonTexto="Adquirir"
-        />
+            *ngFor="let plan of plans"
+            [selectedPlanId]="plan.id"
+            [imagen]="imgPlanFamiliar"
+            [titulo]="'Plan ' + plan.name"
+            [precio]="plan.price + ' COP/año'"
+            [descripcion]="plan.duration_days.toString() + ' Dias'"
+            [positionSide]="plan.name === 'Individual' ? { left: '50%' } : { right: '50%' }"
+          />
         </div>
       </div>
     </div>

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { IonicModule, AlertController, NavController } from '@ionic/angular';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
 import { environment } from 'src/environments/environment';
-import { BeneficiaryService } from 'src/app/modules/auth/services/beneficiary.service';
+import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
 
 @Component({
   selector: 'app-beneficiary-card',
@@ -13,6 +13,8 @@ import { BeneficiaryService } from 'src/app/modules/auth/services/beneficiary.se
 })
 export class BeneficiaryCardComponent implements OnInit {
   public beneficiaries: Beneficiary[] = [];
+  public activeBeneficiary: Beneficiary | null = null;
+
   public environment = environment.url;
   public beneficiaryCount: number = 0;
   public maxBeneficiaries: number = 5;

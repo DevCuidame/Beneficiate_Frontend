@@ -106,50 +106,49 @@
       </div>
     </div>
 
-    <!--TODO: Cambiar el contenido del div.item por los que aparecen en el mockup-->
     <div class="health-info">
       <div class="parent-column">
-        <!-- Identity Card -->
+        <!-- Blood Type -->
         <div class="item">
           <div class="item-icon icon-1">
-            <fa-icon [icon]="faAddressCard"></fa-icon>
+            <fa-icon [icon]="faHeart"></fa-icon>
           </div>
           <div class="item-info">
-            <p>{{ user?.identification_number || 'No aplica' }}</p>
-            <p>{{ user?.identification_type || 'No aplica' }}</p>
+            <p>{{  'No aplica' }}</p>
+            <p>Tipo de sangre</p>
           </div>
         </div>
         <!-- Address -->
         <div class="item">
           <div class="item-icon icon-5">
-            <fa-icon [icon]="faHouse"></fa-icon>
+            <fa-icon [icon]="faHospital"></fa-icon>
           </div>
           <div class="item-info">
-            <p>{{ user?.address || 'No aplica' }}</p>
-            <p>Dirección</p>
+            <p>{{ 'No aplica' }}</p>
+            <p>EPS</p>
           </div>
         </div>
       </div>
 
       <div class="parent-column">
-        <!-- Gender -->
+        <!-- Work Risk Insurance -->
         <div class="item">
           <div class="item-icon icon-4">
-            <fa-icon [icon]="faPersonHalfDress"></fa-icon>
+            <fa-icon [icon]="faHospital"></fa-icon>
           </div>
           <div class="item-info">
-            <p>{{ user?.gender || 'No aplica' }}</p>
-            <p>Género</p>
+            <p>{{ 'No aplica' }}</p>
+            <p>ARL</p>
           </div>
         </div>
-        <!-- Happy Birthday -->
+        <!-- Funeral Insurance -->
         <div class="item">
           <div class="item-icon icon-3">
-            <fa-icon [icon]="faCakeCandles"></fa-icon>
+            <fa-icon [icon]="faHospital"></fa-icon>
           </div>
           <div class="item-info">
-            <p>{{ user?.birth_date || 'No aplica' }}</p>
-            <p>Fecha Nacimiento</p>
+            <p>{{ 'No aplica' }}</p>
+            <p>Seguro funerario</p>
           </div>
         </div>
       </div>

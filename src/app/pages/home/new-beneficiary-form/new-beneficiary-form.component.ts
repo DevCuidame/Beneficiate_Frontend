@@ -15,12 +15,12 @@ import {
   NavController,
 } from '@ionic/angular';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
-import { BeneficiaryService } from 'src/app/modules/auth/services/beneficiary.service';
+import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
 import { debounceTime } from 'rxjs';
 import { TabBarComponent } from 'src/app/shared/components/tab-bar/tab-bar.component';
 import { CustomButtonComponent } from 'src/app/shared/components/custom-button/custom-button.component';
 import { CustomInputComponent } from '../../components/inputs/custom-input/custom-input.component';
-import { HeaderComponent } from '../../components/header/header.component';
+import { HeaderComponent } from '../../components/home/header/header.component';
 import { LocationService } from '../../../modules/auth/services/location.service';
 
 @Component({

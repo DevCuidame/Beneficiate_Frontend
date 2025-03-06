@@ -4,102 +4,157 @@
   <div class="beneficiary-info-container">
     <div class="cards-container">
 
+
+      <!-- ---------- Card para Enfermedades, Condiciones y Distintivos ---------- -->
       <div class="card">
-        <h3 class="title">Enfermedades</h3>
-        <div class="scroll-x">
-          <app-card-info-input
-            [title]="'Tuberculosis'"
-            [info]="'Descripción o detalle 1'"
-            [optionalInfo]="'Información opcional 1'"
-          ></app-card-info-input>
+        <button class="btn btn-edit" (click)="toggleEdit('addHealthCondition')">
+          <fa-icon [icon]="addHealthCondition? faTimes : faPen"></fa-icon>
+        </button>
+        @if (addHealthCondition == false) {
+          <h3 class="title">Enfermedades</h3>
+          <div class="scroll-x">
+            @if (activeBeneficiary?.diseases?.length ?? 0 > 0) { @for (item of
+              activeBeneficiary?.diseases; track item){
+              <app-card-info-input
+                [title]="item.disease"
+              ></app-card-info-input>
+            } }@else {
+              <p style="text-align: start; width: 100%">
+                No hay enfermedades registradas
+              </p>
+            }
+          </div>
 
-          <app-card-info-input
-            [title]="'Tuberculosis'"
-            [info]="'Descripción o detalle 2'"
-            [optionalInfo]="'Información opcional 2'"
-          ></app-card-info-input>
+          <h3 class="title">Condiciones</h3>
+          <div class="scroll-x">
+            @if(activeBeneficiary?.disabilities?.length ?? 0 > 0){ @for (item of
+              activeBeneficiary?.disabilities; track item){
+              <app-card-info-input
+                [title]="item.name?.toString() || ' '"
+              ></app-card-info-input>
+            } }@else {
+              <p>No hay condiciones registradas</p>
+            }
+          </div>
 
-          <app-card-info-input
-            [title]="'Tuberculosis'"
-            [info]="'Descripción o detalle 3'"
-            [optionalInfo]="'Información opcional 3'"
-          ></app-card-info-input>
-
-          <app-card-info-input
-            [title]="'Tuberculosis'"
-            [info]="'Descripción o detalle 4'"
-            [optionalInfo]="'Información opcional 4'"
-          ></app-card-info-input>
-        </div>
-
-        <h3 class="title">Condiciones</h3>
-        <div class="scroll-x">
-          <app-card-info-input
-            [title]="'Tetrabenazina'"
-            [info]="'Bayer'"
-            [optionalInfo]="'20 mg 24 horas'"
-          ></app-card-info-input>
-        </div>
-
-        <h3 class="title">Distintivos</h3>
-        <div class="scroll-x">
-          <app-card-info-input
-            [title]="'Tetrabenazina'"
-            [info]="'Bayer'"
-            [optionalInfo]="'20 mg 24 horas'"
-          ></app-card-info-input>
-        </div>
+          <h3 class="title">Distintivos</h3>
+          <div class="scroll-x">
+            @if(activeBeneficiary?.distinctives?.length ?? 0 > 0){ @for (item of
+              activeBeneficiary?.distinctives; track item){
+              <app-card-info-input
+                [title]="item.description?.toString() || ' '"
+              ></app-card-info-input>
+            } }@else {
+              <p>No hay distintivos registrados</p>
+            }
+          </div>
+        }@else {
+          <app-health-condition-form></app-health-condition-form>
+        }
       </div>
 
+      <!-- ----------------------- Card para Antecedentes ----------------------- -->
       <div class="card">
-        <h3 class="title">Antecedentes Personales</h3>
-        <div class="scroll-x">
-          <app-card-info-input
-            [title]="'Patologico'"
-            [info]="'1 de febrero de 2024'"
-            [optionalInfo]="'Detalles opcionales si los hubiera'"
-          ></app-card-info-input>
-        </div>
+        <button class="btn btn-edit" (click)="toggleEdit('addMedicalHistory')">
+          <fa-icon [icon]="addMedicalHistory? faTimes : faPen"></fa-icon>
+        </button>
+        @if (addMedicalHistory == false) {
+          <h3 class="title">Antecedentes Personales</h3>
+          <div class="scroll-x">
+            @if (activeBeneficiary?.medical_history?.length ?? 0 > 0) { @for (item of
+              activeBeneficiary?.medical_history; track item){
+            <app-card-info-input
+              [title]="item.history_type"
+              [info]="item.history_date?.toString() || 'Fecha no disponible'"
+            ></app-card-info-input>
+          } }@else {
+            <p style="text-align: start; width: 100%">
+              No hay antecedentes personales registrados.
+            </p>
+          }
+          </div>
 
-        <h3 class="title">Antecedentes Familiares</h3>
-        <div class="scroll-x">
-          <app-card-info-input
-            [title]="'Patologico'"
-            [info]="'Mamá'"
-            [optionalInfo]="'Diabetes'"
-          ></app-card-info-input>
-        </div>
+          <h3 class="title">Antecedentes Familiares</h3>
+          <div class="scroll-x">
+            @if(activeBeneficiary?.family_history?.length ?? 0 > 0){ @for (item of
+              activeBeneficiary?.family_history; track item){
+              <app-card-info-input
+                [title]="getLabel(historyTypeOptions, item.history_type)"
+                [info]=" getLabel(relativeOptions, item.relationship) "
+                [optionalInfo]="item.history_date?.toString() || 'Fecha no disponible'"
+              ></app-card-info-input>
+            } }@else {
+              <p>No hay antecedentes familiares registrados.</p>
+            }
+          </div>
+        }@else {
+          <app-medical-history-form></app-medical-history-form>
+        }
       </div>
 
+      <!-- ------------------ Card para Medicamentos y Alergias ------------------ -->
       <div class="card">
-        <h3 class="title">Medicamentos</h3>
-        <div class="scroll-x">
-          <app-card-info-input
-            [title]="'Tetrabenazina'"
-            [info]="'Bayer'"
-            [optionalInfo]="'20 mg 24 horas'"
-          ></app-card-info-input>
-        </div>
+        <button class="btn btn-edit" (click)="toggleEdit('addAllergies')">
+          <fa-icon [icon]="addAllergies? faTimes : faPen"></fa-icon>
+        </button>
+        @if (addAllergies == false) {
+          <h3 class="title">Medicamentos</h3>
+          <div class="scroll-x">
+            @if (activeBeneficiary?.medications?.length ?? 0 > 0) { @for (item of
+              activeBeneficiary?.medications; track item){
+              <app-card-info-input
+                [title]="item.medication"
+                [info]="item.laboratory"
+                [optionalInfo]="item.dosage"
+              ></app-card-info-input>
+            } }@else {
+              <p style="text-align: start; width: 100%">
+                No hay medicamentos registrados.
+              </p>
+            }
+          </div>
 
-        <h3 class="title">Alergias</h3>
-        <div class="scroll-x">
-          <app-card-info-input
-            [title]="'Alimentos'"
-            [info]="'Camarones'"
-            [optionalInfo]="'Detalles opcionales si los hubiera'"
-          ></app-card-info-input>
-        </div>
+          <h3 class="title">Alergias</h3>
+          <div class="scroll-x">
+            @if(activeBeneficiary?.allergies?.length ?? 0 > 0){ @for (item of
+              activeBeneficiary?.allergies; track item){
+              <app-card-info-input
+                [title]="item.allergy_type"
+                [info]="item.description"
+                [optionalInfo]="severityText(item.severity)"
+              ></app-card-info-input>
+            } }@else {
+              <p>No hay alergias registradas.</p>
+            }
+          </div>
+        }@else {
+          <app-medicaments-allergies-form></app-medicaments-allergies-form>
+        }
       </div>
 
+      <!-- ----------------------- Card para Vacunas ----------------------- -->
       <div class="card">
-        <h3 class="title">Vacunas</h3>
-        <div class="scroll-x">
-          <app-card-info-input
-            [title]="'Covid'"
-            [info]="'4 dosis'"
-            [optionalInfo]="'Detalles opcionales si los hubiera'"
-          ></app-card-info-input>
-        </div>
+        <button class="btn btn-edit" (click)="toggleEdit('addVacination')">
+          <fa-icon [icon]="addVacination? faTimes : faPen"></fa-icon>
+        </button>
+        @if (addVacination == false) {
+          <h3 class="title">Vacunas</h3>
+          <div class="scroll-x">
+            @if (activeBeneficiary?.vaccinations?.length ?? 0 > 0) { @for (item of
+              activeBeneficiary?.vaccinations; track item){
+              <app-card-info-input
+                [title]="item.vaccine"
+                [info]="item.vaccination_date.toString() || 'Fecha no disponible'"
+              ></app-card-info-input>
+            } }@else {
+              <p style="text-align: start; width: 100%; color: var(--ion-color-dark)">
+                No hay vacunas registradas.
+              </p>
+            }
+          </div>
+        }@else {
+          <app-vacinations-form></app-vacinations-form>
+        }
       </div>
 
       <div class="fixxed">

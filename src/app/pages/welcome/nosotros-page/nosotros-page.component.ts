@@ -28,7 +28,6 @@ export class NosotrosPageComponent  implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    console.log(this.textoCard);
   }
 
 }

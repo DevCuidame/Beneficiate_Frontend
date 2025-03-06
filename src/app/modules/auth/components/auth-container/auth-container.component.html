@@ -8,8 +8,9 @@
     <p class="toggle-text">
       ¿No tienes cuenta? <a (click)="switchView('register')">Regístrate aquí</a>
     </p>
-    }<!--@else {
-    <app-register (registerSuccess)="switchToLogin()"></app-register>
+
+    } @else if (currentView === 'register') {
+    <app-register (registerSuccess)="switchView('login')"></app-register>
     <p class="toggle-text">
       ¿Ya tienes cuenta? <a (click)="switchView('login')">Inicia sesión</a>
     </p>
@@ -21,11 +22,6 @@
       ¿Recordaste tu contraseña?
       <a (click)="switchView('login')">Inicia sesión</a>
     </p>
-  }-->@else {
-      <app-reset-password></app-reset-password>
-      <p class="toggle-text">
-        ¿Ya tienes cuenta? <a (click)="toggleView()">Inicia sesión</a>
-      </p>
     }
   </div>
 </ion-content>

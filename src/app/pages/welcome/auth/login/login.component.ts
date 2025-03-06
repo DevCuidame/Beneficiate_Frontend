@@ -66,6 +66,9 @@ export class LoginComponent {
     this.passwordVisible = !this.passwordVisible;
   }
 
+  navigateToChangePassword() {
+    this.router.navigate(['/desktop/change-password']);
+  }
   async login() {
     if (this.loginForm.valid) {
       const loading = await this.loadingCtrl.create({

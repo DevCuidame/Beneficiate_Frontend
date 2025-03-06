@@ -4,10 +4,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule, Routes } from '@angular/router';
 
-import { AuthGuard } from 'src/app/core/guards/auth.guard';
 import { WelcomePageComponent } from './welcome-page/welcome-page.component';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
+import { ChangePasswordComponent } from './auth/change-password/change-password.component';
 import { NosotrosPageComponent } from './nosotros-page/nosotros-page.component';
 
 
@@ -20,7 +20,10 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    canActivate: [AuthGuard],
+  },
+  {
+    path: 'change-password',
+    component: ChangePasswordComponent,
   },
   {
     path: 'about-us',
@@ -29,7 +32,6 @@ const routes: Routes = [
   {
     path: 'register',
     component: RegisterComponent,
-    canActivate: [AuthGuard],
   },
   {
     path: '**',

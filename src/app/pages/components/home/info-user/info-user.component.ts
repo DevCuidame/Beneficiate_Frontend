@@ -12,11 +12,13 @@ import {
   faPersonHalfDress,
   faPhone,
   faCity,
+  faHeart,
+  faHospital,
 } from '@fortawesome/free-solid-svg-icons';
 
 import { UserService } from '../../../../modules/auth/services/user.service';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
-import { BeneficiaryService } from 'src/app/modules/auth/services/beneficiary.service';
+import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
 import { User } from 'src/app/core/interfaces/auth.interface';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
 import { BasicDataComponent } from 'src/app/shared/components/basic-data/basic-data.component';
@@ -46,6 +48,8 @@ export class InfoUserComponent  implements OnInit {
   public faPersonHalfDress = faPersonHalfDress;
   public faPhone = faPhone;
   public faCity = faCity;
+  public faHeart = faHeart;
+  public faHospital = faHospital;
 
 
   constructor(
@@ -70,7 +74,6 @@ export class InfoUserComponent  implements OnInit {
       } else {
         this.profileImage = 'assets/images/default-profile.png';
       }
-
     });
 
     this.beneficiaryService.beneficiaries$.subscribe((beneficiaries) => {
@@ -81,8 +84,6 @@ export class InfoUserComponent  implements OnInit {
         }));
       }
     });
-
-
 
     this.authService.refreshUserData();
   }

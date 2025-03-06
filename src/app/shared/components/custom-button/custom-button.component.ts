@@ -15,6 +15,21 @@ export class CustomButtonComponent {
   @Input() disabled: boolean = false;
   @Input() type: 'button' | 'submit' = 'button';
   @Input() color: string = 'var(--ion-color-primary)';
-  @Input() textColor: string = 'var(--ion-color-light)';  // Nuevo input para color de texto
+  @Input() textColor: string = 'var(--ion-color-light)';
   @Input() backgroundImage: string = '';
+  @Input() background: string = '';
+
+  @Input() routerLink?: string;
+  @Input() fontSize: string = '1.25rem';
+  @Input() padding: string = '15px 10px';
+  @Input() boxShadow?: string = 'none';
+
+
+  constructor(private router: Router) {}
+
+  handleClick(): void {
+    if (this.routerLink) {
+      this.router.navigateByUrl(this.routerLink);
+    }
+  }
 }

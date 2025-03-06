@@ -1,13 +1,31 @@
-<div class="plan-card" [style]="customStyle">
-  <div class="image-container">
-    <img [src]="imagen" alt="Imagen del plan" />
+<div class="plan-continer">
+  <div class="plan-card" [style]="customStyle">
+    <div class="image-container">
+      <img [src]="imagen" alt="Imagen del plan" />
+    </div>
+
+    <div class="card-content">
+      <h3 class="plan-title">{{ titulo }}</h3>
+      <p class="plan-price">{{ precio }}</p>
+      <p class="plan-description">{{ descripcion }}</p>
+
+      <button class="plan-button" (click)="openDescription()">{{ isDescriptionVisible ? 'Cancelar' : 'Adquirir' }}</button>
+    </div>
   </div>
 
-  <div class="card-content">
-    <h3 class="plan-title">{{ titulo }}</h3>
-    <p class="plan-price">{{ precio }}</p>
-    <p class="plan-description">{{ descripcion }}</p>
-
-    <button class="plan-button">{{ botonTexto }}</button>
+  <!-- Aquí usamos *ngIf para mostrar/ocultar el div -->
+  <div
+    *ngIf="isDescriptionVisible"
+    class="plan-info"
+    id="plan-info"
+    [ngStyle]="positionSide"
+  >
+    <h3>el plan familiar incluye los siguientes benefecios:</h3>
+    <li>
+      <ul>Ejemplo 1</ul>
+      <ul>Ejemplo 2</ul>
+      <ul>Ejemplo 3</ul>
+    </li>
+    <button class="plan-button" (click)="initiatePayment()">Adquirir</button>
   </div>
 </div>
