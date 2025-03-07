@@ -33,6 +33,7 @@ main {
     z-index: 1;
 
     .beneficiarios-nav {
+      margin-top: 2rem;
       display: flex;
       align-self: center;
       gap: 2rem;
@@ -61,7 +62,7 @@ main {
     .paneles-container {
       height: 100%;
       width: 100%;
-      margin-top: 4rem;
+      margin-top: 2rem;
 
       .beneficiarios-panel {
         height: 100%;
@@ -84,7 +85,6 @@ main {
           font-size: 1.25rem;
           font-weight: 600;
           align-self: flex-start;
-          padding-left: 4rem;
         }
 
         .plan-container {

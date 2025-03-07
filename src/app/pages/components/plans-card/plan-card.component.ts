@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LoadingController, ModalController, ToastController } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 import { Plan, PaymentService } from 'src/app/core/services/payment.service';
 import { InlinePaymentComponent } from '../../../shared/components/inline-payment/inline-payment.component';
@@ -20,6 +21,7 @@ export class PlanCardComponent implements OnInit {
   @Input() customStyle: string = '';
   @Input() selectedPlanId: number | null = null;
   @Input() positionSide: any = { left: '0%' };
+  @Input() optionClick: string = '';
 
   isDescriptionVisible = false;
   isLoading = false;
@@ -29,11 +31,27 @@ export class PlanCardComponent implements OnInit {
     private paymentService: PaymentService,
     private loadingController: LoadingController,
     private toastController: ToastController,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    console.log(this.selectedPlanId);
+    console.log(this.optionClick);
+  }
+
+  buttonOption() {
+    if (this.optionClick === 'payment') {
+      this.initiatePayment();
+    } else if (this.optionClick === 'register') {
+      this.navigateToRegister();
+    } else {
+      console.log('No se ha especificado una opción válida');
+    }
+  }
+
+  navigateToRegister() {
+    console.log('asdasd');
+    this.router.navigate(['/desktop/register']);
   }
 
   async initiatePayment() {

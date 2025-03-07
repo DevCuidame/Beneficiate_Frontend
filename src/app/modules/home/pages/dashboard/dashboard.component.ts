@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { IonicModule, NavController } from '@ionic/angular';
+import { IonicModule, NavController, AlertController } from '@ionic/angular';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
 import { TabBarComponent } from 'src/app/shared/components/tab-bar/tab-bar.component';
 import { User } from 'src/app/core/interfaces/auth.interface';
@@ -28,7 +28,7 @@ import { PlanSelectionComponent } from 'src/app/shared/components/plan-selection
     FontAwesomeModule,
     PrimaryCardComponent,
     PlanSelectionComponent
-  ], // Advertencia
+  ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
@@ -48,8 +48,10 @@ export class DashboardComponent implements OnInit {
     private authService: AuthService,
     private beneficiaryService: BeneficiaryService,
     private cdRef: ChangeDetectorRef,
-    private navController: NavController
+    private navController: NavController,
+    private alertController: AlertController
   ) {}
+  
   ngOnInit() {
     this.userService.user$.subscribe((userData) => {
 
@@ -60,7 +62,6 @@ export class DashboardComponent implements OnInit {
         this.user = userData[0];
       } else {
         this.user = userData;
-
       }
 
       if (
@@ -99,16 +100,41 @@ export class DashboardComponent implements OnInit {
     this.activeTab = tab;
   }
 
-    // Método para manejar la selección de plan
-    onPlanSelected(plan: any) {
-      console.log('Plan seleccionado:', plan);
-      // Puedes agregar lógica adicional aquí si es necesario
-    }
+  // Método para manejar la selección de plan
+  onPlanSelected(plan: any) {
+    // console.log('Plan seleccionado:', plan);
+    // Puedes agregar lógica adicional aquí si es necesario
+  }
 
-  selectButton(buttonType: string) {
-    if(this.user.plan ){
-      if (buttonType === 'Agenda') {
+  async selectButton(buttonType: string) {
+    if (buttonType === 'Beneficiarios') {
+      this.selectedButtonText = 'Beneficiarios';
+      this.selectedIndicatorBorder = '20px 0 0 20px';
+      this.showCards = true;
+    } else if (buttonType === 'Agenda') {
+      if (this.user.plan) {
+        this.selectedButtonText = 'Agenda';
+        this.selectedIndicatorBorder = '0 20px 20px 0';
+        this.showCards = false;
         this.navController.navigateForward(['/home/appointment-booking']);
+      } else {
+        // Mostrar alerta atractiva con botón de aceptar
+        const alert = await this.alertController.create({
+          cssClass: 'custom-alert',
+          header: '¡Atención!',
+          subHeader: 'Plan no disponible',
+          message: 'Actualmente no cuentas con un plan activo para acceder a la agenda.',
+          buttons: [{
+            text: 'Aceptar',
+            cssClass: 'alert-button-confirm',
+            handler: () => {
+              this.activeTab = 'plans-selection';
+            }
+          }],
+          backdropDismiss: false
+        });
+        
+        await alert.present();
       }
     }
   }

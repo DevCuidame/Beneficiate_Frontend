@@ -9,7 +9,7 @@
       <p class="plan-price">{{ precio }}</p>
       <p class="plan-description">{{ descripcion }}</p>
 
-      <button class="plan-button" (click)="openDescription()">{{ isDescriptionVisible ? 'Cancelar' : 'Adquirir' }}</button>
+      <button class="plan-button" (click)="buttonOption()">{{ isDescriptionVisible ? 'Cancelar' : 'Adquirir' }}</button>
     </div>
   </div>
 
@@ -22,9 +22,9 @@
   >
     <h3>el plan familiar incluye los siguientes benefecios:</h3>
     <li>
-      <ul>Ejemplo 1</ul>
-      <ul>Ejemplo 2</ul>
-      <ul>Ejemplo 3</ul>
+      <ul></ul>
+      <ul></ul>
+      <ul></ul>
     </li>
     <button class="plan-button" (click)="initiatePayment()">Adquirir</button>
   </div>

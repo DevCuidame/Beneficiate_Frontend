@@ -47,13 +47,14 @@
             [precio]="plan.price + ' COP/año'"
             [descripcion]="plan.duration_days.toString() + ' Dias'"
             [positionSide]="plan.name === 'Individual' ? { left: '50%' } : { right: '50%' }"
+            optionClick="payment"
           />
         </div>
       </div>
     </div>
   </div>
 
-  <app-info-user></app-info-user>
+  <app-info-user [numBeneficiry]="numBeneficiary.toString()"></app-info-user>
 
   <app-footer-component></app-footer-component>
 </main>

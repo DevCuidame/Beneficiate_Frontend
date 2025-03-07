@@ -85,22 +85,25 @@
 
     <div class="plan-container">
       <app-plan-card
-      [imagen]="imgPlanFamiliar"
-      titulo="PLAN FAMILIAR"
-      precio="$480.000 COP/año"
-      descripcion="Cuota única anual Titular + 4 familiares"
-      botonTexto="Adquirir"
-      customStyle="margin: 0 8rem; transform: scale(1.75);"
-    />
+        [imagen]="imgPlanFamiliar"
+        titulo="PLAN FAMILIAR"
+        precio="$480.000 COP/año"
+        descripcion="Cuota única anual Titular + 4 familiares"
+        botonTexto="Adquirir"
+        customStyle="margin: 0 8rem; transform: scale(1.75);"
+        optionClick="register"
+      />
 
-    <app-plan-card
-      [imagen]="imgPlanIndividual"
-      titulo="PLAN INDIVIDUAL"
-      precio="$250.000 COP/año"
-      descripcion="Cuota única anual"
-      botonTexto="Adquirir"
-      customStyle="margin: 0 8rem; transform: scale(1.75);"
-    />
+      <app-plan-card
+        [imagen]="imgPlanIndividual"
+        titulo="PLAN INDIVIDUAL"
+        precio="$250.000 COP/año"
+        descripcion="Cuota única anual"
+        botonTexto="Adquirir"
+        customStyle="margin: 0 8rem; transform: scale(1.75);"
+        optionClick="register"
+      />
+
     </div>
 
   </section>

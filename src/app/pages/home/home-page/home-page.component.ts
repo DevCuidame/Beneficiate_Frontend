@@ -31,9 +31,10 @@ export class HomePageComponent implements OnInit {
   selectedPanel: string = 'beneficiarios';
   isLoading = false;
   isProcessing = false;
+  numBeneficiary = <any> '';
 
   public beneficiaries: Beneficiary[] = [];
-  plans: Plan[] = [];
+  public plans: Plan[] = [];
 
   public imgPlanFamiliar: string = '../../../../assets/images/Desktop/plan-card-familiar.png';
   public imgPlanIndividual: string = '../../../../assets/images/Desktop/plan-card-individual.png';
@@ -48,6 +49,7 @@ export class HomePageComponent implements OnInit {
   ngOnInit() {
     this.beneficiaryService.beneficiaries$.subscribe((beneficiaries) => {
       if (Array.isArray(beneficiaries)) {
+        this.numBeneficiary = beneficiaries.length;
         this.beneficiaries = beneficiaries.map((beneficiary) => ({
           ...beneficiary,
           image: Array.isArray(beneficiary.image) && beneficiary.image.length > 0 ? beneficiary.image[0] : null,

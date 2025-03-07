@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { environment } from 'src/environments/environment';
 import { IonicModule } from '@ionic/angular';
@@ -34,6 +34,7 @@ import { BasicDataComponent } from 'src/app/shared/components/basic-data/basic-d
   styleUrls: ['./info-user.component.scss'],
 })
 export class InfoUserComponent  implements OnInit {
+  @Input() numBeneficiry: string = '';
   public profileImage: string = '';
   public environment = environment.url;
   public beneficiaries: Beneficiary[] = [];

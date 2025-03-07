@@ -24,7 +24,9 @@ export class CustomInputComponent {
   }
 
   getInputType(): string {
-    if (this.type === 'password' && !this.passwordVisible) return 'password';
+    if (this.type === 'password') {
+      return this.passwordVisible ? 'text' : 'password';
+    }
     return this.type;
   }
 }

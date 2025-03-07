@@ -29,8 +29,12 @@
       <h2>Datos del paciente</h2>
       <div class="form-group">
         <label>Identificación</label>
-        <div class="row">
-          <select [(ngModel)]="appointment.userData.identification_type">
+        <div class="row search-row">
+          <select
+            [(ngModel)]="appointment.userData.identification_type"
+            (change)="onIdentificationNumberChange()"
+          >
+            <option value="">Seleccione</option>
             <option value="CC">Cédula</option>
             <option value="TI">Tarjeta de Identidad</option>
             <option value="PASSPORT">Pasaporte</option>
@@ -40,7 +44,35 @@
             type="text"
             placeholder="#"
             [(ngModel)]="appointment.userData.identification_number"
+            (ngModelChange)="onIdentificationNumberChange()"
           />
+          <button
+            type="button"
+            class="search-button"
+            (click)="searchUserByIdentification()"
+            [disabled]="
+              !appointment.userData.identification_type ||
+              !appointment.userData.identification_number ||
+              searchState.loading
+            "
+          >
+            <i class="fas fa-search"></i> Buscar
+            <span *ngIf="searchState.loading" class="loading-indicator"></span>
+          </button>
+        </div>
+        <div class="search-status">
+          <div *ngIf="searchState.loading" class="status-message loading">
+            <i class="fas fa-spinner fa-spin"></i> Buscando usuario...
+          </div>
+          <div *ngIf="searchState.notFound" class="status-message not-found">
+            <i class="fas fa-exclamation-circle"></i> Usuario no encontrado.
+          </div>
+          <div *ngIf="searchState.success" class="status-message success">
+            <i class="fas fa-check-circle"></i> Usuario encontrado: {{getFullName()}}
+          </div>
+          <div *ngIf="searchState.error" class="status-message error">
+            <i class="fas fa-times-circle"></i> Error al buscar el usuario. Por favor intente nuevamente.
+          </div>
         </div>
       </div>
       <div class="form-group">
@@ -215,7 +247,9 @@
 
 <app-appointment-assigned
   [isPending]="false"
-  [patientName]="appointment.userData.first_name + ' ' + appointment.userData.last_name"
+  [patientName]="
+    appointment.userData.first_name + ' ' + appointment.userData.last_name
+  "
   [professionalName]="getSelectedProfessionalName()"
   [specialty]="getSelectedSpecialty()"
   [date]="appointment.appointment_date"
@@ -223,6 +257,5 @@
   [dayOfWeek]="getFormattedDayOfWeek()"
 >
 </app-appointment-assigned>
-
 
 }
