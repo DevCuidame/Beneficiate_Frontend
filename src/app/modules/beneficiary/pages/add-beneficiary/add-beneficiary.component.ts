@@ -122,8 +122,13 @@ export class AddBeneficiaryComponent implements OnInit {
     const beneficiary = this.beneficiaryService.getActiveBeneficiary();
     
     if (!beneficiary) {
-      this.beneficiaryForm.reset(); 
-      // return;
+      // Clear the form for a new beneficiary
+      this.beneficiaryForm.reset();
+      // Set default values if needed
+      this.beneficiaryForm.patchValue({
+        id: '' // Ensure ID is empty for new beneficiaries
+      });
+      return;
     }
   
     if (beneficiary) {
@@ -194,7 +199,8 @@ export class AddBeneficiaryComponent implements OnInit {
       await loading.present();
   
       const beneficiaryData = { ...this.beneficiaryForm.value };
-      const isEditing = !!beneficiaryData.identification_number; 
+      // Check if there's an ID to determine if it's an edit or a new beneficiary
+      const isEditing = !!beneficiaryData.id; 
   
       const action$ = isEditing
         ? this.beneficiaryService.updateBeneficiary(beneficiaryData.id, beneficiaryData)
