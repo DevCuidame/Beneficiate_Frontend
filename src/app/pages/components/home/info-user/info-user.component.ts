@@ -21,14 +21,12 @@ import { AuthService } from 'src/app/modules/auth/services/auth.service';
 import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
 import { User } from 'src/app/core/interfaces/auth.interface';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
-import { BasicDataComponent } from 'src/app/shared/components/basic-data/basic-data.component';
 
 @Component({
   selector: 'app-info-user',
   imports: [
     IonicModule,
     FontAwesomeModule,
-    BasicDataComponent,
   ],
   templateUrl: './info-user.component.html',
   styleUrls: ['./info-user.component.scss'],

@@ -51,7 +51,7 @@ export class DashboardComponent implements OnInit {
     private navController: NavController,
     private alertController: AlertController
   ) {}
-  
+
   ngOnInit() {
     this.userService.user$.subscribe((userData) => {
 
@@ -106,16 +106,15 @@ export class DashboardComponent implements OnInit {
     // Puedes agregar lógica adicional aquí si es necesario
   }
 
+  goToPlans() {
+    this.activeTab = 'plans-selection';
+  }
+
   async selectButton(buttonType: string) {
     if (buttonType === 'Beneficiarios') {
-      this.selectedButtonText = 'Beneficiarios';
-      this.selectedIndicatorBorder = '20px 0 0 20px';
-      this.showCards = true;
     } else if (buttonType === 'Agenda') {
       if (this.user.plan) {
         this.selectedButtonText = 'Agenda';
-        this.selectedIndicatorBorder = '0 20px 20px 0';
-        this.showCards = false;
         this.navController.navigateForward(['/home/appointment-booking']);
       } else {
         // Mostrar alerta atractiva con botón de aceptar
@@ -133,7 +132,7 @@ export class DashboardComponent implements OnInit {
           }],
           backdropDismiss: false
         });
-        
+
         await alert.present();
       }
     }

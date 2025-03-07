@@ -46,8 +46,8 @@ export class AppointmentService {
   }
 
 
-  createAppointment(appointment: Appointment): Observable<Appointment> {
-    return this.http.post<Appointment>(`${this.api}${this.version}appointments/create`, appointment).pipe(
+  createAppointment(appointment: Appointment): Observable<any> {
+    return this.http.post<Appointment>(`${this.api}${this.version}medical-appointment/create-new`, appointment).pipe(
       tap((newAppointment) => {
         this.appointments.set([...this.appointments(), newAppointment]); 
       }),
@@ -61,7 +61,7 @@ export class AppointmentService {
   /**
    * Actualiza una cita existente en el backend
    */
-  updateAppointment(id: number, appointment: Partial<Appointment>): Observable<Appointment> {
+  updateAppointment(id: number, appointment: Partial<Appointment>): Observable<any> {
     console.log("🚀 ~ AppointmentService ~ updateAppointment ~ appointment:", appointment)
     return this.http.put<Appointment>(`${this.api}${this.version}medical-appointment/update/${id}`, appointment).pipe(
       tap((updatedAppointment) => {

@@ -19,14 +19,14 @@ export class UserService {
   private getUserFromStorage(): User | null {
     return JSON.parse(localStorage.getItem('user') || 'null');
   }
-  
+
   findByIdentification(identificationType: string, identificationNumber: string): Observable<User | null> {
     if (!identificationType || !identificationNumber) {
       return of(null);
     }
 
     const url = `${this.baseUrl}api/v1/user/identification/${identificationType}/${identificationNumber}`;
-    
+
     return this.http.get<User>(url).pipe(
       map((response: any) => {
         const userData = response.data || response;

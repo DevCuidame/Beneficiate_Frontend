@@ -65,7 +65,7 @@
               activeBeneficiary?.medical_history; track item){
             <app-card-info-input
               [title]="item.history_type"
-              [info]="item.history_date?.toString() || 'Fecha no disponible'"
+              [info]="item.history_date.toString() || 'Fecha no disponible'"
             ></app-card-info-input>
           } }@else {
             <p style="text-align: start; width: 100%">
@@ -81,7 +81,7 @@
               <app-card-info-input
                 [title]="getLabel(historyTypeOptions, item.history_type)"
                 [info]=" getLabel(relativeOptions, item.relationship) "
-                [optionalInfo]="item.history_date?.toString() || 'Fecha no disponible'"
+                [optionalInfo]="item.history_date.toString() || 'Fecha no disponible'"
               ></app-card-info-input>
             } }@else {
               <p>No hay antecedentes familiares registrados.</p>

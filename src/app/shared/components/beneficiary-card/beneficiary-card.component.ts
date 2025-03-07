@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { IonicModule, AlertController, NavController } from '@ionic/angular';
 import { User } from 'src/app/core/interfaces/auth.interface';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
+import { Plan } from 'src/app/core/interfaces/plan.interface';
 import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
 import { environment } from 'src/environments/environment';
 
@@ -16,7 +17,8 @@ export class BeneficiaryCardComponent implements OnInit {
   @Input() beneficiaries: Beneficiary[] = [];
   public environment = environment.url;
   public beneficiaryCount: number = 0;
-  public maxBeneficiaries: number = 5; 
+  public maxBeneficiaries: number = 5;
+  @Input() plan?: Plan;
 
   constructor(
     private router: Router,
@@ -26,6 +28,7 @@ export class BeneficiaryCardComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    console.log("plan", this.plan);
     this.beneficiaryService.beneficiaryCount$.subscribe((count) => {
       this.beneficiaryCount = count;
     });
@@ -38,7 +41,6 @@ export class BeneficiaryCardComponent implements OnInit {
   goToBeneficiary(beneficiary: Beneficiary) {
     this.beneficiaryService.setActiveBeneficiary({...beneficiary})
     this.navCtrl.navigateForward(['/beneficiary/home'])
-
   }
 
   get sortedBeneficiaries(): Beneficiary[] {
@@ -47,8 +49,38 @@ export class BeneficiaryCardComponent implements OnInit {
     );
   }
   
+  get isIndividualPlan(): boolean {
+    return this.plan?.code?.includes('INDIVIDUAL') || false;
+  }
+
+  get hasPlan(): boolean {
+    return !!this.plan;
+  }
 
   async createBeneficiary() {
+    // Check if plan is individual
+
+    if (!this.hasPlan) {
+      const alert = await this.alertCtrl.create({
+        header: 'Plan no disponible',
+        message: 'Necesitas un plan activo para agregar beneficiarios.',
+        buttons: ['Aceptar'],
+      });
+      await alert.present();
+      return;
+    }
+
+    if (this.isIndividualPlan) {
+      const alert = await this.alertCtrl.create({
+        header: 'Plan Individual',
+        message: 'No puedes agregar beneficiarios porque tienes un plan individual.',
+        buttons: ['Aceptar'],
+      });
+      await alert.present();
+      return;
+    }
+
+    // Check maximum beneficiaries for family plan
     if (this.beneficiaryCount >= this.maxBeneficiaries) {
       const alert = await this.alertCtrl.create({
         header: 'Límite alcanzado',
@@ -61,5 +93,4 @@ export class BeneficiaryCardComponent implements OnInit {
   
     this.router.navigate(['/beneficiary/add'], { queryParams: { new: true } });
   }
-  
 }

@@ -31,8 +31,6 @@ import { LocationService } from '../../../modules/auth/services/location.service
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    TabBarComponent,
-    CustomButtonComponent,
     CustomInputComponent,
     HeaderComponent,
   ],
