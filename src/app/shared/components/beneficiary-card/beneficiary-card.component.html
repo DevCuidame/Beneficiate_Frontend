@@ -1,28 +1,29 @@
 <div class="card-container">
-  @for (beneficiary of sortedBeneficiaries; track beneficiary.id ) {
-  <div class="card" (click)="goToBeneficiary(beneficiary)">
-    @if(beneficiary.image && beneficiary.image.image_path) {
-    <img
-      [src]="environment + beneficiary.image.image_path.replace('\\', '/')"
-      [alt]="beneficiary.first_name"
-    />
-    }@else {
-    <ng-template #defaultImage>
+  <!-- Only show beneficiaries if not individual plan -->
+  @if(hasPlan && !isIndividualPlan) {
+    @for (beneficiary of sortedBeneficiaries; track beneficiary.id ) {
+    <div class="card" (click)="goToBeneficiary(beneficiary)">
+      @if(beneficiary.image && beneficiary.image.image_path) {
+      <img
+        [src]="environment + beneficiary.image.image_path.replace('\\', '/')"
+        [alt]="beneficiary.first_name"
+      />
+      }@else {
       <img
         src="/src/assets/images/default_user.png"
         [alt]="beneficiary.first_name"
       />
-    </ng-template>
-    }
+      }
 
-    <h3 appResizeText>{{ beneficiary.first_name }}</h3>
-    <img class="crown" src="/assets/icon/crown.svg" alt="basic" />
-  </div>
-  } @empty {
-  <!-- <li>There are no items.</li> -->
+      <h3 appResizeText>{{ beneficiary.first_name }}</h3>
+      <img class="crown" src="/assets/icon/crown.svg" alt="basic" />
+    </div>
+    } @empty {
+    <!-- <li>There are no items.</li> -->
+    }
   }
 
-  <!-- Botón para agregar un nuevo beneficiario -->
+  <!-- Botón para agregar un nuevo beneficiario (always show but logic handles restrictions) -->
   <div class="add-card" (click)="createBeneficiary()">
     <div class="add-circle">
       <ion-icon name="add-circle"></ion-icon>

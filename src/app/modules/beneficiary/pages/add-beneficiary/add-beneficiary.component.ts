@@ -84,7 +84,7 @@ export class AddBeneficiaryComponent implements OnInit {
       phone: ['', [Validators.required, Validators.pattern('^[0-9-]+$')]],
       birth_date: ['', Validators.required],
       gender: ['', Validators.required],
-      blood_type: ['', Validators.required],
+      blood_type: [''],
       health_provider: [''],
       prepaid_health: [''],
       work_risk_insurance: [''],

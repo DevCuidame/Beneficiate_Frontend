@@ -14,8 +14,6 @@ import { identificationOptions } from 'src/app/core/constants/indentifications';
 import { AppointmentAssignedComponent } from '../appointment-assigned/appointment-assigned.component';
 import { SpecialityCardComponent } from '../specialty-card/speciality-card.component';
 import { PatientSearchBarComponent } from '../patient-search-bar/patient-search-bar.component';
-import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
-import { User } from 'src/app/core/interfaces/auth.interface';
 import { Appointment } from 'src/app/core/interfaces/appointment.interface';
 import { MedicalSpecialtyService } from 'src/app/core/services/medicalSpecialty.service';
 import { MedicalProfessionalService } from 'src/app/core/services/medicalProfessional.service';
@@ -51,6 +49,8 @@ export class AppointmentWizardComponent implements OnInit {
   public selectedProfessionalAvailability = signal<
     { day: string; date: string; hours: string[] }[]
   >([]);
+  public beneficiaryId: string = '';
+  public userId: string = '';
 
   // Add to your component class:
 public searchState = {
@@ -197,8 +197,6 @@ debounceIdentificationSearch: any;
       if (this.currentStep < 4) {
         this.currentStep++;
       } else {
-        alert('Cita agendada con éxito');
-        this.success = true;
         this.sendAppointmentData(); // Llamada para enviar la cita al backend
       }
     } else {
@@ -226,6 +224,7 @@ debounceIdentificationSearch: any;
     }
 
     if (this.currentStep === 4) {
+
       if (this.selectedDayIndex !== -1) {
         const selectedDayAvailability =
           this.selectedProfessionalAvailability()[this.selectedDayIndex];
@@ -241,19 +240,44 @@ debounceIdentificationSearch: any;
 
   sendAppointmentData() {
     console.log('🚀 Enviando cita al backend:', this.appointment);
-
-    this.appointmentService
-      .updateAppointment(this.appointment.id, this.appointment)
-      .subscribe(
-        (response) => {
-          console.log('✅ Respuesta del servidor:', response);
-        },
-        (error) => {
-          console.error('❌ Error al enviar la cita:', error);
-        }
-      );
+  
+    if (this.appointment.id === 0) {
+      // Es una nueva cita
+      this.appointmentService
+        .createAppointment(this.appointment)
+        .subscribe(
+          (response) => {
+            console.log('✅ Respuesta del servidor (creación):', response);
+            if (response) {
+              this.appointment = response;
+              if (response.statusCode === 200) {
+                this.success = true;
+                this.appointment = response.data;
+                console.log('🚀 Datos de la cita actualizados:', this.appointment);
+              }
+            }
+          },
+          (error) => {
+            console.error('❌ Error al crear la cita:', error);
+          }
+        );
+    } else {
+      // Es una actualización
+      this.appointmentService
+        .updateAppointment(this.appointment.id, this.appointment)
+        .subscribe(
+          (response) => {
+            console.log('✅ Respuesta del servidor (actualización):', response);
+            if (response.statusCode === 200) {
+              this.success = true;
+            }
+          },
+          (error) => {
+            console.error('❌ Error al actualizar la cita:', error);
+          }
+        );
+    }
   }
-
   toggleSelection(selected: string) {
     if (selected === 'firstTime') {
       this.appointment.first_time = true;
@@ -406,8 +430,6 @@ debounceIdentificationSearch: any;
     return '';
   }
   
-  // Fix for the user search functionality with proper type handling
-
 searchUserByIdentification() {
   const idType = this.appointment.userData.identification_type;
   const idNumber = this.appointment.userData.identification_number;
@@ -429,20 +451,29 @@ searchUserByIdentification() {
   
   this.userService.findByIdentification(idType, idNumber).subscribe(
     (userData) => {
+      console.log('🚀 Datos del usuario encontrado:', userData);
       this.searchState.loading = false;
       
       if (userData) {
-        // Create a properly typed copy of the userData
-        // Check if the returned userData is a User or Beneficiary and handle accordingly
-        
-        if ('user_id' in userData) {
+        if (!userData.is_user) {
           // It's a Beneficiary
+          this.beneficiaryId = userData.id.toString();
+          this.userId = userData.user_id;
+          
+          // Directly assign to appointment object
+          this.appointment.beneficiary_id = userData.id.toString();
+          this.appointment.user_id = userData.user_id;
+          this.appointment.is_for_beneficiary = true;
+          
           this.appointment.userData = {
             ...this.appointment.userData,
+            id: userData.id || 0,
+            user_id: userData.user_id || '',
             first_name: userData.first_name || '',
             last_name: userData.last_name || '',
             phone: userData.phone || '',
-            email: userData.email || '',
+            email: userData.email || 'Sin Correo Electrónico',
+            is_for_beneficiary: true,
             // Handle the image properly based on its type
             image: userData.image ? {
               id: userData.image.id || 0,
@@ -453,14 +484,25 @@ searchUserByIdentification() {
               // beneficiary_id: (userData.image as BeneficiaryImage).beneficiary_id || ''
             } as BeneficiaryImage : {} as BeneficiaryImage
           };
+          console.log('🚀 Datos del beneficiario asignados:', this.appointment);
         } else {
           // It's a User
+          this.beneficiaryId = '';
+          this.userId = userData.id.toString();
+          
+          // Directly assign to appointment object
+          this.appointment.beneficiary_id = '';
+          this.appointment.user_id = userData.id.toString();
+          this.appointment.is_for_beneficiary = false;
+          
           this.appointment.userData = {
             ...this.appointment.userData,
+            id: userData.id || 0,
             first_name: userData.first_name || '',
             last_name: userData.last_name || '',
             phone: userData.phone || '',
             email: userData.email || '',
+            is_for_beneficiary: false,
             // Handle the image properly based on its type
             image: userData.image ? {
               id: userData.image.id || 0,
@@ -471,6 +513,7 @@ searchUserByIdentification() {
               user_id: (userData.image as UserImage).user_id || ''
             } as UserImage : {} as UserImage
           };
+          console.log('🚀 Datos del Usuario asignados:', this.appointment);
         }
         
         // Set success state
@@ -485,8 +528,11 @@ searchUserByIdentification() {
         this.searchState.notFound = true;
         
         // Clear user fields if no user is found
-        // Create an empty user object with the correct structure
-        const isUserBeneficiary = 'user_id' in this.appointment.userData;
+        const isUserBeneficiary = 'beneficiary_id' in this.appointment.userData;
+        
+        // Reset appointment IDs
+        this.appointment.user_id = '';
+        this.appointment.beneficiary_id = '';
         
         if (isUserBeneficiary) {
           // It's a Beneficiary

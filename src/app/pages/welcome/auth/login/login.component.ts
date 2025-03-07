@@ -30,7 +30,6 @@ import { CustomButtonComponent } from 'src/app/shared/components/custom-button/c
     IonicModule,
     HeaderComponent,
     CustomInputComponent,
-    CustomButtonComponent,
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],

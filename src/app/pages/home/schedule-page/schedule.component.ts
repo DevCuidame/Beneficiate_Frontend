@@ -29,7 +29,7 @@ export class ScheduleComponent  implements OnInit {
   ngOnInit() {}
 
   toggleEdit() {
-    this.isEditing = !this.isEditing; // Alterna el valor de isEditing
+    this.isEditing = !this.isEditing; 
   }
 
   toggleCard() {

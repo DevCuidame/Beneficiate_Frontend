@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { AlertController, NavController } from '@ionic/angular';
+import { AlertController, LoadingController, NavController } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -21,7 +21,9 @@ export class HealthProfessionalCardComponent implements OnInit {
 
   public api = environment.url;
 
-  constructor(private alertCtrl: AlertController, private navCtrl: NavController) { }
+  constructor(private alertCtrl: AlertController, private navCtrl: NavController, 
+    private loadingCtrl: LoadingController
+  ) { }
 
   ngOnInit() {}
 
@@ -35,7 +37,9 @@ export class HealthProfessionalCardComponent implements OnInit {
           text: 'Whatsapp',
           cssClass: 'whatsapp-button',
           handler: () => {
-            console.log('WhatsApp presionado');
+            
+
+
           }
         },
         {
@@ -49,5 +53,33 @@ export class HealthProfessionalCardComponent implements OnInit {
       ]
     });
     await alert.present();
+  }
+
+  openWhatsapp = async () => {
+    const loading = await this.showLoading();
+    try {
+      const whatsappUrl = 'whatsapp://send?phone=573043520351&text=Hola, quiero agendar una cita con el doctor';
+      window.location.href = whatsappUrl;
+      
+      setTimeout(() => {
+        window.open('https://web.whatsapp.com/send?phone=573043520351&text=Hola, quiero agendar una cita con el doctor', '_blank');
+      }, 500);
+    } catch (error) {
+      console.error('Error al abrir WhatsApp:', error);
+    } finally {
+      if (loading) {
+        loading.dismiss();
+      }
+    }
+  };
+
+  async showLoading() {
+    const loading = await this.loadingCtrl.create({
+      message: 'Espera un momento, por favor...',
+      cssClass: 'custom-loading',
+    });
+
+    loading.present();
+    return loading;
   }
 }

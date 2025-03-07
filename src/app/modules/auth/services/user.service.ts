@@ -20,7 +20,7 @@ export class UserService {
     return JSON.parse(localStorage.getItem('user') || 'null');
   }
   
-  findByIdentification(identificationType: string, identificationNumber: string): Observable<User | null> {
+  findByIdentification(identificationType: string, identificationNumber: string): Observable<any | null> {
     if (!identificationType || !identificationNumber) {
       return of(null);
     }
