@@ -17,9 +17,15 @@
       margin: 0;
     }
 
-    ion-icon {
-        color: var(--ion-color-secondary);
-        transform: scale(1.5);
-        cursor: pointer;
+    a {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      
+      ion-icon {
+          color: var(--ion-color-secondary);
+          transform: scale(1.5);
+          cursor: pointer;
+      }
     }
 }
