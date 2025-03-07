@@ -2,6 +2,8 @@ import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LoadingController, ModalController, ToastController } from '@ionic/angular';
 
+import { UserService } from '../../../modules/auth/services/user.service';
+import { User } from 'src/app/core/interfaces/auth.interface';
 import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
 import { Plan, PaymentService } from 'src/app/core/services/payment.service';
@@ -34,12 +36,14 @@ export class HomePageComponent implements OnInit {
   numBeneficiary = <any> '';
 
   public beneficiaries: Beneficiary[] = [];
+  public user: User | null = null;
   public plans: Plan[] = [];
 
   public imgPlanFamiliar: string = '../../../../assets/images/Desktop/plan-card-familiar.png';
   public imgPlanIndividual: string = '../../../../assets/images/Desktop/plan-card-individual.png';
 
   constructor(
+    private userService: UserService,
     private beneficiaryService: BeneficiaryService,
     private loadingController: LoadingController,
     private toastController: ToastController,
@@ -47,6 +51,16 @@ export class HomePageComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.userService.user$.subscribe((userData) => {
+      if (Array.isArray(userData) && userData.length > 0) {
+        this.user = userData[0];
+      } else {
+        this.user = userData;
+      }
+    });
+
+console.log(this.user);
+
     this.beneficiaryService.beneficiaries$.subscribe((beneficiaries) => {
       if (Array.isArray(beneficiaries)) {
         this.numBeneficiary = beneficiaries.length;

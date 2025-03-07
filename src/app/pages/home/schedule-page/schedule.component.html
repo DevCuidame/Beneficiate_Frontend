@@ -76,6 +76,10 @@
     </section>
   </div>
 
+  <div class="chat-container">
+    <app-chat></app-chat>
+  </div>
+
   <div class="do-date-container" [ngClass]="{ 'disable': isDisabled }" (click)="closeCard()">
     <app-do-date [phoneNumber]="phoneNumber" [message]="message"></app-do-date>
   </div>

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule, Routes } from '@angular/router';
+import { AutoRedirectGuard } from 'src/app/core/guards/auth.guard';
 
 import { WelcomePageComponent } from './welcome-page/welcome-page.component';
 import { LoginComponent } from './auth/login/login.component';
@@ -20,6 +21,8 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+    canActivate: [AutoRedirectGuard],
+    data: { redirectTo: '/home-desktop' },
   },
   {
     path: 'change-password',

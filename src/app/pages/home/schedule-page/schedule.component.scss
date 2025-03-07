@@ -237,6 +237,14 @@ main {
     }
   }
 
+  .chat-container {
+    height: 60vh;
+    width: 20vw;
+    position: absolute;
+    bottom: 0;
+    right: 10vw;
+  }
+
   .do-date-container {
     height: 100vh;
     width: 100%;

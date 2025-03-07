@@ -96,4 +96,26 @@ main {
       }
     }
   }
+
+  .planes-panel {
+    width: 50vw;
+    position: relative;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+
+    h2 {
+      color: var(--ion-color-custom-green);
+      font-size: 1.25rem;
+      font-weight: 600;
+      align-self: flex-start;
+    }
+
+    .plan-container {
+      margin-top: 50px;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+    }
+  }
 }

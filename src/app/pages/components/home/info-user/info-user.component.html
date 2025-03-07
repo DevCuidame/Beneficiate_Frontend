@@ -9,11 +9,13 @@
     <h1 class="user-name">{{user?.first_name}} {{user?.last_name}}</h1>
 
     <div class="content-plan">
-      @if (user?.plan?.name === 'Básico') {
-      <ion-icon name="star-outline" class="icon"></ion-icon>
-      }@else {
-      <fa-icon class="icon" [icon]="faCrown"></fa-icon>
-      }
+      <!--
+        @if (user?.plan?.name === 'Básico') {
+          <ion-icon name="star-outline" class="icon"></ion-icon>
+        }@else {
+          <fa-icon class="icon" [icon]="faCrown"></fa-icon>
+        }
+      -->
       <span class="plan-name">
         {{ user?.plan?.name }}
       </span>
@@ -73,6 +75,26 @@
             <p>Ciudad</p>
           </div>
         </div>
+        <!-- Blood Type -->
+        <div class="item">
+          <div class="item-icon icon-1">
+            <fa-icon [icon]="faHeart"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{  'No aplica' }}</p>
+            <p>Tipo de sangre</p>
+          </div>
+        </div>
+        <!-- EPS -->
+        <div class="item">
+          <div class="item-icon icon-5">
+            <fa-icon [icon]="faHospital"></fa-icon>
+          </div>
+          <div class="item-info">
+            <p>{{ 'No aplica' }}</p>
+            <p>EPS</p>
+          </div>
+        </div>
       </div>
       <div class="parent-column">
         <!-- Gender -->
@@ -105,35 +127,6 @@
             <p>Teléfono</p>
           </div>
         </div>
-
-      </div>
-    </div>
-
-    <div class="health-info">
-      <div class="parent-column">
-        <!-- Blood Type -->
-        <div class="item">
-          <div class="item-icon icon-1">
-            <fa-icon [icon]="faHeart"></fa-icon>
-          </div>
-          <div class="item-info">
-            <p>{{  'No aplica' }}</p>
-            <p>Tipo de sangre</p>
-          </div>
-        </div>
-        <!-- Address -->
-        <div class="item">
-          <div class="item-icon icon-5">
-            <fa-icon [icon]="faHospital"></fa-icon>
-          </div>
-          <div class="item-info">
-            <p>{{ 'No aplica' }}</p>
-            <p>EPS</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="parent-column">
         <!-- Work Risk Insurance -->
         <div class="item">
           <div class="item-icon icon-4">
@@ -155,9 +148,7 @@
           </div>
         </div>
       </div>
-
     </div>
-
   </div>
 
 </section>

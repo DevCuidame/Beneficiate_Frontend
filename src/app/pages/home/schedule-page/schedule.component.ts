@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { HeaderComponent } from '../../components/home/header/header.component';
 import { FooterComponent } from '../../components/footer-component/footer-component.component';
 import { DoDateComponent } from '../../components/home/do-date/do-date.component';
+import { ChatComponent } from 'src/app/modules/home/pages/chat/chat.component';
 
 @Component({
   selector: 'app-schedule',
@@ -14,6 +15,7 @@ import { DoDateComponent } from '../../components/home/do-date/do-date.component
     DoDateComponent,
     IonicModule,
     CommonModule,
+    ChatComponent
   ],
   templateUrl: './schedule.component.html',
   styleUrls: ['./schedule.component.scss'],
@@ -29,7 +31,7 @@ export class ScheduleComponent  implements OnInit {
   ngOnInit() {}
 
   toggleEdit() {
-    this.isEditing = !this.isEditing; // Alterna el valor de isEditing
+    this.isEditing = !this.isEditing;
   }
 
   toggleCard() {
