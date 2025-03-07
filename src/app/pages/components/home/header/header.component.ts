@@ -16,6 +16,7 @@ import { AuthService } from 'src/app/modules/auth/services/auth.service';
 })
 export class HeaderComponent {
   @Input() addBackground: boolean = false;
+  @Input() noPlan: boolean = false;
   showProfileMenu: boolean = false;
 
   constructor(
@@ -44,7 +45,7 @@ export class HeaderComponent {
 
   async confirmLogout() {
     this.showProfileMenu = false;
-    
+
     const alert = await this.alertController.create({
       header: 'Cerrar sesión',
       message: '¿Estás seguro que deseas cerrar sesión?',

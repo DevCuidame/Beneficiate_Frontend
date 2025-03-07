@@ -1,5 +1,5 @@
 <main>
-  <app-header [addBackground]="false"></app-header>
+  <app-header [addBackground]="false" [noPlan]="user?.plan == null"></app-header>
 
   <div *ngIf="user?.plan !== null; else noPlan" style="height: 100%;">
     <div class="beneficiarios-container">

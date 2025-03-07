@@ -6,14 +6,14 @@
       <li class="nav-option"><a (click)="navigateToHome()">Inicio</a></li>
       <li class="nav-option"><a href="#">Nosotros</a></li>
       <!--<li class="nav-option"><a href="#">Blog</a></li>-->
-      <li class="nav-option"><a (click)="navigateToSchedule()">Agenda</a></li>
+      <li class="nav-option" *ngIf="!noPlan"><a (click)="navigateToSchedule()">Agenda</a></li>
     </ul>
   </nav>
-  
+
   <div class="user-profile" (click)="confirmLogout()">
     <span class="logout" style="color: var(--ion-color-primary);">Cerrar sesión</span>
     <ion-icon name="close-outline" style="color: var(--ion-color-danger);"></ion-icon>
-    
+
     <!-- <div class="profile-menu" >
       <div class="menu-arrow"></div>
       <ul>
@@ -28,7 +28,7 @@
       </ul>
     </div> -->
   </div>
-  
+
   <!-- Backdrop para cerrar el menú al hacer clic fuera -->
   <div class="menu-backdrop" *ngIf="showProfileMenu" (click)="hideMenu()"></div>
 </header>

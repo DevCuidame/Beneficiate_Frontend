@@ -52,25 +52,15 @@ export class AppointmentWizardComponent implements OnInit {
   public beneficiaryId: string = '';
   public userId: string = '';
 
-  // Add to your component class:
-public searchState = {
-  loading: false,
-  notFound: false,
-  success: false,
-  error: false
-};
+    // Add to your component class:
+  public searchState = {
+    loading: false,
+    notFound: false,
+    success: false,
+    error: false
+  };
 
-debounceIdentificationSearch: any;
-
-  // Add to your component class:
-public searchState = {
-  loading: false,
-  notFound: false,
-  success: false,
-  error: false
-};
-
-debounceIdentificationSearch: any;
+  debounceIdentificationSearch: any;
 
   constructor(
     private medicalSpecialtyService: MedicalSpecialtyService,
@@ -429,7 +419,6 @@ debounceIdentificationSearch: any;
     return '';
   }
 
-
   // Formatear el día de la semana para la cita
   getFormattedDayOfWeek(): string {
     if (this.selectedDayIndex !== -1) {
@@ -440,146 +429,146 @@ debounceIdentificationSearch: any;
     return '';
   }
 
-searchUserByIdentification() {
-  const idType = this.appointment.userData.identification_type;
-  const idNumber = this.appointment.userData.identification_number;
+  searchUserByIdentification() {
+    const idType = this.appointment.userData.identification_type;
+    const idNumber = this.appointment.userData.identification_number;
 
-  // Reset search state
-  this.searchState = {
-    loading: false,
-    notFound: false,
-    success: false,
-    error: false
-  };
+    // Reset search state
+    this.searchState = {
+      loading: false,
+      notFound: false,
+      success: false,
+      error: false
+    };
 
-  if (!idType || !idNumber) {
-    return;
-  }
-
-  // Set loading state
-  this.searchState.loading = true;
-
-  this.userService.findByIdentification(idType, idNumber).subscribe(
-    (userData) => {
-      this.searchState.loading = false;
-
-      if (userData) {
-        // Create a properly typed copy of the userData
-        // Check if the returned userData is a User or Beneficiary and handle accordingly
-
-        if ('user_id' in userData) {
-          // It's a Beneficiary
-          this.appointment.userData = {
-            ...this.appointment.userData,
-            first_name: userData.first_name || '',
-            last_name: userData.last_name || '',
-            phone: userData.phone || '',
-            email: userData.email || '',
-            // Handle the image properly based on its type
-            image: userData.image ? {
-              id: userData.image.id || 0,
-              public_name: userData.image.public_name || '',
-              private_name: userData.image.private_name || '',
-              image_path: userData.image.image_path || '',
-              uploaded_at: userData.image.uploaded_at || '',
-              // beneficiary_id: (userData.image as BeneficiaryImage).beneficiary_id || ''
-            } as BeneficiaryImage : {} as BeneficiaryImage
-          };
-          console.log('🚀 Datos del beneficiario asignados:', this.appointment);
-        } else {
-          // It's a User
-          this.beneficiaryId = '';
-          this.userId = userData.id.toString();
-
-          // Directly assign to appointment object
-          this.appointment.beneficiary_id = '';
-          this.appointment.user_id = userData.id.toString();
-          this.appointment.is_for_beneficiary = false;
-
-          this.appointment.userData = {
-            ...this.appointment.userData,
-            id: userData.id || 0,
-            first_name: userData.first_name || '',
-            last_name: userData.last_name || '',
-            phone: userData.phone || '',
-            email: userData.email || '',
-            is_for_beneficiary: false,
-            // Handle the image properly based on its type
-            image: userData.image ? {
-              id: userData.image.id || 0,
-              public_name: userData.image.public_name || '',
-              private_name: userData.image.private_name || '',
-              image_path: userData.image.image_path || '',
-              uploaded_at: userData.image.uploaded_at || '',
-              user_id: (userData.image as UserImage).user_id || ''
-            } as UserImage : {} as UserImage
-          };
-          console.log('🚀 Datos del Usuario asignados:', this.appointment);
-        }
-
-        // Set success state
-        this.searchState.success = true;
-
-        // Reset success state after 3 seconds
-        setTimeout(() => {
-          this.searchState.success = false;
-        }, 3000);
-      } else {
-        // Set not found state
-        this.searchState.notFound = true;
-
-        // Clear user fields if no user is found
-        const isUserBeneficiary = 'beneficiary_id' in this.appointment.userData;
-
-        // Reset appointment IDs
-        this.appointment.user_id = '';
-        this.appointment.beneficiary_id = '';
-
-        if (isUserBeneficiary) {
-          // It's a Beneficiary
-          this.appointment.userData = {
-            ...this.appointment.userData,
-            first_name: '',
-            last_name: '',
-            phone: '',
-            email: '',
-            image: {
-              id: 0,
-              public_name: '',
-              private_name: '',
-              image_path: '',
-              uploaded_at: '',
-              beneficiary_id: ''
-            } as BeneficiaryImage
-          };
-        } else {
-          // It's a User
-          this.appointment.userData = {
-            ...this.appointment.userData,
-            first_name: '',
-            last_name: '',
-            phone: '',
-            email: '',
-            image: {
-              id: 0,
-              public_name: '',
-              private_name: '',
-              image_path: '',
-              uploaded_at: '',
-              user_id: ''
-            } as UserImage
-          };
-        }
-      }
-    },
-    (error) => {
-      // Set error state
-      this.searchState.loading = false;
-      this.searchState.error = true;
-      console.error('Error al buscar usuario:', error);
+    if (!idType || !idNumber) {
+      return;
     }
-  );
-}
+
+    // Set loading state
+    this.searchState.loading = true;
+
+    this.userService.findByIdentification(idType, idNumber).subscribe(
+      (userData) => {
+        this.searchState.loading = false;
+
+        if (userData) {
+          // Create a properly typed copy of the userData
+          // Check if the returned userData is a User or Beneficiary and handle accordingly
+
+          if ('user_id' in userData) {
+            // It's a Beneficiary
+            this.appointment.userData = {
+              ...this.appointment.userData,
+              first_name: userData.first_name || '',
+              last_name: userData.last_name || '',
+              phone: userData.phone || '',
+              email: userData.email || '',
+              // Handle the image properly based on its type
+              image: userData.image ? {
+                id: userData.image.id || 0,
+                public_name: userData.image.public_name || '',
+                private_name: userData.image.private_name || '',
+                image_path: userData.image.image_path || '',
+                uploaded_at: userData.image.uploaded_at || '',
+                // beneficiary_id: (userData.image as BeneficiaryImage).beneficiary_id || ''
+              } as BeneficiaryImage : {} as BeneficiaryImage
+            };
+            console.log('🚀 Datos del beneficiario asignados:', this.appointment);
+          } else {
+            // It's a User
+            this.beneficiaryId = '';
+            this.userId = userData.id.toString();
+
+            // Directly assign to appointment object
+            this.appointment.beneficiary_id = '';
+            this.appointment.user_id = userData.id.toString();
+            this.appointment.is_for_beneficiary = false;
+
+            this.appointment.userData = {
+              ...this.appointment.userData,
+              id: userData.id || 0,
+              first_name: userData.first_name || '',
+              last_name: userData.last_name || '',
+              phone: userData.phone || '',
+              email: userData.email || '',
+              is_for_beneficiary: false,
+              // Handle the image properly based on its type
+              image: userData.image ? {
+                id: userData.image.id || 0,
+                public_name: userData.image.public_name || '',
+                private_name: userData.image.private_name || '',
+                image_path: userData.image.image_path || '',
+                uploaded_at: userData.image.uploaded_at || '',
+                user_id: (userData.image as UserImage).user_id || ''
+              } as UserImage : {} as UserImage
+            };
+            console.log('🚀 Datos del Usuario asignados:', this.appointment);
+          }
+
+          // Set success state
+          this.searchState.success = true;
+
+          // Reset success state after 3 seconds
+          setTimeout(() => {
+            this.searchState.success = false;
+          }, 3000);
+        } else {
+          // Set not found state
+          this.searchState.notFound = true;
+
+          // Clear user fields if no user is found
+          const isUserBeneficiary = 'beneficiary_id' in this.appointment.userData;
+
+          // Reset appointment IDs
+          this.appointment.user_id = '';
+          this.appointment.beneficiary_id = '';
+
+          if (isUserBeneficiary) {
+            // It's a Beneficiary
+            this.appointment.userData = {
+              ...this.appointment.userData,
+              first_name: '',
+              last_name: '',
+              phone: '',
+              email: '',
+              image: {
+                id: 0,
+                public_name: '',
+                private_name: '',
+                image_path: '',
+                uploaded_at: '',
+                beneficiary_id: ''
+              } as BeneficiaryImage
+            };
+          } else {
+            // It's a User
+            this.appointment.userData = {
+              ...this.appointment.userData,
+              first_name: '',
+              last_name: '',
+              phone: '',
+              email: '',
+              image: {
+                id: 0,
+                public_name: '',
+                private_name: '',
+                image_path: '',
+                uploaded_at: '',
+                user_id: ''
+              } as UserImage
+            };
+          }
+        }
+      },
+      (error) => {
+        // Set error state
+        this.searchState.loading = false;
+        this.searchState.error = true;
+        console.error('Error al buscar usuario:', error);
+      }
+    );
+  }
 
   onIdentificationNumberChange() {
     // Clear any existing timeout
