@@ -11,7 +11,11 @@ import { RegisterComponent } from './pages/register/register.component';
 import { AuthService } from './services/auth.service';
 
 const routes: Routes = [
-  { path: 'login', component: AuthContainerComponent, canActivate: [AutoRedirectGuard]  }
+  {
+    path: 'login',
+    component: AuthContainerComponent,
+    canActivate: [AutoRedirectGuard],
+  },
 ];
 
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -30,14 +34,13 @@ import { AuthContainerComponent } from './components/auth-container/auth-contain
     RegisterComponent,
     LoginComponent,
     SharedModule,
-    AuthContainerComponent
-    
+    AuthContainerComponent,
   ],
   providers: [
-    AuthService, 
+    AuthService,
     AuthGuard,
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA] 
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AuthModule {}

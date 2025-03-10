@@ -1,6 +1,7 @@
 ng generate component modules/auth/pages/register 
 ng generate component modules/auth/pages/login 
 ng generate component modules/auth/pages/reset-password 
+ng generate component modules/auth/pages/NewPassword 
 ng generate component modules/home/pages/appointment-booking
 ng generate component modules/home/pages/chat
 ng generate component pages/pages
