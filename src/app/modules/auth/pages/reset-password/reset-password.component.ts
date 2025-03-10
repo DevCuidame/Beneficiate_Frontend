@@ -45,7 +45,7 @@ export class ResetPasswordComponent {
   async resetPassword() {
     if (this.resetPasswordForm.valid) {
       const loading = await this.loadingCtrl.create({
-        message: 'Iniciando sesión...',
+        message: 'Verificado...',
       });
       await loading.present();
 
