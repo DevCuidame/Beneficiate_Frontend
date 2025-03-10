@@ -122,8 +122,11 @@ export class AddBeneficiaryComponent implements OnInit {
     const beneficiary = this.beneficiaryService.getActiveBeneficiary();
     
     if (!beneficiary) {
-      this.beneficiaryForm.reset(); 
-      // return;
+      this.beneficiaryForm.reset();
+      this.beneficiaryForm.patchValue({
+        id: '' 
+      });
+      return;
     }
   
     if (beneficiary) {
@@ -194,7 +197,7 @@ export class AddBeneficiaryComponent implements OnInit {
       await loading.present();
   
       const beneficiaryData = { ...this.beneficiaryForm.value };
-      const isEditing = !!beneficiaryData.identification_number; 
+      const isEditing = !!beneficiaryData.id; 
   
       const action$ = isEditing
         ? this.beneficiaryService.updateBeneficiary(beneficiaryData.id, beneficiaryData)
@@ -216,7 +219,7 @@ export class AddBeneficiaryComponent implements OnInit {
           await loading.dismiss();
           const alert = await this.alertCtrl.create({
             header: 'Error',
-            message: isEditing ? 'Hubo un problema al actualizar el beneficiario.' : 'Hubo un problema al agregar el beneficiario.',
+            message: error.message,
             buttons: ['OK'],
           });
           await alert.present();

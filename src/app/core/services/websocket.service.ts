@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Observer } from 'rxjs';
 import { Appointment } from '../interfaces/appointment.interface';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class WebsocketService {
       throw new Error('No se encontró token en local storage');
     }
     
-    const wsUrl = 'ws://localhost:3000';
+    const wsUrl = 'ws://35.232.173.26:3000';
     this.ws = new WebSocket(wsUrl, token);
 
     return new Observable((observer: Observer<any>) => {

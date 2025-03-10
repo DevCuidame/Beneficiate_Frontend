@@ -55,9 +55,8 @@ export class MedicamentsAllergiesFormComponent implements OnInit {
       this.activeBeneficiary = beneficiary;
       this.initializeForm();
     });
-
-    this.addMedication();
-    this.addAllergy();
+    
+    // Se eliminaron las llamadas automáticas a addMedication() y addAllergy()
   }
 
   ngOnInit() {}
@@ -65,43 +64,59 @@ export class MedicamentsAllergiesFormComponent implements OnInit {
   initializeForm() {
     if (!this.activeBeneficiary) return;
 
-    this.form.setControl(
-      'medications',
-      this.fb.array(
-        this.activeBeneficiary.medications?.map((m) =>
-          this.fb.group({
-            id: m.id,
-            beneficiary_id: this.activeBeneficiary?.id,
-            medication: [
-              m.medication,
-              [Validators.required, Validators.minLength(3)],
-            ],
-            laboratory: [m.laboratory, [Validators.required]],
-            prescription: [m.prescription, [Validators.required]],
-            dosage: [m.dosage, [Validators.required]],
-            frequency: [m.frequency, [Validators.required]],
-          })
-        ) || []
-      )
-    );
+    // Si el beneficiario ya tiene datos, cargamos los existentes
+    if (this.activeBeneficiary.medications?.length) {
+      this.form.setControl(
+        'medications',
+        this.fb.array(
+          this.activeBeneficiary.medications.map((m) =>
+            this.fb.group({
+              id: m.id,
+              beneficiary_id: this.activeBeneficiary?.id,
+              medication: [
+                m.medication,
+                [Validators.required, Validators.minLength(3)],
+              ],
+              laboratory: [m.laboratory, [Validators.required]],
+              prescription: [m.prescription, [Validators.required]],
+              dosage: [m.dosage, [Validators.required]],
+              frequency: [m.frequency, [Validators.required]],
+            })
+          )
+        )
+      );
+    } else {
+      // Si no tiene datos, inicializamos un array vacío
+      this.form.setControl('medications', this.fb.array([]));
+    }
 
-    this.form.setControl(
-      'allergies',
-      this.fb.array(
-        this.activeBeneficiary.allergies?.map((a) =>
-          this.fb.group({
-            id: a.id,
-            beneficiary_id: this.activeBeneficiary?.id,
-            allergy_type: [a.allergy_type, [Validators.required]],
-            description: [a.description, [Validators.required]],
-            severity: [a.severity, [Validators.required]],
-          })
-        ) || []
-      )
-    );
+    if (this.activeBeneficiary.allergies?.length) {
+      this.form.setControl(
+        'allergies',
+        this.fb.array(
+          this.activeBeneficiary.allergies.map((a) =>
+            this.fb.group({
+              id: a.id,
+              beneficiary_id: this.activeBeneficiary?.id,
+              allergy_type: [a.allergy_type, [Validators.required]],
+              description: [a.description, [Validators.required]],
+              severity: [a.severity, [Validators.required]],
+            })
+          )
+        )
+      );
+    } else {
+      // Si no tiene datos, inicializamos un array vacío
+      this.form.setControl('allergies', this.fb.array([]));
+    }
   }
 
   isFormValid(): boolean {
+    // Solo validamos si hay elementos en los arrays
+    if (this.medications.length === 0 && this.allergies.length === 0) {
+      return false;
+    }
+    
     return (
       (this.medications.length > 0 && this.medications.valid) ||
       (this.allergies.length > 0 && this.allergies.valid)
