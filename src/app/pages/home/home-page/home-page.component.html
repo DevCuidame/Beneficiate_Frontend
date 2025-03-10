@@ -28,7 +28,7 @@
 
       <div class="paneles-container">
         <div class="beneficiarios-panel" *ngIf="selectedPanel === 'beneficiarios'">
-          <app-beneficiary-card ></app-beneficiary-card>
+          <app-beneficiary-card [isIndividual]="user?.plan?.id === 1"></app-beneficiary-card>
         </div>
 
         <div class="detalles-panel" *ngIf="selectedPanel === 'detalles'">

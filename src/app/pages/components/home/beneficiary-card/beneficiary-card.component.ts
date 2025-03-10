@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonicModule, AlertController, NavController } from '@ionic/angular';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
@@ -12,6 +12,7 @@ import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
   styleUrls: ['./beneficiary-card.component.scss'],
 })
 export class BeneficiaryCardComponent implements OnInit {
+  @Input() isIndividual: boolean = false;
   public beneficiaries: Beneficiary[] = [];
   public activeBeneficiary: Beneficiary | null = null;
 
@@ -56,6 +57,17 @@ export class BeneficiaryCardComponent implements OnInit {
 
   // Crear un nuevo beneficiario
   async createBeneficiary() {
+
+    if (this.isIndividual) {
+      const alert = await this.alertCtrl.create({
+        header: 'Plan Individual',
+        message: 'No puedes agregar beneficiarios porque tienes un plan individual.',
+        buttons: ['Aceptar'],
+      });
+      await alert.present();
+      return;
+    }
+
     if (this.beneficiaryCount >= this.maxBeneficiaries) {
       const alert = await this.alertCtrl.create({
         header: 'Límite alcanzado',
