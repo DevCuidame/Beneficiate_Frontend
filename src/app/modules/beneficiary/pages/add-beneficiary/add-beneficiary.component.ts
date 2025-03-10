@@ -122,11 +122,9 @@ export class AddBeneficiaryComponent implements OnInit {
     const beneficiary = this.beneficiaryService.getActiveBeneficiary();
     
     if (!beneficiary) {
-      // Clear the form for a new beneficiary
       this.beneficiaryForm.reset();
-      // Set default values if needed
       this.beneficiaryForm.patchValue({
-        id: '' // Ensure ID is empty for new beneficiaries
+        id: '' 
       });
       return;
     }
@@ -199,7 +197,6 @@ export class AddBeneficiaryComponent implements OnInit {
       await loading.present();
   
       const beneficiaryData = { ...this.beneficiaryForm.value };
-      // Check if there's an ID to determine if it's an edit or a new beneficiary
       const isEditing = !!beneficiaryData.id; 
   
       const action$ = isEditing
@@ -222,7 +219,7 @@ export class AddBeneficiaryComponent implements OnInit {
           await loading.dismiss();
           const alert = await this.alertCtrl.create({
             header: 'Error',
-            message: isEditing ? 'Hubo un problema al actualizar el beneficiario.' : 'Hubo un problema al agregar el beneficiario.',
+            message: error.message,
             buttons: ['OK'],
           });
           await alert.present();
