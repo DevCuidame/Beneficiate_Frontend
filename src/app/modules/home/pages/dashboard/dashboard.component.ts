@@ -15,6 +15,8 @@ import { PrimaryCardComponent } from 'src/app/shared/components/primary-card/pri
 import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
 import { Plan } from 'src/app/core/interfaces/plan.interface';
 import { PlanSelectionComponent } from 'src/app/shared/components/plan-selection/plan-selection/plan-selection.component';
+import { GreetingComponent } from 'src/app/shared/components/greeting/greeting.component';
+import { UserChatWidgetComponent } from 'src/app/shared/components/user-chat-widget/user-chat-widget.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,7 +29,9 @@ import { PlanSelectionComponent } from 'src/app/shared/components/plan-selection
     BeneficiaryCardComponent,
     FontAwesomeModule,
     PrimaryCardComponent,
-    PlanSelectionComponent
+    PlanSelectionComponent,
+    GreetingComponent,
+    UserChatWidgetComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
@@ -76,7 +80,8 @@ export class DashboardComponent implements OnInit {
           environment.url
         }${this.user.image.image_path.replace(/\\/g, '/')}`;
       } else {
-        this.profileImage = 'assets/images/default-profile.png';
+        this.profileImage = ''
+        this.profileImage = 'assets/images/default_user.png';
       }
     });
 

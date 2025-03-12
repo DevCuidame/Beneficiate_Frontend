@@ -15,14 +15,14 @@
         [control]="getFormControl(getVaccinationFormGroup(i), 'vaccination_date')"
       ></app-input>
 
-      <button type="button" class="remove" (click)="removeVaccination(i)" [disabled]="vaccinations.length === 1">
-        - Quitar
+      <button type="button" class="remove" (click)="removeVaccination(i)">
+        Quitar
       </button>
     </div>
   </div>
 
   <div class="add-box">
-    <button type="button" class="add" (click)="addVaccination()">+ Añadir</button>
+    <button type="button" class="add" (click)="addVaccination()">Añadir</button>
   </div>
 
   <app-custom-button

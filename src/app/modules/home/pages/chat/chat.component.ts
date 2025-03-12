@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule, NavController } from '@ionic/angular';
+import { IonicModule, NavController, IonContent, Platform } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { TabBarComponent } from 'src/app/shared/components/tab-bar/tab-bar.component';
 import { MessageComponent } from 'src/app/shared/components/message/message.component';
@@ -11,6 +11,8 @@ import { UserService } from 'src/app/modules/auth/services/user.service';
 import { User } from 'src/app/core/interfaces/auth.interface';
 import { WebsocketService } from 'src/app/core/services/websocket.service';
 import { ActivatedRoute } from '@angular/router';
+import { environment } from 'src/environments/environment';
+import { Keyboard } from '@capacitor/keyboard';
 
 @Component({
   selector: 'app-chat',
@@ -26,27 +28,38 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent implements OnInit, OnDestroy {
-  public backgroundStyle =
-    'url("../../../../../assets/background/background.svg") no-repeat bottom center / cover';
+  @ViewChild(IonContent, { static: false }) content!: IonContent;
+  
+  // Eliminamos la referencia al background con imagen
+  public backgroundStyle = 'url("../../../../../assets/background/background.svg") no-repeat bottom center / cover';
 
   public messageText: string = '';
   public messages: Message[] = [];
   private wsSubscription!: Subscription;
-  private user!: User | null;
+  public user!: User | null;
   public professionalId!: number | null;
   public specialtySelected: boolean = false;
   public confirmationSelected: boolean = false;
   public currentStep: 'specialty' | 'confirmation' = 'specialty';
+  public api = environment.url
+
+  cardDefaultHeight: string = '50%';
+  cardHeight: string = this.cardDefaultHeight;
+  private keyboardWillShowListener: any;
+  private keyboardWillHideListener: any;
 
   constructor(
     private websocketService: WebsocketService,
     private toastService: ToastService,
     private userService: UserService,
     private activatedRoute: ActivatedRoute,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private platform: Platform
   ) {}
 
   ngOnInit() {
+    this.setupKeyboardListeners();
+    
     // Obtenemos el professionalId de los query params
     this.activatedRoute.queryParams.subscribe((params) => {
       this.professionalId = params['professionalId']
@@ -60,29 +73,35 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   connectWebSocket() {
-    // Se pasa el professionalId al método connect para que se envíe en onopen
     this.wsSubscription = this.websocketService
       .connect(this.professionalId!)
       .subscribe(
         (data) => {
-          if (data.event === 'chatbot_message') {
-            console.log('Mensaje del bot recibido:', data);
-            if (
-              data.options &&
-              data.options.includes('si') &&
-              data.options.includes('no')
-            ) {
-              this.currentStep = 'confirmation';
-              this.confirmationSelected = false; // Aseguramos que esté habilitado para confirmar.
+          // Validamos que el mensaje tenga contenido antes de añadirlo
+          if (data && data.message && data.message.trim() !== '') {
+            console.log('Mensaje recibido por WebSocket:', data);
+            
+            if (data.event === 'chatbot_message') {
+              if (
+                data.options &&
+                data.options.includes('si') &&
+                data.options.includes('no')
+              ) {
+                this.currentStep = 'confirmation';
+                this.confirmationSelected = false;
+              }
+              if (data.redirectUrl) {
+                setTimeout(() => {
+                  this.navCtrl.navigateRoot(data.redirectUrl);
+                }, 5000);
+              }
             }
-            if (data.redirectUrl) {
-              setTimeout(() => {
-                this.navCtrl.navigateRoot(data.redirectUrl);
-              }, 5000);
-            }
-          }
 
-          this.messages.push(data);
+            this.messages.push(data);
+            this.scrollToBottom();
+          } else {
+            console.warn('Mensaje vacío recibido, ignorando:', data);
+          }
         },
         (error) => {
           console.error('WebSocket error:', error);
@@ -117,30 +136,74 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.messages.push(newMessage);
       this.websocketService.send(newMessage);
       this.messageText = '';
+      this.scrollToBottom();
     }
+  }
+
+  // Método para desplazarse al último mensaje
+  scrollToBottom() {
+    setTimeout(() => {
+      if (this.content) {
+        this.content.scrollToBottom(300);
+      }
+    }, 100);
   }
 
   ngOnDestroy() {
     if (this.wsSubscription) {
       this.wsSubscription.unsubscribe();
     }
+
+    if (this.keyboardWillShowListener) this.keyboardWillShowListener.remove();
+    if (this.keyboardWillHideListener) this.keyboardWillHideListener.remove();
   }
 
   handleOptionSelected(option: string) {
-    // Si el mensaje actual es para la especialidad, usa specialtySelected.
+    console.log('Opción seleccionada:', option, 'Paso actual:', this.currentStep);
+    
     if (this.currentStep === 'specialty') {
-      if (this.specialtySelected) return;
+      if (this.specialtySelected) {
+        console.log('Especialidad ya seleccionada, ignorando.');
+        return;
+      }
       this.specialtySelected = true;
+      console.log('Especialidad marcada como seleccionada');
     }
 
-    // Si es para confirmación, usamos confirmationSelected.
     if (this.currentStep === 'confirmation') {
-      if (this.confirmationSelected) return;
+      if (this.confirmationSelected) {
+        console.log('Confirmación ya seleccionada, ignorando.');
+        return;
+      }
       this.confirmationSelected = true;
+      console.log('Confirmación marcada como seleccionada');
     }
 
-    console.log('Opción seleccionada:', option);
     this.messageText = option;
     this.sendMessage();
+  }
+
+  private setupKeyboardListeners() {
+    if (this.platform.is('capacitor') || this.platform.is('cordova')) {
+      this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', (info) => {
+        const keyboardHeight = info.keyboardHeight;
+        this.cardHeight = `calc(100% - ${keyboardHeight}px)`;
+      });
+
+      this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', () => {
+        this.cardHeight = this.cardDefaultHeight;
+      });
+    } else {
+      window.addEventListener('resize', () => {
+        const viewportHeight = window.innerHeight;
+        const originalHeight = window.outerHeight;
+        
+        if (originalHeight - viewportHeight > 150) {
+          this.cardHeight = '80%'; 
+        } else {
+          this.cardHeight = this.cardDefaultHeight;
+        }
+      });
+    }
   }
 }

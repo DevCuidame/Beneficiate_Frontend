@@ -51,9 +51,6 @@ export class HealthConditionFormComponent implements OnInit {
       this.initializeForm();
     });
 
-    this.addDisease();
-    this.addDisability();
-    this.addDistinctive();
   }
 
   ngOnInit() {}

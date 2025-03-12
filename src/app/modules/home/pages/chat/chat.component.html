@@ -1,16 +1,19 @@
 <ion-content scrollY="false">
   <div class="messages">
     @for(msg of messages; track msg){
-
       <app-message 
-    [message]="msg" 
-    [optionDisabled]="currentStep === 'specialty' ? specialtySelected : confirmationSelected"
-    (optionSelected)="handleOptionSelected($event)">
-  </app-message>
-
+        [message]="msg" 
+        [optionDisabled]="currentStep === 'specialty' ? specialtySelected : confirmationSelected"
+        (optionSelected)="handleOptionSelected($event)">
+      </app-message>
     }
   </div>
-  <div class="card">
+  <div class="card" [ngStyle]="{'max-height': cardHeight}">
+    <div class="profile-container">
+      <div class="circle left">
+        <img [src]="api + user?.image?.image_path" [alt]="user?.first_name" />
+      </div>
+    </div>
     <div class="message-input">
       <ion-item lines="none">
         <ion-input

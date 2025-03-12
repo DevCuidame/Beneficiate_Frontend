@@ -19,20 +19,26 @@
         [control]="getFormControl(getDiseaseFormGroup(i), 'diagnosed_date')"
       ></app-input>
 
-      <app-input
-        label="Requiere Tratamiento"
-        type="checkbox"
-        [control]="getFormControl(getDiseaseFormGroup(i), 'treatment_required')"
-      ></app-input>
+      <div class="custom-checkbox-container">
+        <label class="custom-checkbox-label">
+          <input
+            type="checkbox"
+            [formControl]="getFormControl(getDiseaseFormGroup(i), 'treatment_required')"
+            class="custom-checkbox-input"
+          />
+          <span class="custom-checkbox-mark"></span>
+          <span class="custom-checkbox-text">Requiere tratamiento</span>
+        </label>
+      </div>
 
       <button type="button" class="remove" (click)="removeDisease(i)">
-        - Quitar
+        Quitar
       </button>
     </div>
   </div>
 
   <div class="add-box">
-    <button type="button" class="add" (click)="addDisease()">+ Añadir</button>
+    <button type="button" class="add" (click)="addDisease()">Añadir</button>
   </div>
 
   <h2>¿Tu ser querido tiene alguna discapacidad o condición?</h2>
@@ -50,21 +56,19 @@
       ></app-input>
 
       <button type="button" class="remove" (click)="removeDisability(i)">
-        - Quitar
+        Quitar
       </button>
     </div>
   </div>
 
   <div class="add-box">
-    <button type="button" class="add" (click)="addDisability()">
-      + Añadir
-    </button>
+    <button type="button" class="add" (click)="addDisability()">Añadir</button>
   </div>
 
   <h2>¿Tu ser querido tiene algún rasgo distinivo?</h2>
   <div formArrayName="distinctives">
     <div
-    class="container-item"
+      class="container-item"
       *ngFor="let distinctive of distinctives.controls; let i = index"
       [formGroup]="getDistinctiveFormGroup(i)"
     >
@@ -76,15 +80,13 @@
       ></app-input>
 
       <button type="button" class="remove" (click)="removeDistinctive(i)">
-        - Quitar
+        Quitar
       </button>
     </div>
   </div>
 
   <div class="add-box">
-    <button type="button" class="add" (click)="addDistinctive()">
-      + Añadir
-    </button>
+    <button type="button" class="add" (click)="addDistinctive()">Añadir</button>
   </div>
 
   <app-custom-button

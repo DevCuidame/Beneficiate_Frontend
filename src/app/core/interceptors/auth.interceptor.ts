@@ -1,4 +1,3 @@
-// src/app/core/interceptors/auth.interceptor.ts
 import { Injectable } from '@angular/core';
 import {
   HttpInterceptor,
@@ -19,6 +18,14 @@ export class AuthInterceptor implements HttpInterceptor {
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(
     null
   );
+
+  // Lista de rutas de autenticación que no deberían desencadenar un refresh token
+  private authRoutes = [
+    'api/v1/auth/login',
+    'api/v1/auth/register',
+    'api/v1/auth/refresh-token',
+    'api/v1/email/resend'
+  ];
 
   constructor(
     private router: Router,
@@ -42,9 +49,15 @@ export class AuthInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     return next.handle(this.addAuthToken(req)).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
+        // Verificar si es una ruta de autenticación
+        const isAuthRoute = this.authRoutes.some(route => req.url.includes(route));
+        
+        if (error.status === 401 && !isAuthRoute) {
+          // Solo intentamos refrescar el token si no es una ruta de autenticación
           return this.handle401Error(req, next);
         }
+        
+        // Para rutas de autenticación o errores diferentes, simplemente pasamos el error
         return throwError(() => error);
       })
     );

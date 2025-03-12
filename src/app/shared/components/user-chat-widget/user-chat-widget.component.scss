@@ -1,0 +1,314 @@
+// user-chat-widget.component.scss
+:host {
+    display: block;
+  }
+  
+  .chat-button {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transition: transform 0.2s;
+    
+    &:hover {
+      transform: scale(1.05);
+      background-color: #0069d9;
+    }
+  }
+  
+  .chat-widget {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: 350px;
+    height: 500px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 1000;
+  }
+  
+  .widget-header {
+    padding: 15px;
+    background-color: #007bff;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    
+    .close-button {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      padding: 0;
+      
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+  
+  .widget-content {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+  }
+  
+  .widget-chats {
+    width: 120px;
+    border-right: 1px solid #e9ecef;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    
+    .chat-item {
+      padding: 10px;
+      cursor: pointer;
+      border-bottom: 1px solid #e9ecef;
+      position: relative;
+      
+      &:hover {
+        background-color: #f1f3f5;
+      }
+      
+      &.selected {
+        background-color: #e7f5ff;
+      }
+      
+      .chat-info {
+        .agent-name {
+          font-size: 13px;
+          font-weight: 500;
+          margin: 0 0 5px;
+          color: var(--ion-color-dark);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        
+        .last-message {
+          font-size: 11px;
+          color: #6c757d;
+          margin: 0;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+      
+      .status-indicator {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #adb5bd;
+        
+        &.active {
+          background-color: #20c997;
+        }
+      }
+    }
+  }
+  
+  .widget-chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .widget-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    
+    .message-item {
+      margin-bottom: 12px;
+      max-width: 80%;
+      
+      &.user-message {
+        margin-left: auto;
+        
+        .message-bubble {
+          background-color: #339af0;
+          color: white;
+          border-radius: 18px 4px 4px 18px;
+        }
+        
+        .message-time {
+          text-align: right;
+        }
+      }
+      
+      &.agent-message {
+        .message-bubble {
+          background-color: white;
+          color: var(--ion-color-dark);
+          border: 1px solid #dee2e6;
+          border-radius: 4px 18px 18px 4px;
+        }
+      }
+      
+      &.system-message {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 100%;
+        
+        .message-bubble {
+          background-color: #f1f3f5;
+          color: #495057;
+          border-radius: 18px;
+          font-size: 13px;
+          text-align: center;
+          font-style: italic;
+        }
+        
+        .message-time {
+          text-align: center;
+        }
+      }
+    }
+    
+    .message-bubble {
+      padding: 10px 12px;
+      border-radius: 18px;
+      word-break: break-word;
+    }
+    
+    .message-time {
+      font-size: 11px;
+      color: #868e96;
+      margin-top: 4px;
+    }
+    
+    .empty-messages {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      p {
+        color: #adb5bd;
+        text-align: center;
+        font-size: 14px;
+      }
+    }
+  }
+  
+  .message-input {
+    padding: 10px;
+    background-color: white;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    
+    input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #ced4da;
+      border-radius: 20px;
+      outline: none;
+      
+      &:focus {
+        border-color: #339af0;
+      }
+    }
+    
+    button {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: #339af0;
+      color: white;
+      border: none;
+      margin-left: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      &:hover {
+        background-color: #228be6;
+      }
+    }
+  }
+  
+  .chat-closed {
+    padding: 10px;
+    background-color: #f8f9fa;
+    color: #6c757d;
+    text-align: center;
+    border-top: 1px solid #e9ecef;
+    font-size: 14px;
+  }
+  
+  .no-chat {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    
+    p {
+      color: #adb5bd;
+      text-align: center;
+      font-size: 14px;
+    }
+  }
+  
+  .error-notification {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background-color: #ff6b6b;
+    color: white;
+    padding: 8px 15px;
+    font-size: 14px;
+    text-align: center;
+  }
+  
+  .loading-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }

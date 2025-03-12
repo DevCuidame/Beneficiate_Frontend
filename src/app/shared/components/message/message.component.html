@@ -11,6 +11,7 @@
     </div>
   </div>
 </ng-container>
+
 <ng-template #regularMessage>
   <div class="message" [ngClass]="{
     sent: message.sender_type === 'USER',
@@ -23,9 +24,10 @@
       sent: message.sender_type === 'USER',
       received: ['AGENT', 'BOT'].includes(message.sender_type)
     }">
-      <span class="time">{{ message.sent_at }}</span>
+      <span class="time">{{ message.sent_at}}</span>
       <span class="status" *ngIf="message.sender_type === 'USER' && message.status">
-        {{ message.status }}
+        <ion-icon name="checkmark" *ngIf="message.status === 'read'"></ion-icon>
+        <ion-icon name="checkmark-done" *ngIf="message.status === 'delivered'"></ion-icon>
       </span>
     </div>
   </div>
