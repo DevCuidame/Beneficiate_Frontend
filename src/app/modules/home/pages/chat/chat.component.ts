@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, NavController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
@@ -28,6 +28,8 @@ import { ActivatedRoute } from '@angular/router';
 export class ChatComponent implements OnInit, OnDestroy {
   public backgroundStyle =
     'url("../../../../../assets/background/background.svg") no-repeat bottom center / cover';
+  @Output() toggle: EventEmitter<void> = new EventEmitter();
+  @Input() inputProfessionalId!: number | null;
 
   public messageText: string = '';
   public messages: Message[] = [];
@@ -47,24 +49,31 @@ export class ChatComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    // Obtenemos el professionalId de los query params
-    this.activatedRoute.queryParams.subscribe((params) => {
-      this.professionalId = params['professionalId']
-        ? +params['professionalId']
-        : null;
-      console.log('Professional ID recibido:', this.professionalId);
+    if (this.inputProfessionalId !== null ) {
+      this.setProfessionalId();
       this.connectWebSocket();
-    });
+    } else {
+      // Obtenemos el professionalId de los query params
+      this.activatedRoute.queryParams.subscribe((params) => {
+        this.professionalId = params['professionalId']
+          ? +params['professionalId']
+          : null;
+        console.log('Professional ID recibido:', this.professionalId);
+        this.connectWebSocket();
+      });
+    }
 
     this.user = this.userService.getUser();
   }
 
   connectWebSocket() {
+
     // Se pasa el professionalId al método connect para que se envíe en onopen
     this.wsSubscription = this.websocketService
       .connect(this.professionalId!)
       .subscribe(
         (data) => {
+          console.log(this.professionalId);
           if (data.event === 'chatbot_message') {
             console.log('Mensaje del bot recibido:', data);
             if (
@@ -124,6 +133,14 @@ export class ChatComponent implements OnInit, OnDestroy {
     if (this.wsSubscription) {
       this.wsSubscription.unsubscribe();
     }
+  }
+
+  setProfessionalId() {
+    this.professionalId = this.inputProfessionalId;
+  }
+
+  closeChat() {
+    this.toggle.emit(); 
   }
 
   handleOptionSelected(option: string) {

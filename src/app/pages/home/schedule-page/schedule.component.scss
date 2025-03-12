@@ -189,47 +189,112 @@ main {
     }
 
     .doc-schedule {
-      .msg-start {
-        color: var(--ion-color-medium);
-        font-size: 0.9rem;
-        font-weight: bold;
-        margin-bottom: 15px;
-      }
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
 
-      .doc-card {
-        height: 200px;
-        width: 350px;
-        position: relative;
+      .header-doc-schedule {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
 
-        img {
-          height: 100%;
-          position: absolute;
-          top: 0;
-          left: 0;
-          border-radius: 40px;
+        .msg-start {
+          color: var(--ion-color-medium);
+          font-size: 0.9rem;
+          font-weight: bold;
+          margin-bottom: 15px;
         }
 
-        .doc-info {
-          background: linear-gradient(90deg, rgba(211,226,235,0) 0%, rgba(216,231,238,1) 50%, rgba(122,165,220,1) 100%);
-          height: 100%;
-          width: 100%;
-          padding: 20px;
-          display: flex;
-          flex-direction: column;
-          align-items: end;
-          justify-content: space-around;
+        .custom-dropdown {
           position: relative;
-          border-radius: 40px;
-          z-index: 2;
+          display: inline-block;
+          width: 200px;
 
-          .get-date {
-            background-color: var(--ion-color-dark);
-            width: 50%;
-            padding: 15px 0;
-            border-radius: 25px;
+          .dropdown-btn {
+            background-color: var(--ion-color-secondary);
+            color: var(--ion-color-dark);
+            width: 100%;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            border: none;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+          }
 
-            h3 {
-              color: var(--ion-color-secondary);
+          .dropdown-list {
+            height: 14.25rem;
+            width: 100%;
+            padding: 0;
+            margin-top: 5px;
+            display: none;
+            list-style: none;
+            position: absolute;
+            overflow-y: scroll;
+            z-index: 15;
+
+
+            li {
+              background-color: var(--ion-color-secondary);
+              color: var(--ion-color-dark);
+              padding: 10px;
+              border-radius: 20px;
+              margin-top: 5px;
+              cursor: pointer;
+              font-weight: bold;
+            }
+          }
+
+          .show {
+            display: block;
+            transform: translateY(0);
+          }
+        }
+      }
+
+      .main-doc-schedule {
+        height: 225px;
+        width: 100%;
+        display: flex;
+        gap: 25px;
+        overflow: auto;
+
+        .doc-card {
+          height: 200px;
+          position: relative;
+
+          img {
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 40px;
+          }
+
+          .doc-info {
+            background: linear-gradient(90deg, rgba(211,226,235,0) 0%, rgba(216,231,238,1) 50%, rgba(122,165,220,1) 100%);
+            height: 100%;
+            width: 350px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: end;
+            justify-content: space-around;
+            position: relative;
+            border-radius: 40px;
+            z-index: 2;
+
+            .get-date {
+              background-color: var(--ion-color-dark);
+              width: 50%;
+              padding: 15px 0;
+              border-radius: 25px;
+
+              h3 {
+                color: var(--ion-color-secondary);
+              }
             }
           }
         }
@@ -239,10 +304,11 @@ main {
 
   .chat-container {
     height: 60vh;
-    width: 20vw;
+    width: 25rem;
     position: absolute;
     bottom: 0;
     right: 10vw;
+    z-index: 15;
   }
 
   .do-date-container {

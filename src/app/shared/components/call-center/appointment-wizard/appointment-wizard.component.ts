@@ -324,7 +324,7 @@ export class AppointmentWizardComponent implements OnInit {
       const availabilityArray = Object.entries(
         selectedProfessional.availability
       )
-        .filter(([_, range]) => range.start && range.end) // Validación adicional
+        .filter(([_, range]) => range.start && range.end)
         .map(([day, range]) => ({
           day: range.formatted_date,
           date: range.date,
@@ -338,7 +338,7 @@ export class AppointmentWizardComponent implements OnInit {
       this.selectedProfessionalAvailability.set(availabilityArray);
     } else {
       console.warn('⚠️ No hay disponibilidad para este profesional.');
-      this.selectedProfessionalAvailability.set([]); // Asegura que se limpie la data anterior
+      this.selectedProfessionalAvailability.set([]);
     }
   }
 
