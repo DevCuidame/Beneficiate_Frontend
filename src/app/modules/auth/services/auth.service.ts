@@ -26,36 +26,62 @@ export class AuthService {
   }
 
 
-  login(credentials: { email: string; password: string }): Observable<any> {
-    return this.http.post(`${apiUrl}api/v1/auth/login`, credentials).pipe(
-      map((response: any) => {
-        console.log(response);
-        localStorage.setItem('token', response.data.token.accessToken);
-        this.authState.next(true);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        this.userService.setUser(response.data.user as User);
+ login(credentials: { email: string; password: string }): Observable<any> {
+  return this.http.post(`${apiUrl}api/v1/auth/login`, credentials).pipe(
+    map((response: any) => {
+      localStorage.setItem('token', response.data.token.accessToken);
+      localStorage.setItem('refresh-token', response.data.token.refreshToken);
+      this.authState.next(true);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      this.userService.setUser(response.data.user as User);
 
+      if (response.data.plan?.max_beneficiaries) {
+        this.beneficiaryService.maxBeneficiariesSubject.next(response.data.plan.max_beneficiaries);
+      }
 
-        if (response.data.plan?.max_beneficiaries) {
-          this.beneficiaryService.maxBeneficiariesSubject.next(response.data.plan.max_beneficiaries);
-        }
+      // Guardar beneficiarios
+      if (response.data.beneficiaries) {
+        localStorage.setItem('beneficiaries', JSON.stringify(response.data.beneficiaries));
+        this.beneficiaryService.setBeneficiaries(response.data.beneficiaries as Beneficiary[]);
+      }
+      this.authState.next(true);
+      console.log('🔥 authState actualizado a TRUE');
 
-         // Guardar beneficiarios
-         if (response.data.beneficiaries) {
-          localStorage.setItem('beneficiaries', JSON.stringify(response.data.beneficiaries));
-          this.beneficiaryService.setBeneficiaries(response.data.beneficiaries as Beneficiary[]);
-        }
-        this.authState.next(true);
-        console.log('🔥 authState actualizado a TRUE');
-
-        return response;
-      })
-    );
-  }
+      return response;
+    }),
+    catchError(error => {
+      // Simplemente registra y pasa el error HTTP tal como es
+      console.error('Login error:', error);
+      
+      // Asegúrate de que el error devuelto contenga la información completa
+      // del error HTTP, incluyendo status y mensaje de error
+      return throwError(() => ({
+        status: error.status,
+        error: error.error,
+        message: error.error?.error || 'Error de autenticación'
+      }));
+    })
+  );
+}
 
   register(credentials: RegisterData): Observable<any> {
     return this.http.post(`${apiUrl}api/v1/auth/register`, credentials);
   }
+
+  /**
+ * Reenvía el correo de verificación al usuario
+ * @param email Email del usuario
+ */
+resendVerificationEmail(email: string): Observable<any> {
+  return this.http.post(`${apiUrl}api/v1/email/resend`, { email }).pipe(
+    catchError(error => {
+      console.error('Error al reenviar correo de verificación:', error);
+      return throwError(() => error);
+    })
+  );
+}
+
+
 
   logout(): void {
     localStorage.removeItem('token');
@@ -78,6 +104,11 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     return this.authState.value;
+  }
+
+  isAgent(): boolean {
+    const user = this.getUserData();
+    return user && user.isAgent === true;
   }
 
   refreshToken(): Observable<any> {

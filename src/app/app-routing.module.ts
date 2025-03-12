@@ -1,7 +1,11 @@
+import { AgentChatPanelComponent } from './pages/callCenter/agent-chat-panel/agent-chat-panel.component';
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AutoRedirectGuard } from './core/guards/auth.guard';
 import { BrowserRedirectGuard } from './core/guards/redirect.guard';
+import { VerifyEmailComponent } from './modules/auth/pages/verify-email/verify-email.component';
+import { UserChatWidgetComponent } from './shared/components/user-chat-widget/user-chat-widget.component';
+import { AgentGuard } from './core/guards/agent.guard';
 
 const routes: Routes = [
   {
@@ -22,6 +26,19 @@ const routes: Routes = [
   {
     path: 'reset-password',
     loadChildren: () => import('./modules/auth/pages/new-password/new-password.module').then(m => m.NewPasswordModule)
+  },
+  {
+    path: 'verify-email',
+    component: VerifyEmailComponent
+  },
+  {
+    path: 'chat-agent',
+    component: AgentChatPanelComponent,
+    // canActivate: [AgentGuard] 
+  },
+  {
+    path: 'chat-user',
+    component: UserChatWidgetComponent
   },
   {
     path: 'auth',

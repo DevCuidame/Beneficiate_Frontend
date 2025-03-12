@@ -57,8 +57,6 @@ export class MedicalHistoryFormComponent implements OnInit {
       this.initializeForm();
     });
 
-    this.addMedicalHistory();
-    this.addFamilyHistory();
   }
 
   ngOnInit() {}

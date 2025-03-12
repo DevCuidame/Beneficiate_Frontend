@@ -25,10 +25,11 @@ export class ResetPasswordService {
    * @param token Token de restablecimiento
    * @param newPassword Nueva contraseña
    */
-  resetPassword(token: string, newPassword: string): Observable<any> {
+  resetPassword(token: string, newPassword: string, confirmPassword: string): Observable<any> {
     return this.http.post(`${this.apiUrl}api/v1/password/reset`, { 
       token, 
-      password: newPassword 
+      newPassword: newPassword ,
+      confirmPassword: confirmPassword
     });
   }
 

@@ -48,3 +48,43 @@
 p {
     margin: 0;
 }
+
+/* Añade esto a tu archivo global.scss o donde manejes los estilos globales */
+
+/* Estilos para el modal de verificación */
+.verification-modal .modal-wrapper {
+  --width: 90%;
+  --max-width: 400px;
+  --height: auto;
+  --border-radius: 16px;
+  --box-shadow: 0 28px 48px rgba(0, 0, 0, 0.4);
+}
+
+.verification-modal ion-header {
+  --background: transparent;
+}
+
+.verification-modal ion-toolbar {
+  --background: transparent;
+}
+
+.verification-modal ion-content {
+  --background: var(--ion-background-color);
+}
+
+/* Animación para el icono */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.verification-modal .verification-icon {
+  animation: pulse 2s infinite ease-in-out;
+}

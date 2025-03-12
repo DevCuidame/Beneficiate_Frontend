@@ -8,7 +8,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { NavController } from '@ionic/angular';
+import { IonicModule, NavController } from '@ionic/angular';
 import {
   Beneficiary,
   Vaccination,
@@ -26,6 +26,7 @@ import { InputComponent } from 'src/app/shared/components/input/input.component'
     CommonModule,
     InputComponent,
     CustomButtonComponent,
+    IonicModule
   ],
   templateUrl: './vacinations-form.component.html',
   styleUrls: ['./vacinations-form.component.scss'],
@@ -50,7 +51,6 @@ export class VacinationsFormComponent implements OnInit {
       vaccinations: this.fb.array([]),
     });
 
-    this.addVaccination();
   }
 
   ngOnInit() {
@@ -103,7 +103,8 @@ export class VacinationsFormComponent implements OnInit {
   }
 
   removeVaccination(index: number) {
-    this.vaccinations.removeAt(index);this.form.updateValueAndValidity();
+    this.vaccinations.removeAt(index);
+    this.form.updateValueAndValidity();
     
   }
 

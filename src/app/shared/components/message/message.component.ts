@@ -14,7 +14,6 @@ import { Message } from 'src/app/core/interfaces/message.interface';
 export class MessageComponent {
   @Input() message!: Message;
   @Output() optionSelected = new EventEmitter<string>();
-  // Renombramos la flag para mayor claridad
   @Input() optionDisabled: boolean = false;
 
   onSelectOption(option: string) {

@@ -69,11 +69,12 @@ export class NewPasswordComponent implements OnInit {
     
     this.isSubmitting = true;
     const newPassword = this.newPasswordForm.get('password')?.value;
+    const confirmPassword = this.newPasswordForm.get('confirmPassword')?.value;
     
     const loading = await this.createLoadingIndicator('Guardando nueva contraseña...');
     await loading.present();
 
-    this.resetPasswordService.resetPassword(this.token, newPassword)
+    this.resetPasswordService.resetPassword(this.token, newPassword, confirmPassword)
       .pipe(
         finalize(() => {
           loading.dismiss();

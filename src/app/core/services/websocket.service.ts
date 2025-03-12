@@ -18,39 +18,56 @@ export class WebsocketService {
       throw new Error('No se encontró token en local storage');
     }
     
-    const wsUrl = 'ws://35.232.173.26:3000';
-    this.ws = new WebSocket(wsUrl, token);
+    // Asegurarse de que la URL tenga el formato correcto para WebSocket
+    const baseUrl = environment.url.replace(/^http/, 'ws').replace(/\/$/, '');
+    const wsUrl = `${baseUrl}/ws`; // Asegúrate de que coincida con la ruta de tu servidor WebSocket
+    
+    // Usar el mismo formato para los protocolos que usa ChatWebsocketService
+    this.ws = new WebSocket(wsUrl, ['tokenAuth', token]);
 
     return new Observable((observer: Observer<any>) => {
       this.ws.onopen = () => {
-        console.log('Conexión WebSocket establecida');
+        console.log('Conexión WebSocket del chatbot establecida');
         // Envía el mensaje init desde onopen para garantizar que la conexión esté lista.
         if (professionalId) {
           console.log('Enviando init desde onopen con professionalId:', professionalId);
-          this.ws.send(JSON.stringify({ event: 'init', professionalId }));
+          this.ws.send(JSON.stringify({ 
+            event: 'chatbot_init', // Usar un nombre de evento específico para el chatbot
+            professionalId 
+          }));
         }
       };
 
       this.ws.onmessage = (event) => {
         try {
+          console.log('Mensaje recibido en WebsocketService (chatbot):', event.data);
           const data = JSON.parse(event.data);
+          
+          // Solo procesar eventos específicos del chatbot o de citas
           if (data.event === 'user_appointments') {
             console.log("📢 Citas recibidas:", data.appointments);
             this.userAppointments.next(data.appointments);
           }
-          observer.next(data);
+          
+          // También pasar eventos de chatbot al componente
+          if (data.event === 'chatbot_message' || 
+              data.event === 'user_appointments' ||
+              data.event === 'new_appointment') {
+            observer.next(data);
+          }
         } catch (error) {
+          console.error('Error procesando mensaje WebSocket:', error);
           observer.error(error);
         }
       };
 
       this.ws.onerror = (error) => {
-        console.error('Error en WebSocket:', error);
+        console.error('Error en WebSocket del chatbot:', error);
         observer.error(error);
       };
 
       this.ws.onclose = () => {
-        console.log('Conexión WebSocket cerrada');
+        console.log('Conexión WebSocket del chatbot cerrada');
         observer.complete();
       };
 
@@ -64,23 +81,17 @@ export class WebsocketService {
 
   public send(data: any): void {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify(data));
-      console.log("🚀 ~ WebsocketService ~ send ~ data:", data);
+      // Añadir un tipo para identificar que es un mensaje del chatbot
+      const chatbotData = { 
+        ...data, 
+        source: 'chatbot' // Añadir un campo para identificar la fuente
+      };
+      
+      this.ws.send(JSON.stringify(chatbotData));
+      console.log("🚀 ~ WebsocketService ~ send ~ chatbotData:", chatbotData);
     } else {
-      console.error('WebSocket no está conectado.');
+      console.error('WebSocket del chatbot no está conectado.');
     }
-  }
-
-  public notifyTyping(chat_id: string, user_id: string): void {
-    this.send({ event: 'typing', chat_id, user_id });
-  }
-
-  public notifyStopTyping(chat_id: string, user_id: string): void {
-    this.send({ event: 'stop_typing', chat_id, user_id });
-  }
-
-  public markMessageAsRead(chat_id: string, user_id: string, message_id: string): void {
-    this.send({ event: 'message_read', chat_id, user_id, message_id });
   }
 
   public disconnect(): void {

@@ -1,6 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { AlertController, LoadingController, NavController } from '@ionic/angular';
+import {
+  AlertController,
+  LoadingController,
+  NavController,
+} from '@ionic/angular';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -10,20 +14,21 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./health-professional-card.component.scss'],
 })
 export class HealthProfessionalCardComponent implements OnInit {
-
-  @Input() first_name: string = ''; 
-  @Input() last_name: string = ''; 
-  @Input() specialty_name: string = ''; 
-  @Input() profileImage: string = 'assets/images/test_doctor.svg'; 
+  @Input() first_name: string = '';
+  @Input() last_name: string = '';
+  @Input() specialty_name: string = '';
+  @Input() profileImage: string = 'assets/images/test_doctor.svg';
   @Input() buttonVisible: boolean = true;
   @Input() agendaColor: string = 'var(--ion-color-primary)';
   @Input() professionalId!: number;
 
   public api = environment.url;
 
-  constructor(private alertCtrl: AlertController, private navCtrl: NavController, 
+  constructor(
+    private alertCtrl: AlertController,
+    private navCtrl: NavController,
     private loadingCtrl: LoadingController
-  ) { }
+  ) {}
 
   ngOnInit() {}
 
@@ -31,26 +36,26 @@ export class HealthProfessionalCardComponent implements OnInit {
     const alert = await this.alertCtrl.create({
       header: 'Solicitar cita',
       message: 'Selecciona el método de contacto que prefieras',
-      cssClass: 'two-button-alert', 
+      cssClass: 'two-button-alert',
       buttons: [
         {
           text: 'Whatsapp',
           cssClass: 'whatsapp-button',
           handler: () => {
-            
-
-
-          }
+            this.openWhatsapp();
+          },
         },
         {
           text: 'Chat',
           cssClass: 'chat-button',
           handler: () => {
             console.log('Chat presionado');
-            this.navCtrl.navigateForward(['/home/chat'], { queryParams: { professionalId: this.professionalId } });
-          }
-        }
-      ]
+            this.navCtrl.navigateForward(['/home/chat'], {
+              queryParams: { professionalId: this.professionalId },
+            });
+          },
+        },
+      ],
     });
     await alert.present();
   }
@@ -58,11 +63,15 @@ export class HealthProfessionalCardComponent implements OnInit {
   openWhatsapp = async () => {
     const loading = await this.showLoading();
     try {
-      const whatsappUrl = 'whatsapp://send?phone=573043520351&text=Hola, quiero agendar una cita con el doctor';
+      const whatsappUrl =
+        'whatsapp://send?phone=573043520351&text=Hola, quiero agendar una cita con el doctor';
       window.location.href = whatsappUrl;
-      
+
       setTimeout(() => {
-        window.open('https://web.whatsapp.com/send?phone=573043520351&text=Hola, quiero agendar una cita con el doctor', '_blank');
+        window.open(
+          'https://web.whatsapp.com/send?phone=573043520351&text=Hola, quiero agendar una cita con el doctor',
+          '_blank'
+        );
       }, 500);
     } catch (error) {
       console.error('Error al abrir WhatsApp:', error);

@@ -2,6 +2,7 @@ ng generate component modules/auth/pages/register
 ng generate component modules/auth/pages/login 
 ng generate component modules/auth/pages/reset-password 
 ng generate component modules/auth/pages/NewPassword 
+ng generate component modules/auth/pages/verifyEmail 
 ng generate component modules/home/pages/appointment-booking
 ng generate component modules/home/pages/chat
 ng generate component pages/pages
@@ -10,6 +11,7 @@ ng generate component modules/call-center/components/header-dash
 ng generate component modules/call-center/components/sidebar-dash
 
 ng generate component pages/callCenter/pendingAppointments
+ng generate component pages/callCenter/agentChatPanel
 ng generate component pages/callCenter/appointmentAssignment
 ng generate component pages/callCenter/dailyAppointments
 ng generate component shared/call-center/pendingCard
@@ -20,6 +22,11 @@ ng generate component shared/components/call-center/specialtyCard
 ng generate component shared/components/call-center/patientSearchBar
 ng generate component shared/components/plan-selection/plan-selection
 ng generate component shared/components/inline-payment/
+ng generate component shared/components/greeting 
+ng generate component shared/components/userChatWidget 
+
+ng generate service core/services/chatWebsocket
+ng generate service core/services/agent-chat
 
 ng generate component shared/components/beneficiary-card
 ng generate component shared/components/primary-card
