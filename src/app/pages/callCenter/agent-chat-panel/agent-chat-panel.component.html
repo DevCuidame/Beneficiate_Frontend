@@ -47,10 +47,10 @@
                class="chat-item"
                [class.selected]="selectedChat?.id === chat.id"
                (click)="selectChat(chat)">
-            <div class="avatar">{{chat.user.first_name[0]}}{{chat.user.last_name[0]}}</div>
+            <div class="avatar">{{chat.user?.first_name?.[0] || 'U'}}{{chat.user?.last_name?.[0] || ''}}</div>
             <div class="chat-info">
-              <p class="name">{{chat.user.first_name}} {{chat.user.last_name}}</p>
-              <p class="message">{{chat.last_message.message || 'No hay mensajes'}}</p>
+              <p class="name">{{chat.user?.first_name || 'Usuario'}} {{chat.user?.last_name || ''}}</p>
+              <p class="message">{{chat.last_message?.message || 'No hay mensajes'}}</p>
             </div>
             <span class="status-dot" [class.online]="chat.status === 'ACTIVE'"></span>
           </div>

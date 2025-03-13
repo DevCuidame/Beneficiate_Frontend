@@ -6,11 +6,11 @@
   .chat-button {
     position: fixed;
     right: 20px;
-    bottom: 20px;
+    top: 20px;
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    background-color: #007bff;
+    background-color: var(--ion-color-dark);
     color: white;
     display: flex;
     align-items: center;
@@ -22,7 +22,7 @@
     
     &:hover {
       transform: scale(1.05);
-      background-color: #0069d9;
+      background-color: var(--ion-color-custom-dark-blue);
     }
   }
   
@@ -43,7 +43,7 @@
   
   .widget-header {
     padding: 15px;
-    background-color: #007bff;
+    background-color: var(--ion-color-custom-dark-blue);
     color: white;
     display: flex;
     justify-content: space-between;
@@ -152,7 +152,7 @@
         margin-left: auto;
         
         .message-bubble {
-          background-color: #339af0;
+          background-color: var(--ion-color-custom-dark-blue);
           color: white;
           border-radius: 18px 4px 4px 18px;
         }
@@ -226,12 +226,14 @@
     input {
       flex: 1;
       padding: 8px 12px;
+    background-color: white;
+      color: var(--ion-color-dark);
       border: 1px solid #ced4da;
       border-radius: 20px;
       outline: none;
       
       &:focus {
-        border-color: #339af0;
+        border-color: var(--ion-color-dark);
       }
     }
     
@@ -239,7 +241,7 @@
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      background-color: #339af0;
+      background-color: var(--ion-color-dark);
       color: white;
       border: none;
       margin-left: 8px;
@@ -249,7 +251,7 @@
       justify-content: center;
       
       &:hover {
-        background-color: #228be6;
+        background-color: var(--ion-color-custom-dark-blue);
       }
     }
   }
@@ -302,7 +304,7 @@
       width: 40px;
       height: 40px;
       border: 4px solid #f3f3f3;
-      border-top: 4px solid #3498db;
+      border-top: 4px solid var(--ion-color-dark);
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
