@@ -32,6 +32,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   public backgroundStyle = 'url("../../../../../assets/background/background.svg") no-repeat bottom center / cover';
   @Output() toggle: EventEmitter<void> = new EventEmitter();
   @Input() inputProfessionalId!: number | null;
+  @Input() isHeaderEnable: boolean = false;
 
   public messageText: string = '';
   public messages: Message[] = [];
