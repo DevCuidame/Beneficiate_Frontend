@@ -73,27 +73,21 @@ export class LoginComponent {
         window.location.reload();
       },
       async (error) => {
-        console.log("🚀 ~ LoginComponent ~ error:", error);
         await loading.dismiss();
         
-        // Extract the proper error message
         let errorMessage = 'Error al iniciar sesión';
         
         if (error.error && error.error.error) {
-          // If the API returns a formatted error message
           errorMessage = error.error.error;
         } else if (error.message) {
-          // Fallback to error.message if available
           errorMessage = error.message;
         }
         
-        // Check if it's a verification email error
         if (errorMessage.includes('verifica tu correo') || 
             errorMessage.toLowerCase().includes('email verification') ||
             (error.status === 401 && errorMessage.includes('correo'))) {
           this.showVerificationAlert(this.loginForm.value.email);
         } else {
-          // Standard error alert
           const alert = await this.alertCtrl.create({
             header: 'Error',
             message: errorMessage,
