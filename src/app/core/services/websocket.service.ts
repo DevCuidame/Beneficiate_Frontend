@@ -36,16 +36,15 @@ export class WebsocketService {
 
       this.ws.onmessage = (event) => {
         try {
-          console.log('Mensaje recibido en WebsocketService (chatbot):', event.data);
           const data = JSON.parse(event.data);
           
-          if (data.event === 'user_appointments') {
+          if (data.event === 'all_appointments') {
             console.log("📢 Citas recibidas:", data.appointments);
             this.userAppointments.next(data.appointments);
+            observer.next(data);
           }
           
           if (data.event === 'chatbot_message' || 
-              data.event === 'user_appointments' ||
               data.event === 'new_appointment') {
             observer.next(data);
           }

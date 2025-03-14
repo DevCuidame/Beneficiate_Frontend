@@ -31,17 +31,34 @@ export class AppointmentAssignmentComponent implements OnInit, OnDestroy {
   constructor(private websocketService: WebsocketService) {}
 
   ngOnInit(): void {
+    // Subscribe to WebSocket events
     this.wsSubscription = this.websocketService.connect().subscribe({
       next: (data) => {
         console.log('Datos recibidos desde WebSocket:', data);
+        
         if (data.event === 'all_appointments' && data.appointments) {
-          this.appointments = data.appointments.data as Appointment[];
-          this.appointmentCounts = data.appointments.counts;
+          // Check if appointments data has the expected structure
+          if (data.appointments.data && data.appointments.counts) {
+            // Structure with data and counts
+            this.appointments = data.appointments.data;
+            this.appointmentCounts = data.appointments.counts;
+          } else {
+            // Plain array of appointments without counts
+            this.appointments = Array.isArray(data.appointments) ? data.appointments : [];
+            this.updateAppointmentCounts();
+          }
+          
           this.updateRequests();
           console.log('Citas actualizadas:', this.appointments);
           console.log('Contadores:', this.appointmentCounts);
-        } else if (data.event === 'new_appointment' && data.appointment) {
+        } 
+        else if (data.event === 'new_appointment' && data.appointment) {
           this.appointments.push(data.appointment as Appointment);
+          // Update counts when a new appointment arrives
+          const status = data.appointment.status as keyof appointmentCounts;
+          if (status && this.appointmentCounts[status] !== undefined) {
+            this.appointmentCounts[status]++;
+          }
           console.log('Nueva cita agregada:', data.appointment);
           this.updateRequests();
         }
@@ -53,19 +70,43 @@ export class AppointmentAssignmentComponent implements OnInit, OnDestroy {
         console.log('Conexión WebSocket cerrada');
       },
     });
+
+    // The connection is now handled in the service's onopen
   }
 
+  // Calculate counts from appointments array
+  updateAppointmentCounts() {
+    // Reset counts
+    Object.keys(this.appointmentCounts).forEach(key => {
+      this.appointmentCounts[key as keyof appointmentCounts] = 0;
+    });
+
+    // Count by status
+    this.appointments.forEach(appointment => {
+      const status = appointment.status as keyof appointmentCounts;
+      if (status && this.appointmentCounts[status] !== undefined) {
+        this.appointmentCounts[status]++;
+      }
+    });
+  }
 
   updateRequests() {
     this.requests = this.appointmentCounts.PENDING > 0
       ? `${this.appointmentCounts.PENDING} solicitudes`
       : '0 solicitudes';
   }
+
+  requestAppointments() {
+    console.log('Solicitando todas las citas...');
+    this.websocketService.send({
+      event: 'all_appointments'
+    });
+  }
+
   ngOnDestroy(): void {
     if (this.wsSubscription) {
       this.wsSubscription.unsubscribe();
     }
     this.websocketService.disconnect();
   }
-  
 }
