@@ -68,6 +68,7 @@ export class LoginComponent {
   navigateToChangePassword() {
     this.router.navigate(['/desktop/change-password']);
   }
+  
   async login() {
     if (this.loginForm.valid) {
       const loading = await this.loadingCtrl.create({
@@ -79,7 +80,6 @@ export class LoginComponent {
         async (response) => {
           await loading.dismiss();
           setTimeout(() => {
-
             if (!response.data.user.agentActive) {
               this.router.navigateByUrl('/home-desktop');
             } else {
@@ -89,14 +89,88 @@ export class LoginComponent {
         },
         async (error) => {
           await loading.dismiss();
-          const alert = await this.alertCtrl.create({
-            header: 'Error',
-            message: 'Credenciales incorrectas',
-            buttons: ['OK'],
-          });
-          await alert.present();
+          
+          let errorMessage = 'Credenciales incorrectas';
+          
+          if (error.error && error.error.error) {
+            errorMessage = error.error.error;
+          } else if (error.message) {
+            errorMessage = error.message;
+          }
+          
+          if (errorMessage.includes('verifica tu correo') || 
+              errorMessage.toLowerCase().includes('email verification') ||
+              (error.status === 401 && errorMessage.includes('correo'))) {
+            this.showVerificationAlert(this.loginForm.value.email);
+          } else {
+            const alert = await this.alertCtrl.create({
+              header: 'Error',
+              message: errorMessage,
+              buttons: ['OK'],
+            });
+            await alert.present();
+          }
         }
       );
     }
+  }
+
+  /**
+   * Muestra un diálogo específico para errores de verificación de correo
+   */
+  async showVerificationAlert(email: string) {
+    const alert = await this.alertCtrl.create({
+      header: 'Verificación Pendiente',
+      message: `Por favor verifica tu correo electrónico para continuar. Hemos enviado un enlace de verificación a ${email}`,
+      cssClass: 'verification-alert-modal',
+      buttons: [
+        {
+          text: 'Reenviar Correo',
+          handler: () => {
+            this.resendVerificationEmail(email);
+          }
+        },
+        {
+          text: 'OK',
+          role: 'cancel'
+        }
+      ]
+    });
+    
+    await alert.present();
+  }
+
+  /**
+   * Reenvía el correo de verificación
+   */
+  resendVerificationEmail(email: string) {
+    // Muestra un loading
+    this.loadingCtrl.create({
+      message: 'Reenviando correo de verificación...'
+    }).then(loading => {
+      loading.present();
+      
+      // Llama al servicio para reenviar el correo
+      this.authService.resendVerificationEmail(email).subscribe(
+        async () => {
+          loading.dismiss();
+          const successAlert = await this.alertCtrl.create({
+            header: 'Correo Enviado',
+            message: 'Hemos reenviado el correo de verificación. Por favor revisa tu bandeja de entrada.',
+            buttons: ['OK']
+          });
+          await successAlert.present();
+        },
+        async (error) => {
+          loading.dismiss();
+          const errorAlert = await this.alertCtrl.create({
+            header: 'Error',
+            message: 'No pudimos reenviar el correo de verificación. Por favor intenta más tarde.',
+            buttons: ['OK']
+          });
+          await errorAlert.present();
+        }
+      );
+    });
   }
 }

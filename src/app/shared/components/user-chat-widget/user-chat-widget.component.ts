@@ -53,24 +53,62 @@ export class UserChatWidgetComponent implements OnInit, OnDestroy {
   }
 
   private handleWebSocketMessage(data: any): void {
-    console.log('Mensaje WebSocket recibido en usuario:', data);
-  
+    console.log('WebSocket message received:', data);  // Add this for debugging
+    
     switch (data.event) {
       case 'new_chat':
-        this.activeChats = [data.chat, ...this.activeChats];
-    
-        this.chatVisible = true;
-    
-        if (!this.selectedChat) {
-          this.selectedChat = data.chat;
-          if (data.message) {
-            this.messages = [this.normalizeMessage(data.message, data.chat_id)];
-          } else {
-            this.messages = [];
+      case 'chat_initiated':  // Add handling for this event
+        console.log('New chat received:', data);
+        
+        // Ensure the chat object has a valid structure
+        if (!data.chat) {
+          console.error('Received chat event without chat data', data);
+          return;
+        }
+        
+        // Check if this chat already exists in our list
+        const existingChatIndex = this.activeChats.findIndex(chat => chat.id === data.chat.id);
+        
+        if (existingChatIndex === -1) {
+          // This is a new chat, add it to the list
+          this.activeChats = [data.chat, ...this.activeChats];
+          
+          // Show the chat widget
+          this.chatVisible = true;
+          
+          // If no chat is selected, select this one
+          if (!this.selectedChat) {
+            this.selectChat(data.chat);
+            
+            // If there's a welcome message, add it
+            if (data.message) {
+              const welcomeMessage = this.normalizeMessage(data.message, data.chat.id);
+              this.messages = [welcomeMessage];
+              setTimeout(() => this.scrollToBottom(), 100);
+            } else {
+              // Create a system message indicating a new chat was started
+              const systemMessage = {
+                id: 'sys_' + Date.now(),
+                chat_id: data.chat.id,
+                message: 'Un agente ha iniciado este chat con usted.',
+                sender_type: 'SYSTEM',
+                created_at: new Date().toISOString(),
+                sent_at: new Date().toISOString(),
+                is_read: false
+              };
+              this.messages = [this.normalizeMessage(systemMessage, data.chat.id)];
+              setTimeout(() => this.scrollToBottom(), 100);
+            }
           }
+        } else {
+          // This chat already exists, update it if needed
+          this.activeChats[existingChatIndex] = {
+            ...this.activeChats[existingChatIndex],
+            ...data.chat
+          };
         }
         break;
-    
+  
       case 'new_message':
       case 'agent_chat_message':
       case 'user_message':
@@ -78,34 +116,52 @@ export class UserChatWidgetComponent implements OnInit, OnDestroy {
           console.error('Mensaje recibido sin propiedad message:', data);
           return;
         }
-          
+  
+        // If we receive a message for a chat we don't have, request all chats
+        const chatExists = this.activeChats.some(chat => chat.id === data.chat_id);
+        if (!chatExists) {
+          console.log('Received message for unknown chat, fetching chats...');
+          this.fetchUserChats();
+          return;
+        }
+  
         const message = this.normalizeMessage(data.message, data.chat_id);
-        
-        const messageExists = data.message.id && 
-                              this.messages.some(m => m.id === data.message.id);
-                              
-        const tempMessageExists = this.messages.some(m => 
-            m.id.toString().startsWith('temp_') && 
-            m.message === message.message && 
-            m.sender_type === message.sender_type && 
-            m.chat_id === message.chat_id);
-        
-        if (!messageExists && !tempMessageExists && 
-            this.selectedChat && data.chat_id === this.selectedChat.id) {
-          console.log('Agregando mensaje al chat seleccionado:', message);
+  
+        const messageExists =
+          data.message.id &&
+          this.messages.some((m) => m.id === data.message.id);
+  
+        const tempMessageExists = this.messages.some(
+          (m) =>
+            m.id.toString().startsWith('temp_') &&
+            m.message === message.message &&
+            m.sender_type === message.sender_type &&
+            m.chat_id === message.chat_id
+        );
+  
+        if (
+          !messageExists &&
+          !tempMessageExists &&
+          this.selectedChat &&
+          data.chat_id === this.selectedChat.id
+        ) {
           this.messages.push(message);
           setTimeout(() => this.scrollToBottom(), 100);
-        } else {
-          console.log('Mensaje ignorado (duplicado o chat no seleccionado):', 
-                     { messageExists, tempMessageExists, message });
         }
-    
+  
+        // If this message is from an agent and the chat is not visible, show a notification
+        if (data.message.sender_type === 'AGENT' && !this.chatVisible) {
+          // TODO: Show a notification or highlight the chat button
+          this.chatVisible = true; // Automatically open the chat on new message
+        }
+  
         this.activeChats = this.activeChats.map((chat) =>
           chat.id === data.chat_id
             ? { ...chat, last_message: message.message }
             : chat
         );
         break;
+        
       case 'chat_closed':
         if (this.selectedChat && data.chat_id === this.selectedChat.id) {
           this.selectedChat = { ...this.selectedChat, status: 'CLOSED' };
@@ -115,8 +171,11 @@ export class UserChatWidgetComponent implements OnInit, OnDestroy {
               chat_id: data.chat_id,
               message: data.message.message || 'Chat cerrado',
               sender_type: data.message.sender_type || 'SYSTEM',
-              created_at: data.message.created_at || data.message.sent_at || new Date().toISOString(),
-              is_read: data.message.is_read || false
+              created_at:
+                data.message.created_at ||
+                data.message.sent_at ||
+                new Date().toISOString(),
+              is_read: data.message.is_read || false,
             };
             this.messages.push(closeMessage);
             setTimeout(() => this.scrollToBottom(), 100);
@@ -147,7 +206,7 @@ export class UserChatWidgetComponent implements OnInit, OnDestroy {
         break;
   
       default:
-        console.log('Evento no manejado:', data.event);
+        console.log('Unhandled event type:', data.event);
         break;
     }
   }
@@ -158,9 +217,11 @@ export class UserChatWidgetComponent implements OnInit, OnDestroy {
       chat_id: chatId,
       message: message.message || '',
       sender_type: message.sender_type || 'UNKNOWN',
-      created_at: message.created_at || message.sent_at || new Date().toISOString(),
-      sent_at: message.sent_at || message.created_at || new Date().toISOString(),
-      is_read: message.is_read || false
+      created_at:
+        message.created_at || message.sent_at || new Date().toISOString(),
+      sent_at:
+        message.sent_at || message.created_at || new Date().toISOString(),
+      is_read: message.is_read || false,
     };
   }
   private fetchUserChats(): void {
@@ -171,10 +232,6 @@ export class UserChatWidgetComponent implements OnInit, OnDestroy {
       this.agentChatService.getUserChats(userId.id).subscribe({
         next: (response) => {
           this.activeChats = response.data;
-          console.log(
-            '🚀 ~ UserChatWidgetComponent ~ this.agentChatService.getUserChats ~ this.activeChats:',
-            this.activeChats
-          );
 
           if (this.activeChats.length > 0) {
             this.chatVisible = true;
@@ -193,10 +250,12 @@ export class UserChatWidgetComponent implements OnInit, OnDestroy {
 
   fetchChatMessages(chatId: number): void {
     this.loading = true;
-  
+
     this.agentChatService.getChatMessages(chatId).subscribe({
       next: (response) => {
-        this.messages = response.data.map((msg: any) => this.normalizeMessage(msg, chatId));
+        this.messages = response.data.map((msg: any) =>
+          this.normalizeMessage(msg, chatId)
+        );
         this.loading = false;
         setTimeout(() => this.scrollToBottom(), 100);
       },
@@ -215,11 +274,11 @@ export class UserChatWidgetComponent implements OnInit, OnDestroy {
 
   sendMessage(): void {
     if (!this.newMessage.trim() || !this.selectedChat) return;
-  
+
     const messageToSend = this.newMessage.trim();
-    
+
     const tempId = 'temp_' + Date.now();
-    
+
     const localMessage = {
       id: tempId,
       chat_id: this.selectedChat.id,
@@ -228,32 +287,26 @@ export class UserChatWidgetComponent implements OnInit, OnDestroy {
       created_at: new Date().toISOString(),
       sent_at: new Date().toISOString(),
       is_read: false,
-      isLocalTemp: true
+      isLocalTemp: true,
     };
-    
+
     this.messages.push(localMessage);
-    
+
     this.activeChats = this.activeChats.map((chat) =>
       chat.id === this.selectedChat.id
         ? { ...chat, last_message: messageToSend }
         : chat
     );
-    
+
     this.newMessage = '';
-    
+
     setTimeout(() => this.scrollToBottom(), 100);
-    
+
     setTimeout(() => {
       this.agentChatService.sendChatMessage(
         this.selectedChat.id,
         messageToSend
       );
-      
-      console.log('Mensaje enviado al servidor con ID temporal:', {
-        temp_id: tempId,
-        chat_id: this.selectedChat.id,
-        message: messageToSend
-      });
     }, 10);
   }
 

@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 })
 export class HeaderDashComponent implements OnInit {
   @Input() user: User | any = null;
-  @Input() profileImage: string = '';
+  @Input() profileImage: string = 'assets/images/default_user.png';
   showProfileMenu: boolean = false;
 
   constructor(

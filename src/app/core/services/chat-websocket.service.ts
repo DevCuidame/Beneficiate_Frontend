@@ -23,7 +23,6 @@ export class ChatWebsocketService {
     this.socket = new WebSocket(wsUrl, ['tokenAuth', token]);
 
     this.socket.onopen = () => {
-      console.log('Conexión WebSocket establecida');
       this.connectionStatusSubject.next(true);
     };
 
@@ -31,22 +30,14 @@ export class ChatWebsocketService {
 
     this.socket.onmessage = (event) => {
       try {
-        // Log para depuración
-        console.log('Mensaje recibido:', event);
-
-        // Si recibimos un ArrayBuffer vacío, probablemente es un heartbeat o ping
         if (event.data instanceof ArrayBuffer && event.data.byteLength === 0) {
-          console.log('Recibido heartbeat/ping (ArrayBuffer vacío)');
-          return; // Ignoramos estos mensajes
+          return;
         }
 
-        // Si es un string, intentamos parsearlo como JSON
-        // When successfully parsing JSON data, check if we need to normalize event types
         if (typeof event.data === 'string') {
           try {
             const data = JSON.parse(event.data);
 
-            // Ensure we normalize message events if needed
             if (
               data.event === 'new_message' &&
               data.message?.sender_type === 'AGENT'
@@ -69,7 +60,6 @@ export class ChatWebsocketService {
           return;
         }
 
-        // Si es un ArrayBuffer o Blob con contenido, intentamos convertirlo a texto
         if (
           (event.data instanceof ArrayBuffer && event.data.byteLength > 0) ||
           (event.data instanceof Blob && event.data.size > 0)
@@ -78,9 +68,7 @@ export class ChatWebsocketService {
           reader.onload = () => {
             const textContent = reader.result as string;
 
-            // Si el contenido está vacío, no hacemos nada
             if (!textContent || textContent.trim() === '') {
-              console.log('Contenido binario vacío');
               return;
             }
 
@@ -99,7 +87,6 @@ export class ChatWebsocketService {
             console.error('Error al leer datos binarios:', readerError);
           };
 
-          // Convertir ArrayBuffer a Blob si es necesario
           const dataToRead =
             event.data instanceof ArrayBuffer
               ? new Blob([event.data])
@@ -118,12 +105,9 @@ export class ChatWebsocketService {
     };
 
     this.socket.onclose = (event) => {
-      console.log('Conexión WebSocket cerrada:', event.code, event.reason);
       this.connectionStatusSubject.next(false);
 
-      // Reconectar automáticamente, excepto si el cierre fue intencional (código 1000)
       if (event.code !== 1000) {
-        console.log('Intentando reconexión en 3 segundos...');
         setTimeout(() => this.connect(), 3000);
       }
     };
@@ -132,8 +116,8 @@ export class ChatWebsocketService {
   public sendMessage(data: any): void {
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {
       try {
+        console.log('Sending WebSocket message:', data);
         const jsonString = JSON.stringify(data);
-        console.log('Enviando mensaje:', jsonString);
         this.socket.send(jsonString);
       } catch (error) {
         console.error('Error al enviar mensaje:', error);
