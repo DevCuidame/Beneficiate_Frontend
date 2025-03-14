@@ -39,18 +39,13 @@
     .personal-info-container {
       background: radial-gradient(circle, rgb(211, 226, 235) 0%, rgb(198, 216, 228) 25%, rgb(184, 204, 220) 50%, rgb(159, 183, 206) 75%, rgb(148, 174, 199) 100%);
       display: flex;
+      height: 50vh;
       width: 100%;
       padding: 15px 50px 25px;
       flex-direction: column;
       align-items: center;
       border-radius: 50px;
-      overflow-y: scroll;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-
-      &::-webkit-scrollbar {
-        display: none;
-      }
+      overflow-y: auto;
 
       .parent-column {
         width: 100%;
@@ -84,6 +79,21 @@
           }
 
         }
+      }
+    }
+
+    .btn {
+      background-color: var(--ion-color-primary);
+      height: 2.5rem;
+      padding: 0 15px;
+      border-radius: 10px;
+      position: relative;
+      top: -20px;
+
+      span {
+        margin-left: 10px;
+        font-size: 1.25rem;
+        font-weight: bold;
       }
     }
   }

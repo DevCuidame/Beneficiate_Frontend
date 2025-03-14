@@ -59,8 +59,6 @@ export class HomePageComponent implements OnInit {
       }
     });
 
-console.log(this.user);
-
     this.beneficiaryService.beneficiaries$.subscribe((beneficiaries) => {
       if (Array.isArray(beneficiaries)) {
         this.numBeneficiary = beneficiaries.length;

@@ -8,6 +8,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AlertController, LoadingController } from '@ionic/angular';
+import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
@@ -70,7 +71,8 @@ export class RegisterComponent implements OnInit {
     private alertCtrl: AlertController,
     private authService: AuthService,
     private loadingCtrl: LoadingController,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private router: Router,
   ) {
     this.registerForm = this.fb.group(
       {
@@ -238,6 +240,7 @@ export class RegisterComponent implements OnInit {
           });
           await alert.present();
           this.registerSuccess.emit();
+          this.router.navigateByUrl('/desktop');
         },
         async (error) => {
           await loading.dismiss();

@@ -14,14 +14,15 @@ import {
   LoadingController,
   NavController,
 } from '@ionic/angular';
+import { ActivatedRoute } from '@angular/router';
+
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
 import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
 import { debounceTime } from 'rxjs';
-import { TabBarComponent } from 'src/app/shared/components/tab-bar/tab-bar.component';
-import { CustomButtonComponent } from 'src/app/shared/components/custom-button/custom-button.component';
 import { CustomInputComponent } from '../../components/inputs/custom-input/custom-input.component';
 import { HeaderComponent } from '../../components/home/header/header.component';
 import { LocationService } from '../../../modules/auth/services/location.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-new-beneficiary',
@@ -53,10 +54,11 @@ export class NewBeneficiaryFormComponent implements OnInit {
     phone: 'Debe ser un número de teléfono válido.',
   };
 
-  public departmentsOptions: any[] = [];
-  public citiesOptions: any[] = [];
+  public departmentsOption: any[] = [];
+  public citiesOption: any[] = [];
 
   constructor(
+    private route: ActivatedRoute,
     private fb: FormBuilder,
     private beneficiaryService: BeneficiaryService,
     private loadingCtrl: LoadingController,
@@ -99,12 +101,25 @@ export class NewBeneficiaryFormComponent implements OnInit {
   ngOnInit() {
     this.loadDepartments();
 
+
+    this.route.queryParams.subscribe(params => {
+      if (params['new']) {
+        this.beneficiaryService.setActiveBeneficiary(null);
+      }
+    });
+
     // Escuchar cambios en el departamento seleccionado y actualizar las ciudades
     this.beneficiaryForm
       .get('department')
       ?.valueChanges.subscribe((departmentId) => {
-        this.loadCities(departmentId);
+        if (departmentId) {
+          this.beneficiaryForm.patchValue({ city_id: '' });
+          this.loadCities(departmentId);
+        }
       });
+
+    this.loadBeneficiaryData();
+
   }
 
     // -------------------------------------- Gets form -------------------------------------- //
@@ -175,23 +190,65 @@ export class NewBeneficiaryFormComponent implements OnInit {
 
   // -------------------------------------- Load Select input options -------------------------------------- //
 
+  loadBeneficiaryData() {
+    const beneficiary = this.beneficiaryService.getActiveBeneficiary();
+
+    if (!beneficiary) {
+      this.beneficiaryForm.reset();
+      this.beneficiaryForm.patchValue({
+        id: ''
+      });
+      return;
+    }
+
+    if (beneficiary) {
+      this.beneficiaryForm.patchValue(beneficiary);
+
+      this.imageLoaded = beneficiary.image?.image_path
+        ? `${environment.url}${beneficiary.image.image_path.replace('\\', '/')}`
+        : '';
+
+      this.locationService.fetchDepartments();
+      this.locationService.departments$.subscribe((departments) => {
+        this.departmentsOption = departments.map(dept => ({
+          value: dept.id,
+          label: dept.name
+        }));
+
+        if (beneficiary.location?.department_id) {
+          this.beneficiaryForm.patchValue({ department: beneficiary.location.department_id });
+          console.log(this.departmentsOption);
+
+          this.loadCities(beneficiary.location.department_id, beneficiary.location?.township_id);
+        }
+      });
+    }
+  }
+
   loadDepartments() {
     this.locationService.fetchDepartments();
     this.locationService.departments$.subscribe((departments) => {
-      this.departmentsOptions = departments.map(dept => ({
+      this.departmentsOption = departments.map(dept => ({
         value: dept.id,
         label: dept.name
       }));
     });
   }
 
-  loadCities(departmentId: number) {
+  loadCities(departmentId: any, cityId?: any) {
     this.locationService.fetchCitiesByDepartment(departmentId);
+
     this.locationService.cities$.subscribe((cities) => {
-      this.citiesOptions = cities.map(city => ({
+      this.citiesOption = cities.map(city => ({
         value: city.id,
         label: city.name
       }));
+
+      if (cityId && cities.some(city => city.id === cityId)) {
+        setTimeout(() => {
+          this.beneficiaryForm.patchValue({ city_id: cityId });
+        }, 100);
+      }
     });
   }
 

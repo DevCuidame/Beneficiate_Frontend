@@ -78,6 +78,6 @@ export class BeneficiaryCardComponent implements OnInit {
       return;
     }
 
-    this.router.navigate(['/home-desktop/add']);
+    this.router.navigate(['/home-desktop/add'], { queryParams: { new: true } });
   }
 }

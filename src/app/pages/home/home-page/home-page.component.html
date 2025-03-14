@@ -32,8 +32,19 @@
         </div>
 
         <div class="detalles-panel" *ngIf="selectedPanel === 'detalles'">
-
-
+            <div
+              class="plan-info"
+              id="plan-info"
+            >
+            <h2><strong>Plan {{user?.plan?.name}}</strong></h2>
+            <hr/>
+            <h3>el plan incluye los siguientes benefecios:</h3>
+            <ul>
+              <li>{{user?.plan?.description}}.</li>
+              <li><span ngif="user?.plan?.id === 2">{{user?.plan?.max_beneficiaries}} Beneficiarios + </span><span>Uso personal.</span></li>
+              <li>{{user?.plan?.duration_days}} dias de uso.</li>
+            </ul>
+          </div>
         </div>
 
         <div class="planes-panel" *ngIf="selectedPanel === 'planes'">

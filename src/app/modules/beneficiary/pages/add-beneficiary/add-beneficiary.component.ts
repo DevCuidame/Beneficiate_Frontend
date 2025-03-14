@@ -20,7 +20,7 @@ import { LocationService } from '../../../auth/services/location.service';
 import { BeneficiaryService } from '../../../../core/services/beneficiary.service';
 import { environment } from 'src/environments/environment';
 
-import { ActivatedRoute } from '@angular/router'; 
+import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-add-beneficiary',
   standalone: true,
@@ -120,35 +120,35 @@ export class AddBeneficiaryComponent implements OnInit {
 
   loadBeneficiaryData() {
     const beneficiary = this.beneficiaryService.getActiveBeneficiary();
-    
+
     if (!beneficiary) {
       this.beneficiaryForm.reset();
       this.beneficiaryForm.patchValue({
-        id: '' 
+        id: ''
       });
       return;
     }
-  
+
     if (beneficiary) {
       this.beneficiaryForm.patchValue(beneficiary);
-  
-      this.imageLoaded = beneficiary.image?.image_path 
-        ? `${environment.url}${beneficiary.image.image_path.replace('\\', '/')}` 
+
+      this.imageLoaded = beneficiary.image?.image_path
+        ? `${environment.url}${beneficiary.image.image_path.replace('\\', '/')}`
         : '';
-  
+
       this.locationService.fetchDepartments();
       this.locationService.departments$.subscribe((departments) => {
         this.departments = departments;
-  
+
         if (beneficiary.location?.department_id) {
           this.beneficiaryForm.patchValue({ department: beneficiary.location.department_id });
-  
+
           this.loadCities(beneficiary.location.department_id, beneficiary.location?.township_id);
         }
       });
     }
   }
-  
+
 
   loadDepartments() {
     this.locationService.fetchDepartments();
@@ -159,18 +159,18 @@ export class AddBeneficiaryComponent implements OnInit {
 
   loadCities(departmentId: any, cityId?: any) {
     this.locationService.fetchCitiesByDepartment(departmentId);
-  
+
     this.locationService.cities$.subscribe((cities) => {
       this.cities = cities;
-  
+
       if (cityId && cities.some(city => city.id === cityId)) {
         setTimeout(() => {
           this.beneficiaryForm.patchValue({ city_id: cityId });
-        }, 100); 
+        }, 100);
       }
     });
   }
-  
+
 
   setupRealTimeValidation() {
     this.beneficiaryForm.valueChanges.pipe(debounceTime(300)).subscribe(() => {
@@ -195,14 +195,14 @@ export class AddBeneficiaryComponent implements OnInit {
     if (this.beneficiaryForm.valid) {
       const loading = await this.loadingCtrl.create({ message: 'Guardando...' });
       await loading.present();
-  
+
       const beneficiaryData = { ...this.beneficiaryForm.value };
-      const isEditing = !!beneficiaryData.id; 
-  
+      const isEditing = !!beneficiaryData.id;
+
       const action$ = isEditing
         ? this.beneficiaryService.updateBeneficiary(beneficiaryData.id, beneficiaryData)
         : this.beneficiaryService.addBeneficiary(beneficiaryData);
-  
+
       action$.subscribe(
         async () => {
           await loading.dismiss();
@@ -227,7 +227,7 @@ export class AddBeneficiaryComponent implements OnInit {
       );
     }
   }
-  
+
 
   // Image Controller
   selectImage() {

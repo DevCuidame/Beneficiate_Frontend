@@ -82,21 +82,25 @@
             <app-custom-input label="Dirección" type="text" label_s="color: var(--ion-color-dark)" [control]="address"></app-custom-input>
           </div>
 
+
+
           <div class="form-group">
             <app-custom-input
-        label="Departamento"
-        type="select"
-              label_s="color: var(--ion-color-dark)" [control]="department"
-        [options]="departmentsOptions"
+              label="Departamento"
+              type="select"
+              label_s="color: var(--ion-color-dark)"
+              [control]="department"
+              [options]="departmentsOption"
             ></app-custom-input>
           </div>
 
           <div class="form-group">
             <app-custom-input
-        label="Ciudad"
-        type="select"
-              label_s="color: var(--ion-color-dark)" [control]="city_id"
-        [options]="citiesOptions"
+              label="Ciudad"
+              type="select"
+              label_s="color: var(--ion-color-dark)"
+              [control]="city_id"
+              [options]="citiesOption"
             ></app-custom-input>
           </div>
 
