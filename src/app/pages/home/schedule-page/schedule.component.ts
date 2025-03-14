@@ -1,6 +1,6 @@
 import { Component, computed, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule, AlertController } from '@ionic/angular';
+import { IonicModule, AlertController, LoadingController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
@@ -42,8 +42,6 @@ export class ScheduleComponent  implements OnInit {
   selectedSpecialtyId = signal<number | null>(null);
   appointments: any[] = [];
   profileImage: string = '';
-  phoneNumber: string = '3195752651';
-  message: string = '¡Hola! Quiero saber más sobre tus servicios.';
 
   private wsSubscription!: Subscription;
   public specialties = computed(() => {
@@ -82,6 +80,7 @@ export class ScheduleComponent  implements OnInit {
       private appointmentService: AppointmentService,
       private websocketService: WebsocketService,
       private alertController: AlertController,
+      private loadingCtrl: LoadingController,
       private userService: UserService,
   ) { }
 
@@ -106,6 +105,7 @@ export class ScheduleComponent  implements OnInit {
 
     this.wsSubscription = this.websocketService.connect().subscribe(
       (data) => {
+        console.log(data);
         if (data.event === 'user_appointments') {
           this.appointments = data.appointments;
           console.log(
@@ -160,6 +160,39 @@ export class ScheduleComponent  implements OnInit {
         console.error('Error al cancelar la cita:', error);
       }
     );
+  }
+
+  openWhatsapp = async () => {
+    const loading = await this.showLoading();
+    try {
+      const whatsappUrl =
+        'whatsapp://send?phone=573043520351&text=Hola, quiero agendar una cita con el doctor';
+      window.location.href = whatsappUrl;
+
+      setTimeout(() => {
+        window.open(
+          'https://web.whatsapp.com/send?phone=573043520351&text=Hola, quiero agendar una cita con el doctor',
+          '_blank'
+        );
+      }, 500);
+      this.closeCard();
+    } catch (error) {
+      console.error('Error al abrir WhatsApp:', error);
+    } finally {
+      if (loading) {
+        loading.dismiss();
+      }
+    }
+  };
+
+  async showLoading() {
+    const loading = await this.loadingCtrl.create({
+      message: 'Espera un momento, por favor...',
+      cssClass: 'custom-loading',
+    });
+
+    loading.present();
+    return loading;
   }
 
 
