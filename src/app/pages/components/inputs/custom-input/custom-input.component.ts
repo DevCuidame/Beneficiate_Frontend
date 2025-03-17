@@ -30,3 +30,4 @@ export class CustomInputComponent {
     return this.type;
   }
 }
+

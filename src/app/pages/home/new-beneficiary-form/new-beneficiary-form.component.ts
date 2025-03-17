@@ -292,7 +292,7 @@ export class NewBeneficiaryFormComponent implements OnInit {
               buttons: ['OK'],
             });
             await alert.present();
-            this.navCtrl.navigateRoot('/home/dashboard');
+            this.navCtrl.navigateRoot('/home-desktop/');
           },
           async (error: any) => {
             await loading.dismiss();

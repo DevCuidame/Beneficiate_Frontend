@@ -26,7 +26,6 @@ export class MedicalProfessionalService {
     if (this.professionals().length > 0 && specialtyId == null) {
       return of(this.professionals());
     }
-    console.log('owo');
     return this.http.get<MedicalProfessionalResponse>(`${this.apiUrl}${specialtyId}`).pipe(
       map(response => response.data),
       tap(data => this.saveToCache(data)),

@@ -105,13 +105,8 @@ export class ScheduleComponent  implements OnInit {
 
     this.wsSubscription = this.websocketService.connect().subscribe(
       (data) => {
-        console.log(data);
         if (data.event === 'user_appointments') {
           this.appointments = data.appointments;
-          console.log(
-            '🚀 ~ AppointmentBookingComponent ~ ngOnInit ~ this.appointments:',
-            this.appointments
-          );
         }
       },
       (error) => {
@@ -229,6 +224,7 @@ export class ScheduleComponent  implements OnInit {
 
   closeCard() {
     this.isDisabled = true;
+    return this.isDisabled;
   }
 
 }
