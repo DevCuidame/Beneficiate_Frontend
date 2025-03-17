@@ -62,6 +62,7 @@ export class RegisterComponent implements OnInit {
     password:
       'La contraseña debe contener al menos 8 caracteres, una mayúscula y un número.',
     confirmPassword: 'Las contraseñas no coinciden.',
+    base_64: 'La imagen es obligatoria.',
   };
 
   // -------------------------------------- Initial Logic -------------------------------------- //
@@ -108,7 +109,7 @@ export class RegisterComponent implements OnInit {
         ],
         confirmPassword: ['', [Validators.required]],
         public_name: [''],
-        base_64: [''],
+        base_64: ['', Validators.required],
         privacy_policy: [false, Validators.requiredTrue],
       },
       { validator: this.passwordMatchValidator }
