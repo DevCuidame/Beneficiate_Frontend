@@ -62,7 +62,7 @@ main {
     .paneles-container {
       height: 100%;
       width: 100%;
-      margin-top: 2rem;
+      margin-top: 4rem;
 
       .beneficiarios-panel {
         height: 100%;
@@ -71,6 +71,37 @@ main {
 
       .detalles-panel {
         width: 50vw;
+        display: flex;
+        justify-content: center;
+
+        .plan-info {
+          background: radial-gradient(circle, rgb(211, 226, 235) 0%, rgb(198, 216, 228) 25%, rgb(184, 204, 220) 50%, rgb(159, 183, 206) 75%, rgb(148, 174, 199) 100%);
+          color: var(--ion-color-dark);
+          width: 80%;
+          padding: 30px;
+          position: absolute;
+          display: flex;
+          flex-direction: column;
+          align-items: baseline;
+          border-radius: 25px;
+
+          h2 {
+            text-align: left;
+            margin: 0;
+            margin-bottom: 15px;
+          }
+
+          hr {
+            background: var(--ion-color-dark);
+            width: 100%;
+            height: 2px;
+          }
+
+          li {
+            margin: 5px 0;
+            font-size: large;
+          }
+        }
       }
 
       .planes-panel {
@@ -82,6 +113,7 @@ main {
 
         h2 {
           color: var(--ion-color-custom-green);
+          margin: 0;
           font-size: 1.25rem;
           font-weight: 600;
           align-self: flex-start;

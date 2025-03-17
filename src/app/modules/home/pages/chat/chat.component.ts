@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, NavController, IonContent, Platform } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
@@ -29,9 +29,10 @@ import { Keyboard } from '@capacitor/keyboard';
 })
 export class ChatComponent implements OnInit, OnDestroy {
   @ViewChild(IonContent, { static: false }) content!: IonContent;
-  
-  // Eliminamos la referencia al background con imagen
   public backgroundStyle = 'url("../../../../../assets/background/background.svg") no-repeat bottom center / cover';
+  @Output() toggle: EventEmitter<void> = new EventEmitter();
+  @Input() inputProfessionalId!: number | null;
+  @Input() isHeaderEnable: boolean = false;
 
   public messageText: string = '';
   public messages: Message[] = [];
@@ -58,16 +59,21 @@ export class ChatComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.setupKeyboardListeners();
-    
-    // Obtenemos el professionalId de los query params
-    this.activatedRoute.queryParams.subscribe((params) => {
-      this.professionalId = params['professionalId']
-        ? +params['professionalId']
-        : null;
-      console.log('Professional ID recibido:', this.professionalId);
+    if (this.inputProfessionalId !== null ) {
+      this.setProfessionalId();
       this.connectWebSocket();
-    });
+    } else {
+      this.setupKeyboardListeners();
+
+      // Obtenemos el professionalId de los query params
+      this.activatedRoute.queryParams.subscribe((params) => {
+        this.professionalId = params['professionalId']
+          ? +params['professionalId']
+          : null;
+        console.log('Professional ID recibido:', this.professionalId);
+        this.connectWebSocket();
+      });
+    }
 
     this.user = this.userService.getUser();
   }
@@ -80,7 +86,7 @@ export class ChatComponent implements OnInit, OnDestroy {
           // Validamos que el mensaje tenga contenido antes de añadirlo
           if (data && data.message && data.message.trim() !== '') {
             console.log('Mensaje recibido por WebSocket:', data);
-            
+
             if (data.event === 'chatbot_message') {
               if (
                 data.options &&
@@ -158,9 +164,17 @@ export class ChatComponent implements OnInit, OnDestroy {
     if (this.keyboardWillHideListener) this.keyboardWillHideListener.remove();
   }
 
+  setProfessionalId() {
+    this.professionalId = this.inputProfessionalId;
+  }
+
+  closeChat() {
+    this.toggle.emit();
+  }
+
   handleOptionSelected(option: string) {
     console.log('Opción seleccionada:', option, 'Paso actual:', this.currentStep);
-    
+
     if (this.currentStep === 'specialty') {
       if (this.specialtySelected) {
         console.log('Especialidad ya seleccionada, ignorando.');
@@ -197,9 +211,9 @@ export class ChatComponent implements OnInit, OnDestroy {
       window.addEventListener('resize', () => {
         const viewportHeight = window.innerHeight;
         const originalHeight = window.outerHeight;
-        
+
         if (originalHeight - viewportHeight > 150) {
-          this.cardHeight = '80%'; 
+          this.cardHeight = '80%';
         } else {
           this.cardHeight = this.cardDefaultHeight;
         }

@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { environment } from 'src/environments/environment';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { IonicModule } from '@ionic/angular';
+import { Router } from '@angular/router';
 import {
+  faPen,
   faCrown,
   faAddressCard,
   faCakeCandles,
@@ -29,6 +31,7 @@ export class InfoBeneficiaryComponent implements OnInit {
   public beneficiary: Beneficiary | null = null;
 
   // Iconos
+  public faPen = faPen;
   public faCrown = faCrown;
   public faAddressCard = faAddressCard;
   public faCakeCandles = faCakeCandles;
@@ -40,7 +43,7 @@ export class InfoBeneficiaryComponent implements OnInit {
   public faHeart = faHeart;
   public faHospital = faHospital;
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   ngOnInit() {
     this.beneficiary = this.loadActiveBeneficiary();
@@ -56,5 +59,9 @@ export class InfoBeneficiaryComponent implements OnInit {
   private loadActiveBeneficiary(): Beneficiary | null {
     const storedBeneficiary = localStorage.getItem('activeBeneficiary');
     return storedBeneficiary ? JSON.parse(storedBeneficiary) : null;
+  }
+
+  navigateToEdit() {
+      this.router.navigate(['/home-desktop/add']);
   }
 }

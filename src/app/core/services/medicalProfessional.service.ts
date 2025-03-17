@@ -22,13 +22,14 @@ export class MedicalProfessionalService {
    * @param specialtyId - ID de la especialidad médica.
    */
   fetchMedicalProfessionals(specialtyId: number): Observable<MedicalProfessional[]> {
-    if (this.professionals().length > 0) {
+    console.log(specialtyId);
+    if (this.professionals().length > 0 && specialtyId == null) {
       return of(this.professionals());
     }
-
+    console.log('owo');
     return this.http.get<MedicalProfessionalResponse>(`${this.apiUrl}${specialtyId}`).pipe(
       map(response => response.data),
-      tap(data => this.saveToCache(data)), 
+      tap(data => this.saveToCache(data)),
       catchError(error => {
         console.error('Error al obtener profesionales médicos:', error);
         return of([]);
@@ -47,7 +48,7 @@ export class MedicalProfessionalService {
 
     return this.http.get<MedicalProfessionalResponse>(`${this.apiMedicalProf}`).pipe(
       map(response => response.data),
-      tap(data => this.saveToCache(data)), 
+      tap(data => this.saveToCache(data)),
       catchError(error => {
         console.error('Error al obtener profesionales médicos:', error);
         return of([]);
@@ -57,6 +58,7 @@ export class MedicalProfessionalService {
 
 
   private saveToCache(data: MedicalProfessional[]): void {
+    console.log(data);
     this.professionals.set(data);
     localStorage.setItem(this.cacheKey, JSON.stringify(data));
   }

@@ -8,6 +8,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AlertController, LoadingController } from '@ionic/angular';
+import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
@@ -61,6 +62,7 @@ export class RegisterComponent implements OnInit {
     password:
       'La contraseña debe contener al menos 8 caracteres, una mayúscula y un número.',
     confirmPassword: 'Las contraseñas no coinciden.',
+    base_64: 'La imagen es obligatoria.',
   };
 
   // -------------------------------------- Initial Logic -------------------------------------- //
@@ -70,7 +72,8 @@ export class RegisterComponent implements OnInit {
     private alertCtrl: AlertController,
     private authService: AuthService,
     private loadingCtrl: LoadingController,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private router: Router,
   ) {
     this.registerForm = this.fb.group(
       {
@@ -106,7 +109,7 @@ export class RegisterComponent implements OnInit {
         ],
         confirmPassword: ['', [Validators.required]],
         public_name: [''],
-        base_64: [''],
+        base_64: ['', Validators.required],
         privacy_policy: [false, Validators.requiredTrue],
       },
       { validator: this.passwordMatchValidator }
@@ -238,6 +241,7 @@ export class RegisterComponent implements OnInit {
           });
           await alert.present();
           this.registerSuccess.emit();
+          this.router.navigateByUrl('/desktop');
         },
         async (error) => {
           await loading.dismiss();

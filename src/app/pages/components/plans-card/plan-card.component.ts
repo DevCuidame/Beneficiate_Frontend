@@ -36,7 +36,6 @@ export class PlanCardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log(this.optionClick);
   }
 
   buttonOption() {
