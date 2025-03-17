@@ -67,7 +67,7 @@ export class HealthConditionFormComponent implements OnInit {
             beneficiary_id: this.activeBeneficiary?.id,
             disease: [d.disease, [Validators.required]],
             diagnosed_date: [d.diagnosed_date, [Validators.required]],
-            treatment_required: [d.treatment_required, [Validators.required]],
+            // treatment_required: [d.treatment_required, [Validators.required]],
           })
         ) || []
       )

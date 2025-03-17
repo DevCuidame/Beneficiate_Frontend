@@ -80,7 +80,7 @@
         <input
           type="text"
           disabled="true"
-          [(ngModel)]="appointment.userData.first_name"
+          [value]="getFullName()"
         />
       </div>
       <div class="form-group">
@@ -224,23 +224,27 @@
     }
   </div>
 
-  <!-- Botones de Navegación -->
-  <div class="buttons-container">
-    <button
-      class="prev-button"
-      (click)="prevStep()"
-      [disabled]="currentStep === 1"
-    >
-      Anterior
-    </button>
-    <button
-      class="next-button"
-      (click)="nextStep()"
-      [disabled]="!isStepValid()"
-    >
+<div class="buttons-container">
+  <button
+    class="prev-button"
+    (click)="prevStep()"
+    [disabled]="currentStep === 1 || isSubmitting"
+  >
+    Anterior
+  </button>
+  <button
+    class="next-button"
+    (click)="nextStep()"
+    [disabled]="!isStepValid() || isSubmitting"
+  >
+    <span *ngIf="!(currentStep === 4 && isSubmitting)">
       {{ currentStep < 4 ? "Siguiente" : "Confirmar" }}
-    </button>
-  </div>
+    </span>
+    <span *ngIf="currentStep === 4 && isSubmitting" class="button-loading">
+      <i class="fas fa-spinner fa-spin"></i> Procesando...
+    </span>
+  </button>
+</div>
 </div>
 }@else {
 <!-- <app-appointment-assigned [isPending]="true"> </app-appointment-assigned> -->

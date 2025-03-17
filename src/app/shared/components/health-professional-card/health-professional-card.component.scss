@@ -107,3 +107,20 @@
   justify-content: center;
   gap: 16px;
 }
+
+.low-res {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  filter: blur(10px);
+  transition: opacity 0.3s;
+}
+
+.high-res {
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.high-res.loaded {
+  opacity: 1;
+}

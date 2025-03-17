@@ -1,7 +1,19 @@
 <div class="card-container">
   <div class="background-gradient"></div>
   <div class="card-image">
-    <img [src]="api + profileImage" [alt]="first_name">
+    <img 
+      [src]="lowResProfileImage" 
+      class="low-res"
+      alt=""
+    >
+    <img 
+      [src]="api + profileImage" 
+      loading="lazy"
+      [alt]="first_name"
+      width="150" 
+      height="175"
+      class="high-res"
+    >
   </div>
   
   <div class="card-content">

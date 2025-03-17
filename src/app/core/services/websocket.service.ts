@@ -17,8 +17,8 @@ export class WebsocketService {
       throw new Error('No se encontró token en local storage');
     }
     
-    const baseUrl = environment.url.replace(/^http/, 'ws').replace(/\/$/, '');
-    const wsUrl = `${baseUrl}/ws`; 
+    
+    const wsUrl =  environment.url.replace(/^http/, 'ws').replace(/\/$/, '');
     
     this.ws = new WebSocket(wsUrl, ['tokenAuth', token]);
 

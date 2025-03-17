@@ -54,7 +54,7 @@ export class RegisterComponent implements OnInit {
     first_name: 'El nombre solo puede contener letras.',
     last_name: 'El apellido solo puede contener letras.',
     identification_number: 'Debe ser un número válido.',
-    phone: 'Debe ser un número de teléfono válido.',
+    phone: 'Debe ser un número de teléfono válido con al menos 10 dígitos.',
     address: 'La dirección no es valida.',
     email: 'Ingrese un correo electrónico válido.',
     gender: 'El género es obligatorio.',
@@ -73,7 +73,7 @@ export class RegisterComponent implements OnInit {
     private authService: AuthService,
     private loadingCtrl: LoadingController,
     private locationService: LocationService,
-    private router: Router,
+    private router: Router
   ) {
     this.registerForm = this.fb.group(
       {
@@ -95,7 +95,14 @@ export class RegisterComponent implements OnInit {
         department: [null, Validators.required],
         gender: ['', Validators.required],
         birth_date: ['', Validators.required],
-        phone: ['', [Validators.required, Validators.pattern('^[0-9-]+$')]],
+        phone: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern('^[0-9-]+$'),
+            Validators.minLength(10),
+          ],
+        ],
         email: ['', [Validators.required, Validators.email]],
         password: [
           '',
@@ -216,6 +223,16 @@ export class RegisterComponent implements OnInit {
   // -------------------------------------- Send Form Controller -------------------------------------- //
 
   async register() {
+    if (!this.selectedImage) {
+      const alert = await this.alertCtrl.create({
+        header: 'Falta imagen',
+        message: 'Por favor, carga una imagen antes de continuar.',
+        buttons: ['OK'],
+      });
+      await alert.present();
+      return;
+    }
+
     if (this.registerForm.valid) {
       const loading = await this.loadingCtrl.create({
         message: 'Registrando...',
@@ -262,9 +279,9 @@ export class RegisterComponent implements OnInit {
   loadDepartments() {
     this.locationService.fetchDepartments();
     this.locationService.departments$.subscribe((departments) => {
-      this.departmentsOptions = departments.map(dept => ({
+      this.departmentsOptions = departments.map((dept) => ({
         value: dept.id,
-        label: dept.name
+        label: dept.name,
       }));
     });
   }
@@ -272,9 +289,9 @@ export class RegisterComponent implements OnInit {
   loadCities(departmentId: number) {
     this.locationService.fetchCitiesByDepartment(departmentId);
     this.locationService.cities$.subscribe((cities) => {
-      this.citiesOptions = cities.map(city => ({
+      this.citiesOptions = cities.map((city) => ({
         value: city.id,
-        label: city.name
+        label: city.name,
       }));
     });
   }

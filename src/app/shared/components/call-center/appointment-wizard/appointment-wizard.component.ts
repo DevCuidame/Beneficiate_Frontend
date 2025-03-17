@@ -1,4 +1,8 @@
-import { BeneficiaryImage, Image, UserImage } from './../../../../core/interfaces/user.interface';
+import {
+  BeneficiaryImage,
+  Image,
+  UserImage,
+} from './../../../../core/interfaces/user.interface';
 import { HealthProfessionalCardComponent } from 'src/app/shared/components/health-professional-card/health-professional-card.component';
 import { CommonModule } from '@angular/common';
 import {
@@ -21,6 +25,7 @@ import { AppointmentService } from 'src/app/core/services/appointment.service';
 import { MedicalProfessional } from 'src/app/core/interfaces/medicalProfessional.interface';
 import { MedicalSpecialty } from 'src/app/core/interfaces/medicalSpecialty.interface';
 import { UserService } from 'src/app/modules/auth/services/user.service';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 @Component({
   selector: 'app-appointment-wizard',
@@ -51,13 +56,14 @@ export class AppointmentWizardComponent implements OnInit {
   >([]);
   public beneficiaryId: string = '';
   public userId: string = '';
+  public isSubmitting = false;
 
-    // Add to your component class:
+  // Add to your component class:
   public searchState = {
     loading: false,
     notFound: false,
     success: false,
-    error: false
+    error: false,
   };
 
   debounceIdentificationSearch: any;
@@ -66,7 +72,8 @@ export class AppointmentWizardComponent implements OnInit {
     private medicalSpecialtyService: MedicalSpecialtyService,
     private medicalProfessionalService: MedicalProfessionalService,
     private appointmentService: AppointmentService,
-    private userService: UserService
+    private userService: UserService,
+    private toastService: ToastService
   ) {}
 
   public specialties = computed(() => {
@@ -132,9 +139,7 @@ export class AppointmentWizardComponent implements OnInit {
     }
 
     this.medicalProfessionalService.loadFromCache();
-    this.medicalProfessionalService.professionals().forEach((prof) => {
-      console.log('Profesional cargado:', prof);
-    });
+    this.medicalProfessionalService.professionals().forEach((prof) => {});
   }
 
   updateSearchTerm(term: string) {
@@ -164,15 +169,17 @@ export class AppointmentWizardComponent implements OnInit {
   }
 
   isStep1Valid(): boolean {
-    return (
-      (!!this.appointment.userData.identification_type &&
-        !!this.appointment.userData.identification_number &&
-        !!this.appointment.userData.first_name &&
-        !!this.appointment.userData.phone &&
-        !!this.appointment.userData.email &&
-        !!this.appointment.first_time) ||
-      !!this.appointment.control
-    );
+    const fieldsValid =
+      !!this.appointment.userData.identification_type &&
+      !!this.appointment.userData.identification_number &&
+      !!this.appointment.userData.first_name &&
+      !!this.appointment.userData.phone &&
+      !!this.appointment.userData.email;
+
+    const optionSelected =
+      !!this.appointment.first_time || !!this.appointment.control;
+
+    return fieldsValid && optionSelected;
   }
 
   isStep2Valid(): boolean {
@@ -189,22 +196,35 @@ export class AppointmentWizardComponent implements OnInit {
   // Navegación entre pasos
   nextStep() {
     if (this.isStepValid()) {
-      // Actualizar la información antes de enviarla
       this.updateAppointmentData();
-
-      console.log('📌 Datos actualizados antes de enviar:', this.appointment);
-
       if (this.currentStep < 4) {
         this.currentStep++;
       } else {
-        this.sendAppointmentData(); // Llamada para enviar la cita al backend
+        this.isSubmitting = true;
+        this.sendAppointmentData();
       }
     } else {
-      alert('Por favor, complete todos los campos antes de continuar.');
+      this.toastService.presentToast(
+        'Por favor, complete todos los campos antes de continuar.',
+        'warning'
+      );
     }
   }
 
   updateAppointmentData() {
+
+    if (this.userId) {
+      this.appointment.user_id = this.userId;
+    }
+
+
+    if (this.beneficiaryId) {
+      this.appointment.beneficiary_id = this.beneficiaryId;
+      this.appointment.is_for_beneficiary = true;
+    } else {
+      this.appointment.is_for_beneficiary = false;
+    }
+
     if (this.currentStep === 3) {
       // Validar que haya un índice seleccionado antes de acceder al array
       const selectedIndex = this.selectedProfessionalIndex();
@@ -215,7 +235,7 @@ export class AppointmentWizardComponent implements OnInit {
           this.appointment.professional_id = selectedProfessional.id.toString();
         }
       }
-      if (selectedSpecialtyIndex!== null) {
+      if (selectedSpecialtyIndex !== null) {
         const selectedSpecialty = this.specialties()[selectedSpecialtyIndex];
         if (selectedSpecialty) {
           this.appointment.specialty_id = selectedSpecialty.id.toString();
@@ -224,7 +244,6 @@ export class AppointmentWizardComponent implements OnInit {
     }
 
     if (this.currentStep === 4) {
-
       if (this.selectedDayIndex !== -1) {
         const selectedDayAvailability =
           this.selectedProfessionalAvailability()[this.selectedDayIndex];
@@ -239,44 +258,60 @@ export class AppointmentWizardComponent implements OnInit {
   }
 
   sendAppointmentData() {
-    console.log('🚀 Enviando cita al backend:', this.appointment);
+    console.log(
+      '🚀 ~ AppointmentWizardComponent ~ sendAppointmentData ~ this.appointment:',
+      this.appointment
+    );
 
-    if (this.appointment.id === 0) {
-      // Es una nueva cita
-      this.appointmentService
-        .createAppointment(this.appointment)
-        .subscribe(
-          (response) => {
-            console.log('✅ Respuesta del servidor (creación):', response);
-            if (response) {
-              this.appointment = response;
-              if (response.statusCode === 200) {
-                this.success = true;
-                this.appointment = response.data;
-                console.log('🚀 Datos de la cita actualizados:', this.appointment);
-              }
-            }
-          },
-          (error) => {
-            console.error('❌ Error al crear la cita:', error);
-          }
-        );
-    } else {
-      // Es una actualización
-      this.appointmentService
-        .updateAppointment(this.appointment.id, this.appointment)
-        .subscribe(
-          (response) => {
-            console.log('✅ Respuesta del servidor (actualización):', response);
-            if (response.statusCode === 200) {
-              this.success = true;
-            }
-          },
-          (error) => {
-            console.error('❌ Error al actualizar la cita:', error);
-          }
-        );
-    }
+    // if (this.appointment.id === 0) {
+    //   this.appointmentService.createAppointment(this.appointment).subscribe(
+    //     (response) => {
+    //       this.isSubmitting = false;
+
+    //       if (response) {
+    //         this.appointment = response;
+    //         if (response.statusCode === 200) {
+    //           this.success = true;
+    //           this.appointment = response.data;
+    //           this.toastService.presentToast(
+    //             'Cita creada exitosamente',
+    //             'success'
+    //           );
+    //         }
+    //       }
+    //     },
+    //     (error) => {
+    //       this.isSubmitting = false;
+    //       this.toastService.presentToast(
+    //         'Error al crear la cita. Intente nuevamente.',
+    //         'danger'
+    //       );
+    //     }
+    //   );
+    // } else {
+    //   this.appointmentService
+    //     .updateAppointment(this.appointment.id, this.appointment)
+    //     .subscribe(
+    //       (response) => {
+    //         this.isSubmitting = false;
+
+    //         if (response.statusCode === 200) {
+    //           this.success = true;
+    //           this.toastService.presentToast(
+    //             'Cita actualizada exitosamente',
+    //             'success'
+    //           );
+    //         }
+    //       },
+    //       (error) => {
+    //         this.isSubmitting = false;
+    //         this.toastService.presentToast(
+    //           'Error al actualizar la cita. Intente nuevamente.',
+    //           'danger'
+    //         );
+    //       }
+    //     );
+    // }
   }
   toggleSelection(selected: string) {
     if (selected === 'firstTime') {
@@ -305,12 +340,7 @@ export class AppointmentWizardComponent implements OnInit {
       this.medicalProfessionalService.clearCache();
       this.medicalProfessionalService
         .fetchMedicalProfessionals(selectedSpecialty.id)
-        .subscribe(() => {
-          console.log(
-            'Profesionales actualizados para la especialidad:',
-            selectedSpecialty.name
-          );
-        });
+        .subscribe(() => {});
     }
   }
 
@@ -331,10 +361,6 @@ export class AppointmentWizardComponent implements OnInit {
           hours: this.generateTimeSlots(range.start, range.end),
         }));
 
-      console.log(
-        '📌 Disponibilidad estructurada con `date`:',
-        availabilityArray
-      );
       this.selectedProfessionalAvailability.set(availabilityArray);
     } else {
       console.warn('⚠️ No hay disponibilidad para este profesional.');
@@ -411,7 +437,6 @@ export class AppointmentWizardComponent implements OnInit {
     return '';
   }
 
-  // Obtener el nombre de la especialidad seleccionada
   getSelectedSpecialty(): string {
     if (this.selectedSpecialtyIndex() !== null) {
       return this.specialties()[this.selectedSpecialtyIndex()!].name;
@@ -419,7 +444,6 @@ export class AppointmentWizardComponent implements OnInit {
     return '';
   }
 
-  // Formatear el día de la semana para la cita
   getFormattedDayOfWeek(): string {
     if (this.selectedDayIndex !== -1) {
       const selectedDayAvailability =
@@ -438,7 +462,7 @@ export class AppointmentWizardComponent implements OnInit {
       loading: false,
       notFound: false,
       success: false,
-      error: false
+      error: false,
     };
 
     if (!idType || !idNumber) {
@@ -449,34 +473,33 @@ export class AppointmentWizardComponent implements OnInit {
     this.searchState.loading = true;
 
     this.userService.findByIdentification(idType, idNumber).subscribe(
-      (userData) => {
+      (userData: any) => {
         this.searchState.loading = false;
 
         if (userData) {
-          // Create a properly typed copy of the userData
-          // Check if the returned userData is a User or Beneficiary and handle accordingly
-
           if ('user_id' in userData) {
+            this.appointment.beneficiary_id = userData.id.toString();
+            this.appointment.user_id = userData.user_id.toString();  
+            this.appointment.is_for_beneficiary = true;   
             // It's a Beneficiary
             this.appointment.userData = {
               ...this.appointment.userData,
               first_name: userData.first_name || '',
               last_name: userData.last_name || '',
               phone: userData.phone || '',
-              email: userData.email || '',
-              // Handle the image properly based on its type
-              image: userData.image ? {
-                id: userData.image.id || 0,
-                public_name: userData.image.public_name || '',
-                private_name: userData.image.private_name || '',
-                image_path: userData.image.image_path || '',
-                uploaded_at: userData.image.uploaded_at || '',
-                // beneficiary_id: (userData.image as BeneficiaryImage).beneficiary_id || ''
-              } as BeneficiaryImage : {} as BeneficiaryImage
+              email: userData.email || 'Sin correo electrónico',
+              image: userData.image
+                ? ({
+                    id: userData.image.id || 0,
+                    public_name: userData.image.public_name || '',
+                    private_name: userData.image.private_name || '',
+                    image_path: userData.image.image_path || '',
+                    uploaded_at: userData.image.uploaded_at || '',
+                    // beneficiary_id: (userData.image as BeneficiaryImage).beneficiary_id || ''
+                  } as BeneficiaryImage)
+                : ({} as BeneficiaryImage),
             };
-            console.log('🚀 Datos del beneficiario asignados:', this.appointment);
           } else {
-            // It's a User
             this.beneficiaryId = '';
             this.userId = userData.id.toString();
 
@@ -494,31 +517,29 @@ export class AppointmentWizardComponent implements OnInit {
               email: userData.email || '',
               is_for_beneficiary: false,
               // Handle the image properly based on its type
-              image: userData.image ? {
-                id: userData.image.id || 0,
-                public_name: userData.image.public_name || '',
-                private_name: userData.image.private_name || '',
-                image_path: userData.image.image_path || '',
-                uploaded_at: userData.image.uploaded_at || '',
-                user_id: (userData.image as UserImage).user_id || ''
-              } as UserImage : {} as UserImage
+              image: userData.image
+                ? ({
+                    id: userData.image.id || 0,
+                    public_name: userData.image.public_name || '',
+                    private_name: userData.image.private_name || '',
+                    image_path: userData.image.image_path || '',
+                    uploaded_at: userData.image.uploaded_at || '',
+                    user_id: (userData.image as UserImage).user_id || '',
+                  } as UserImage)
+                : ({} as UserImage),
             };
-            console.log('🚀 Datos del Usuario asignados:', this.appointment);
           }
 
-          // Set success state
           this.searchState.success = true;
 
-          // Reset success state after 3 seconds
           setTimeout(() => {
             this.searchState.success = false;
           }, 3000);
         } else {
-          // Set not found state
           this.searchState.notFound = true;
 
-          // Clear user fields if no user is found
-          const isUserBeneficiary = 'beneficiary_id' in this.appointment.userData;
+          const isUserBeneficiary =
+            'beneficiary_id' in this.appointment.userData;
 
           // Reset appointment IDs
           this.appointment.user_id = '';
@@ -538,8 +559,8 @@ export class AppointmentWizardComponent implements OnInit {
                 private_name: '',
                 image_path: '',
                 uploaded_at: '',
-                beneficiary_id: ''
-              } as BeneficiaryImage
+                beneficiary_id: '',
+              } as BeneficiaryImage,
             };
           } else {
             // It's a User
@@ -555,8 +576,8 @@ export class AppointmentWizardComponent implements OnInit {
                 private_name: '',
                 image_path: '',
                 uploaded_at: '',
-                user_id: ''
-              } as UserImage
+                user_id: '',
+              } as UserImage,
             };
           }
         }
@@ -571,15 +592,13 @@ export class AppointmentWizardComponent implements OnInit {
   }
 
   onIdentificationNumberChange() {
-    // Clear any existing timeout
     if (this.debounceIdentificationSearch) {
       clearTimeout(this.debounceIdentificationSearch);
     }
 
-    // Set a new timeout
     this.debounceIdentificationSearch = setTimeout(() => {
       this.searchUserByIdentification();
-    }, 500); // 500ms debounce time
+    }, 500);
   }
 
   getFullName(): string {
