@@ -1,6 +1,5 @@
-@if(!success){
+<!-- @if(!success){
 <div class="wizard-container">
-  <!-- Paso / Stepper Superior -->
   <div class="stepper">
     <div class="steps">
       <div class="step" [class.active]="currentStep >= 1">
@@ -132,7 +131,6 @@
       [firstTime]="appointment.first_time"
       (searchTermChanged)="updateSearchTerm($event)"
     ></app-patient-search-bar>
-    <!-- PASO 2: ESPECIALIDAD -->
     <div class="step-content">
       <h2>Selecciona la especialidad médica que requieres:</h2>
       <div class="carousel-container">
@@ -156,7 +154,6 @@
       </div>
     </div>
     }@else if(currentStep === 3){
-    <!-- PASO 3: PROFESIONAL -->
     <div class="step-content">
       <app-patient-search-bar
         [image_path]="appointment.userData.image.image_path"
@@ -179,6 +176,7 @@
             [last_name]="prof.user.last_name"
             [specialty_name]="prof.specialty_name"
             [profileImage]="prof.image.header_path"
+            [scheduleInfo]="prof.scheduleInfo"
             [agendaColor]="'var(--ion-color-secondary)'"
             [class.selected]="i === selectedProfessionalIndex()"
             (click)="selectProfessional(i)"
@@ -190,7 +188,6 @@
       </div>
     </div>
     }@else if(currentStep === 4){
-    <!-- PASO 4: FECHA Y HORA -->
     <div class="step-content">
       <h2>Horario de atención</h2>
       <p>Selecciona el día y la hora para la consulta</p>
@@ -247,7 +244,6 @@
 </div>
 </div>
 }@else {
-<!-- <app-appointment-assigned [isPending]="true"> </app-appointment-assigned> -->
 
 <app-appointment-assigned
   [isPending]="false"
@@ -262,4 +258,4 @@
 >
 </app-appointment-assigned>
 
-}
+} -->

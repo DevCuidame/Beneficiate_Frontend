@@ -2,14 +2,16 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import {
   AlertController,
+  IonicModule,
   LoadingController,
   NavController,
 } from '@ionic/angular';
+import { ScheduleInfo } from 'src/app/core/interfaces/medicalProfessional.interface';
 import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-health-professional-card',
-  imports: [CommonModule],
+  imports: [CommonModule, IonicModule],
   templateUrl: './health-professional-card.component.html',
   styleUrls: ['./health-professional-card.component.scss'],
 })
@@ -22,6 +24,13 @@ export class HealthProfessionalCardComponent {
   @Input() agendaColor: string = 'var(--ion-color-primary)';
   @Input() professionalId!: number;
   @Input() lowResProfileImage: string = '';
+  @Input() scheduleInfo: ScheduleInfo = {
+    type: 'UNAVAILABLE',
+    description: '',
+    isBooking: false,
+  };
+  @Input() availability: boolean = false;
+  @Input() gender: string = '';
 
   public api = environment.url;
 

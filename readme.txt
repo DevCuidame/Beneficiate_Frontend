@@ -20,10 +20,17 @@ ng generate component shared/components/call-center/appointmentAssigned
 ng generate component shared/components/call-center/chatFloating
 ng generate component shared/components/call-center/specialtyCard
 ng generate component shared/components/call-center/patientSearchBar
+ng generate component shared/components/call-center/patientDataStep
+ng generate component shared/components/call-center/specialtySelectionStep
+ng generate component shared/components/call-center/professionalSelectionStep
+ng generate component shared/components/call-center/wizardStepper
+ng generate component shared/components/call-center/scheduleSelectionStep
 ng generate component shared/components/plan-selection/plan-selection
 ng generate component shared/components/inline-payment/
 ng generate component shared/components/greeting 
-ng generate component shared/components/userChatWidget 
+ng generate component shared/components/userChatWidget
+ng generate component shared/components/calendarSelector
+
 
 ng generate service core/services/chatWebsocket
 ng generate service core/services/agent-chat
