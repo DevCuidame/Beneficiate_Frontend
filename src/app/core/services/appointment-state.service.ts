@@ -175,26 +175,34 @@ export class AppointmentStateService {
     }
     
     if (currentStep === 3) {
-      // Update professional data
       const selectedIndex = this.selectedProfessionalIndex();
       if (selectedIndex !== null) {
-        // Assuming we have access to the professionals data
-        // This would need to be injected or passed to this service
+      }
+      
+      if (currentAppointment.professionalData?.scheduleInfo?.type === 'MANUAL') {
+        currentAppointment.status = 'TO_BE_CONFIRMED';
       }
     }
     
     if (currentStep === 4) {
-      // Update appointment date and time
-      const dayIndex = this.selectedDayIndex();
-      const hour = this.selectedHour();
-      
-      if (dayIndex !== -1) {
-        const selectedDayAvailability = this.selectedProfessionalAvailability()[dayIndex];
+      if (currentAppointment.professionalData?.scheduleInfo?.type === 'MANUAL') {
+        if (this.manualDate() && this.selectedHour()) {
+          currentAppointment.appointment_date = this.manualDate();
+          currentAppointment.appointment_time = this.selectedHour();
+        }
+        currentAppointment.status = 'TO_BE_CONFIRMED';
+      } else {
+        const dayIndex = this.selectedDayIndex();
+        const hour = this.selectedHour();
         
-        if (selectedDayAvailability) {
-          currentAppointment.appointment_date = selectedDayAvailability.date;
-          currentAppointment.appointment_time = hour;
-          currentAppointment.status = 'CONFIRMED';
+        if (dayIndex !== -1) {
+          const selectedDayAvailability = this.selectedProfessionalAvailability()[dayIndex];
+          
+          if (selectedDayAvailability) {
+            currentAppointment.appointment_date = selectedDayAvailability.date;
+            currentAppointment.appointment_time = hour;
+            currentAppointment.status = 'CONFIRMED';
+          }
         }
       }
     }

@@ -66,13 +66,17 @@ import { AppointmentStateService } from 'src/app/core/services/appointment-state
       </div>
     } @else {
       <app-appointment-assigned
-        [isPending]="false"
+        [isPending]="isAgendaPendiente()"
+        [isManual]="isAgendaManual()"
         [patientName]="getFullName()"
         [professionalName]="getSelectedProfessionalName()"
+        [professionalPhone]="getProfessionalPhone()"
         [specialty]="getSelectedSpecialty()"
         [date]="appointment().appointment_date"
         [time]="appointment().appointment_time"
         [dayOfWeek]="getFormattedDayOfWeek()"
+        [appointment]="appointment()"
+        (appointmentSaved)="onAppointmentSaved($event)"
       ></app-appointment-assigned>
     }
   `,
@@ -107,9 +111,15 @@ export class AppointmentWizardComponent implements OnInit {
       if (this.currentStep() < 4) {
         this.stateService.nextStep();
       } else {
-        // Procesar la confirmación de la cita
-        this.stateService.setSubmitting(true);
-        this.sendAppointmentData();
+        // Verificar si es agenda manual
+        if (this.isAgendaManual()) {
+          // Para agenda manual, simplemente marcamos como éxito y mostramos pantalla de confirmación
+          this.stateService.setSuccess(true);
+        } else {
+          // Procesar la confirmación de la cita
+          this.stateService.setSubmitting(true);
+          this.sendAppointmentData();
+        }
       }
     } else {
       this.toastService.presentToast(
@@ -133,14 +143,12 @@ export class AppointmentWizardComponent implements OnInit {
 
     // Aquí se implementaría la llamada al servicio para crear/actualizar la cita
     // Por ahora, simularemos una respuesta exitosa
-
     setTimeout(() => {
       this.stateService.setSubmitting(false);
       this.stateService.setSuccess(true);
       this.toastService.presentToast('Cita creada exitosamente', 'success');
     }, 1500);
 
-    /* Código real de envío (comentado para esta demo)
     if (appointmentData.id === 0) {
       this.appointmentService.createAppointment(appointmentData).subscribe({
         next: (response) => {
@@ -179,7 +187,28 @@ export class AppointmentWizardComponent implements OnInit {
         }
       });
     }
-    */
+
+  }
+  
+  // Método para manejar cuando se guarda una cita pendiente
+  onAppointmentSaved(success: boolean): void {
+    if (success) {
+      // Resetear el estado del wizard
+      setTimeout(() => {
+        this.stateService.resetState();
+      }, 2000);
+    }
+  }
+
+  // Verificar si el profesional tiene agenda manual
+  isAgendaManual(): boolean {
+    const professionalData = this.appointment().professionalData;
+    return professionalData?.scheduleInfo?.type === 'MANUAL';
+  }
+  
+  // Verificar si la cita está pendiente
+  isAgendaPendiente(): boolean {
+    return this.appointment().status === 'PENDING' || this.appointment().status === 'TO_BE_CONFIRMED';
   }
 
   // Métodos auxiliares para la plantilla
@@ -194,6 +223,11 @@ export class AppointmentWizardComponent implements OnInit {
       return `${professionalData.user.first_name || ''} ${professionalData.user.last_name || ''}`.trim();
     }
     return '';
+  }
+  
+  getProfessionalPhone(): string {
+    const professionalData = this.appointment().professionalData;
+    return professionalData?.user?.phone || '';
   }
 
   getSelectedSpecialty(): string {

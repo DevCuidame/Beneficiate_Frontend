@@ -6,6 +6,7 @@ import { HealthProfessionalCardComponent } from 'src/app/shared/components/healt
 import { MedicalProfessionalService } from 'src/app/core/services/medicalProfessional.service';
 import { AppointmentStateService } from 'src/app/core/services/appointment-state.service';
 import { ScheduleService } from 'src/app/core/services/schedule.service';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 @Component({
   selector: 'app-professional-selection-step',
@@ -46,9 +47,9 @@ import { ScheduleService } from 'src/app/core/services/schedule.service';
               [specialty_name]="prof.specialty_name"
               [profileImage]="prof.image.header_path"
               [scheduleInfo]="prof.scheduleInfo"
-              [agendaColor]="'var(--ion-color-secondary)'"
+              [agendaColor]="getAgendaColor(prof.scheduleInfo.type)"
               [class.selected]="isSelected(prof.id)"
-              [class.unavailable]="prof.scheduleInfo!.type === 'UNAVAILABLE'"
+              [class.unavailable]="prof.scheduleInfo.type === 'UNAVAILABLE'"
               (click)="selectProfessional(prof)"
               [availability]="true"
             ></app-health-professional-card>
@@ -59,9 +60,47 @@ import { ScheduleService } from 'src/app/core/services/schedule.service';
           &#10095;
         </button>
       </div>
+      
+      <!-- Información sobre agenda manual si está seleccionada -->
+      @if (isManualAgendaSelected()) {
+        <div class="manual-agenda-info">
+          <div class="info-box">
+            <i class="fas fa-info-circle"></i>
+            <p>El profesional seleccionado maneja agenda manual. En el siguiente paso podrás introducir opcionalmente la fecha y hora acordada o continuar sin especificarla.</p>
+          </div>
+        </div>
+      }
     </div>
   `,
-  styleUrls: ['./professional-selection-step.component.scss']
+  styles: [`
+    @import url('../../../styles/wizard.styles.scss');
+    
+    .manual-agenda-info {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      background-color: rgba(var(--ion-color-warning-rgb), 0.1);
+    }
+    
+    .info-box {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      
+      i {
+        color: var(--ion-color-warning);
+        font-size: 24px;
+        margin-top: 3px;
+      }
+      
+      p {
+        margin: 0;
+        color: var(--ion-color-dark);
+        font-size: 14px;
+        line-height: 1.5;
+      }
+    }
+  `]
 })
 export class ProfessionalSelectionStepComponent implements OnInit {
   @ViewChild('carouselContent', { static: false })
@@ -73,7 +112,8 @@ export class ProfessionalSelectionStepComponent implements OnInit {
   constructor(
     private stateService: AppointmentStateService,
     private medicalProfessionalService: MedicalProfessionalService,
-    private scheduleService: ScheduleService
+    private scheduleService: ScheduleService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -94,6 +134,24 @@ export class ProfessionalSelectionStepComponent implements OnInit {
     return professional.scheduleInfo?.type !== 'UNAVAILABLE';
   }
 
+  isManualAgendaSelected(): boolean {
+    const index = this.stateService.selectedProfessionalIndex();
+    if (index === null) return false;
+    
+    const professionals = this.professionals();
+    if (!professionals || !professionals[index]) return false;
+    
+    return professionals[index].scheduleInfo?.type === 'MANUAL';
+  }
+  
+  getAgendaColor(type: string): string {
+    switch (type) {
+      case 'ONLINE': return 'var(--ion-color-secondary)';
+      case 'MANUAL': return 'var(--ion-color-warning)';
+      case 'UNAVAILABLE': return 'var(--ion-color-danger)';
+      default: return 'var(--ion-color-primary)';
+    }
+  }
 
   // Filtrado de profesionales basado en el término de búsqueda
   public professionals = computed(() => {
@@ -119,9 +177,12 @@ export class ProfessionalSelectionStepComponent implements OnInit {
   }
 
   selectProfessional(professional: any): void {
-
-    if (!this.isProfessionalAvailable(professional)) {
-      return; // No hacer nada si el profesional no está disponible
+    if (professional.scheduleInfo?.type === 'UNAVAILABLE') {
+      this.toastService.presentToast(
+        'Este profesional no está disponible para agendar citas',
+        'warning'
+      );
+      return;
     }
 
     // Encontrar el índice del profesional seleccionado
@@ -135,7 +196,9 @@ export class ProfessionalSelectionStepComponent implements OnInit {
       this.stateService.appointment.update(app => ({
         ...app,
         professional_id: professional.id.toString(),
-        professionalData: professional
+        professionalData: professional,
+        // Si es agenda manual, cambiamos el estado
+        status: professional.scheduleInfo?.type === 'MANUAL' ? 'TO_BE_CONFIRMED' : 'PENDING'
       }));
       
       // Procesar disponibilidad del profesional para el siguiente paso
@@ -144,6 +207,12 @@ export class ProfessionalSelectionStepComponent implements OnInit {
   }
 
   processAvailability(professional: any): void {
+    if (professional.scheduleInfo?.type === 'MANUAL') {
+      // Para agenda manual, no procesamos disponibilidad
+      this.stateService.setAvailability([]);
+      return;
+    }
+    
     if (professional && professional.availability) {
       const availabilityArray = this.scheduleService.processProfessionalAvailability(
         professional.availability

@@ -37,8 +37,8 @@ import { CalendarSelectorComponent } from '../../calendar-selector/calendar-sele
       <div class="schedule-type-info manual">
         <i class="fas fa-calendar-alt"></i>
         <p>
-          Este profesional maneja agenda manual. Por favor selecciona la fecha y
-          hora que acordaron.
+          Por favor selecciona la fecha y
+          hora que acordaron o haga clic en "Siguiente" para continuar sin seleccionar fecha y hora.
         </p>
       </div>
       } @else {
@@ -89,12 +89,16 @@ import { CalendarSelectorComponent } from '../../calendar-selector/calendar-sele
           </div>
         </div>
 
-        <div class="manual-note">
+        <!-- <div class="manual-note">
           <p>
             <i class="fas fa-info-circle"></i> La confirmación de la cita está
             sujeta a la disponibilidad del profesional.
           </p>
-        </div>
+          <p>
+            <i class="fas fa-exclamation-circle"></i> Si no ha acordado fecha y hora aún, 
+            puede hacer clic en "Siguiente" para continuar y contactar al profesional posteriormente.
+          </p>
+        </div> -->
       </div>
       }
 
@@ -166,7 +170,7 @@ export class ScheduleSelectionStepComponent implements OnInit {
         ...app,
         appointment_date: '',
         appointment_time: '',
-        status: 'PENDING' 
+        status: 'TO_BE_CONFIRMED' 
       }));
       
       this.stateService.selectDay(-1); 
@@ -201,7 +205,7 @@ export class ScheduleSelectionStepComponent implements OnInit {
             ...app,
             appointment_date: '',
             appointment_time: '',
-            status: 'PENDING'
+            status: newManualSchedule ? 'TO_BE_CONFIRMED' : 'PENDING'
           }));
           
           this.stateService.selectDay(-1);
@@ -257,16 +261,23 @@ export class ScheduleSelectionStepComponent implements OnInit {
   }
 
   updateAppointmentManual() {
+    // Si seleccionaron fecha y hora, actualiza el appointment
     if (this.selectedDate && this.selectedTime) {
       this.stateService.appointment.update((app) => ({
         ...app,
         appointment_date: this.selectedDate,
         appointment_time: this.selectedTime,
-        status: 'CONFIRMED',
+        status: 'TO_BE_CONFIRMED', // Para agenda manual
       }));
 
       this.stateService.selectHour(this.selectedTime);
       this.stateService.manualDate.set(this.selectedDate);
+    } else {
+      // Si no hay fecha y hora seleccionadas, asegúrate de que el estado sea TO_BE_CONFIRMED
+      this.stateService.appointment.update((app) => ({
+        ...app,
+        status: 'TO_BE_CONFIRMED'
+      }));
     }
   }
 
@@ -302,6 +313,7 @@ export class ScheduleSelectionStepComponent implements OnInit {
       console.log(`Hora seleccionada: ${hour} para el día: ${selectedDay.day} (índice ${dayIndex})`);
     }, 10);
   }
+  
   isDaySelected(index: number): boolean {
     return this.stateService.selectedDayIndex() === index;
   }
