@@ -123,6 +123,52 @@ export class AppointmentService {
       );
   }
 
+  updateAppointmentStatus(id: number, status: any): Observable<any> {
+    return this.http
+      .put<AppointmentResponse>(
+        `${this.api}${this.version}medical-appointment/status/${id}`,
+        { status }
+      )
+      .pipe(
+        tap((response) => {
+          if (response && response.data) {
+            const updatedAppointments = this.appointments().map((appt) =>
+              appt.id === id ? { ...appt, status: status } : appt
+            );
+            this.appointments.set(updatedAppointments);
+            this.saveToCache(updatedAppointments);
+          }
+        }),
+        catchError((error) => {
+          console.error('Error al actualizar estado de la cita:', error);
+          return of({
+            message: 'Error al actualizar estado de la cita',
+            statusCode: 500,
+          });
+        })
+      );
+  }
+
+
+  getAppointmentsList(): void {
+    this.http
+      .get<{ data: Appointment[] }>(
+        `${this.api}${this.version}medical-appointment/`
+      )
+      .pipe(
+        map((response) => response.data),
+        catchError((error) => {
+          console.error('Error al obtener todas las citas:', error);
+          return of([]);
+        })
+      )
+      .subscribe((appointments) => {
+        if (appointments && appointments.length > 0) {
+          this.updateAppointments(appointments);
+        }
+      });
+  }
+
   clearCache(): void {
     this.appointments.set([]);
     localStorage.removeItem(this.cacheKey);

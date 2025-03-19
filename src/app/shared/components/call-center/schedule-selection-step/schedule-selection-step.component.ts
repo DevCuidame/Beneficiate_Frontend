@@ -43,6 +43,7 @@ import { MedicalProfessionalService } from 'src/app/core/services/medicalProfess
         <div class="professional-details">
           <p><strong>Profesional:</strong> {{ professionalName }}</p>
           <p><strong>Especialidad:</strong> {{ specialtyName }}</p>
+          <p><strong>Tipo de agenda:</strong> {{ getScheduleTypeLabel() }}</p>
         </div>
       </div>
       }
@@ -54,7 +55,7 @@ import { MedicalProfessionalService } from 'src/app/core/services/medicalProfess
         <i class="fas fa-calendar-alt"></i>
         <p>
           Por favor, selecciona la fecha y
-          hora que acordaron o haga clic en "Siguiente" para continuar sin
+          hora que acordaron o haga clic en "{{ isAssigningToPendingAppointment ? 'Confirmar cita' : 'Siguiente' }}" para continuar sin
           seleccionar fecha y hora.
         </p>
       </div>
@@ -157,8 +158,7 @@ export class ScheduleSelectionStepComponent implements OnInit {
 
   public patientData: any;
   public appointmentFirstTime: boolean = false;
-  public availableSchedule: { day: string; date: string; hours: string[] }[] =
-    [];
+  public availableSchedule: { day: string; date: string; hours: string[] }[] = [];
   public isManualSchedule: boolean = false;
   private injector = inject(Injector);
 
@@ -168,6 +168,9 @@ export class ScheduleSelectionStepComponent implements OnInit {
   public specialtyName: string = '';
 
   public availableHours: string[] = [];
+  
+  // Variable para mantener la determinación inicial de agenda manual
+  private initialDetermination: boolean = false;
 
   constructor(
     private stateService: AppointmentStateService,
@@ -194,63 +197,64 @@ export class ScheduleSelectionStepComponent implements OnInit {
       this.loadProfessionalAvailability();
     }
 
-    const newIsManualSchedule =
-      appointment.professionalData?.scheduleInfo?.type === 'MANUAL';
+    // Determinar si es agenda manual (una sola vez al inicio)
+    this.determineManualSchedule();
+    this.initialDetermination = this.isManualSchedule;
 
-    if (this.isManualSchedule !== newIsManualSchedule) {
-      this.stateService.appointment.update((app) => ({
-        ...app,
-        appointment_date: '',
-        appointment_time: '',
-        status: 'TO_BE_CONFIRMED', 
-      }));
-
-      this.stateService.selectDay(-1);
-      this.stateService.selectHour('');
-      this.stateService.manualDate.set('');
-
-      this.selectedDate = '';
-      this.selectedTime = '';
-    }
-
-    this.isManualSchedule = newIsManualSchedule;
-
-    if (this.isManualSchedule) {
-      this.selectedDate = '';
-      this.selectedTime = '';
-    }
-
-    this.availableSchedule =
-      this.stateService.selectedProfessionalAvailability();
+    this.availableSchedule = this.stateService.selectedProfessionalAvailability();
 
     runInInjectionContext(this.injector, () => {
       effect(() => {
-        const availability =
-          this.stateService.selectedProfessionalAvailability();
+        const availability = this.stateService.selectedProfessionalAvailability();
         this.availableSchedule = availability || [];
-
+        
+        // Solo actualizamos la fecha y hora seleccionadas, no el modo de agenda
         const appointment = this.stateService.appointment();
-        const newManualSchedule =
-          appointment.professionalData?.scheduleInfo?.type === 'MANUAL';
-
-        if (this.isManualSchedule !== newManualSchedule) {
-          this.stateService.appointment.update((app) => ({
-            ...app,
-            appointment_date: '',
-            appointment_time: '',
-            status: newManualSchedule ? 'TO_BE_CONFIRMED' : 'PENDING',
-          }));
-
-          this.stateService.selectDay(-1);
-          this.stateService.selectHour('');
-          this.stateService.manualDate.set('');
-
-          this.selectedDate = '';
-          this.selectedTime = '';
-          this.isManualSchedule = newManualSchedule;
+        if (appointment.appointment_date) {
+          this.selectedDate = appointment.appointment_date;
+        }
+        if (appointment.appointment_time) {
+          this.selectedTime = appointment.appointment_time;
         }
       });
     });
+  }
+
+  determineManualSchedule(): void {
+    const appointment = this.stateService.appointment();
+    
+    // Es agenda manual si el profesional tiene tipo MANUAL
+    const isManualByType = appointment.professionalData?.scheduleInfo?.type === 'MANUAL';
+    
+    // O si es una cita pendiente por confirmar sin fecha/hora asignada (en modo asignación)
+    const isPendingConfirmation = this.isAssigningToPendingAppointment && 
+                                 appointment.status === 'TO_BE_CONFIRMED';
+                                 
+    this.isManualSchedule = isManualByType || isPendingConfirmation;
+    
+    // Inicializar fechas si ya existen en el appointment
+    if (appointment.appointment_date) {
+      this.selectedDate = appointment.appointment_date;
+    }
+    if (appointment.appointment_time) {
+      this.selectedTime = appointment.appointment_time;
+    }
+  }
+
+  getScheduleTypeLabel(): string {
+    const appointment = this.stateService.appointment();
+    const scheduleType = appointment.professionalData?.scheduleInfo?.type;
+    
+    switch (scheduleType) {
+      case 'MANUAL':
+        return 'Manual';
+      case 'ONLINE':
+        return 'En línea';
+      case 'UNAVAILABLE':
+        return 'No disponible';
+      default:
+        return 'Pendiente por confirmar';
+    }
   }
 
   loadProfessionalAvailability(): void {
@@ -314,6 +318,9 @@ export class ScheduleSelectionStepComponent implements OnInit {
 
   updateAppointmentManual() {
     if (this.selectedDate && this.selectedTime) {
+      // Mantener isManualSchedule constante (no debe cambiarse por actualización de fecha/hora)
+      this.isManualSchedule = this.initialDetermination;
+      
       this.stateService.appointment.update((app) => ({
         ...app,
         appointment_date: this.selectedDate,
@@ -334,38 +341,44 @@ export class ScheduleSelectionStepComponent implements OnInit {
   }
 
   selectDay(index: number): void {
-    this.stateService.selectDay(index);
+    // Solo ejecutar si no estamos en modo manual
+    if (!this.isManualSchedule) {
+      this.stateService.selectDay(index);
+    }
   }
 
   selectHour(hour: string, dayIndex: number): void {
-    this.stateService.appointment.update((app) => ({
-      ...app,
-      appointment_date: '',
-      appointment_time: '',
-    }));
-
-    setTimeout(() => {
-      const selectedDay = this.availableSchedule[dayIndex];
-
-      if (!selectedDay) {
-        console.error('Día seleccionado no válido');
-        return;
-      }
-
-      this.stateService.selectDay(dayIndex);
-      this.stateService.selectHour(hour);
-
+    // Solo ejecutar si no estamos en modo manual
+    if (!this.isManualSchedule) {
       this.stateService.appointment.update((app) => ({
         ...app,
-        appointment_date: selectedDay.date,
-        appointment_time: hour,
-        status: this.isAssigningToPendingAppointment ? 'CONFIRMED' : 'PENDING',
+        appointment_date: '',
+        appointment_time: '',
       }));
 
-      console.log(
-        `Hora seleccionada: ${hour} para el día: ${selectedDay.day} (índice ${dayIndex})`
-      );
-    }, 10);
+      setTimeout(() => {
+        const selectedDay = this.availableSchedule[dayIndex];
+
+        if (!selectedDay) {
+          console.error('Día seleccionado no válido');
+          return;
+        }
+
+        this.stateService.selectDay(dayIndex);
+        this.stateService.selectHour(hour);
+
+        this.stateService.appointment.update((app) => ({
+          ...app,
+          appointment_date: selectedDay.date,
+          appointment_time: hour,
+          status: this.isAssigningToPendingAppointment ? 'CONFIRMED' : 'PENDING',
+        }));
+
+        console.log(
+          `Hora seleccionada: ${hour} para el día: ${selectedDay.day} (índice ${dayIndex})`
+        );
+      }, 10);
+    }
   }
 
   isDaySelected(index: number): boolean {

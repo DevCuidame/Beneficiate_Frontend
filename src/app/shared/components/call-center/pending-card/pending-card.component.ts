@@ -3,16 +3,27 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CustomButtonComponent } from '../../custom-button/custom-button.component';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faClock, faCalendar } from '@fortawesome/free-regular-svg-icons';
+import {
+  faClock,
+  faCalendar,
+  faEllipsisV,
+} from '@fortawesome/free-solid-svg-icons';
 import { Appointment } from 'src/app/core/interfaces/appointment.interface';
 import { Router } from '@angular/router';
 import { AppointmentService } from 'src/app/core/services/appointment.service';
 import { ToastService } from 'src/app/core/services/toast.service';
-import { AlertController } from '@ionic/angular';
+import { AlertController, IonicModule } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-pending-card',
-  imports: [CustomButtonComponent, CommonModule, FontAwesomeModule],
+  imports: [
+    CustomButtonComponent,
+    CommonModule,
+    FontAwesomeModule,
+    IonicModule,
+    FormsModule,
+  ],
   templateUrl: './pending-card.component.html',
   styleUrls: ['./pending-card.component.scss'],
 })
@@ -22,9 +33,15 @@ export class PendingCardComponent implements OnInit {
   public environment = environment.url;
 
   public buttonBackground: string = 'assets/background/primary_button_bg.svg';
-  public confirmButtonBackground: string = 'assets/background/confirm_button_bg.svg';
+  public confirmButtonBackground: string =
+    'assets/background/primary_button_bg.svg';
   public faClock = faClock;
   public faCalendar = faCalendar;
+  public faEllipsisV = faEllipsisV;
+
+  public showStatusMenu = false;
+  public statusUpdating = false;
+  public originalStatus = '';
 
   constructor(
     private router: Router,
@@ -33,7 +50,71 @@ export class PendingCardComponent implements OnInit {
     private alertController: AlertController
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    // Guardar el estado original para poder revertirlo en caso de error
+    this.originalStatus = this.appointment.status;
+  }
+
+  toggleStatusMenu(event: Event) {
+    event.stopPropagation();
+    this.showStatusMenu = !this.showStatusMenu;
+
+    // Cerrar el menú si se hace clic fuera de él
+    if (this.showStatusMenu) {
+      setTimeout(() => {
+        const closeClickHandler = () => {
+          this.showStatusMenu = false;
+          document.removeEventListener('click', closeClickHandler);
+        };
+        document.addEventListener('click', closeClickHandler);
+      }, 0);
+    }
+  }
+
+  updateStatus(newStatus: any) {
+    if (this.statusUpdating || this.appointment.status === newStatus) {
+      this.showStatusMenu = false;
+      return;
+    }
+
+    this.statusUpdating = true;
+    const previousStatus = this.appointment.status;
+
+    this.appointment.status = newStatus;
+    this.showStatusMenu = false;
+
+    this.appointmentService
+      .updateAppointmentStatus(this.appointment.id, newStatus)
+      .subscribe({
+        next: (response) => {
+          this.statusUpdating = false;
+          if (response && response.statusCode === 200) {
+            this.toastService.presentToast(
+              `Estado actualizado a "${this.getStatusLabel()}"`,
+              'success'
+            );
+            // Si es necesario, actualizar la lista completa
+            if (['CANCELLED', 'EXPIRED'].includes(newStatus)) {
+              this.appointmentService.getAppointmentsList();
+            }
+          } else {
+            this.handleUpdateError(previousStatus);
+          }
+        },
+        error: (err) => {
+          this.handleUpdateError(previousStatus);
+        },
+      });
+  }
+
+  handleUpdateError(previousStatus: any) {
+    this.statusUpdating = false;
+    this.appointment.status = previousStatus;
+    this.toastService.presentToast(
+      'Error al actualizar el estado. Intente nuevamente.',
+      'danger'
+    );
+  }
 
   getClockColor(appointment: Appointment): string {
     const createdAt = new Date(appointment.created_at).getTime();
@@ -50,9 +131,72 @@ export class PendingCardComponent implements OnInit {
     return 'var(--ion-color-primary)';
   }
 
+  getStatusBadgeClass(): any {
+    const baseClass = 'status-badge';
+
+    switch (this.appointment.status) {
+      case 'PENDING':
+        return {
+          [baseClass]: true,
+          'pending-badge': true,
+          'badge-secondary': true,
+        };
+      case 'CONFIRMED':
+        return {
+          [baseClass]: true,
+          'confirmed-badge': true,
+          'badge-primary': true,
+        };
+      case 'TO_BE_CONFIRMED':
+        return {
+          [baseClass]: true,
+          'to-be-confirmed-badge': true,
+          'badge-warning': true,
+        };
+      case 'RESCHEDULED':
+        return {
+          [baseClass]: true,
+          'rescheduled-badge': true,
+          'badge-secondary': true,
+        };
+      case 'CANCELLED':
+      case 'EXPIRED':
+        return {
+          [baseClass]: true,
+          'cancelled-badge': true,
+          'badge-danger': true,
+        };
+      default:
+        return {
+          [baseClass]: true,
+        };
+    }
+  }
+
+  getStatusLabel(): string {
+    switch (this.appointment.status) {
+      case 'PENDING':
+        return 'Pendiente';
+      case 'CONFIRMED':
+        return 'Confirmada';
+      case 'TO_BE_CONFIRMED':
+        return 'Pendiente por Asignar';
+      case 'RESCHEDULED':
+        return 'Reagendada';
+      case 'CANCELLED':
+        return 'Cancelada';
+      case 'EXPIRED':
+        return 'Vencida';
+      default:
+        return 'Desconocido';
+    }
+  }
+
   // Verifica si la cita necesita asignación de horario
   needsScheduleAssignment(): boolean {
-    return !this.appointment.appointment_date || !this.appointment.appointment_time;
+    return (
+      !this.appointment.appointment_date || !this.appointment.appointment_time
+    );
   }
 
   // Formatea la fecha para mostrarse de manera amigable
@@ -64,7 +208,7 @@ export class PendingCardComponent implements OnInit {
         weekday: 'long',
         day: 'numeric',
         month: 'long',
-        year: 'numeric'
+        year: 'numeric',
       });
     } catch (error) {
       console.error('Error formateando fecha:', error);
@@ -95,9 +239,9 @@ export class PendingCardComponent implements OnInit {
     // Podemos usar la misma ruta pero con un query param para indicar que es asignación de horario
     localStorage.setItem('selectedAppointment', JSON.stringify(appointment));
     this.router.navigate(['/call-center/dash/pending'], {
-      state: { 
+      state: {
         appointment,
-        scheduleAssignment: true // Flag para indicar que es asignación de horario
+        scheduleAssignment: true, // Flag para indicar que es asignación de horario
       },
     });
   }
@@ -106,11 +250,13 @@ export class PendingCardComponent implements OnInit {
   async confirmAppointment(appointment: Appointment) {
     const alert = await this.alertController.create({
       header: 'Confirmar cita',
-      message: `¿Está seguro que desea confirmar la cita para ${this.formatDate(appointment.appointment_date)} a las ${appointment.appointment_time}?`,
+      message: `¿Está seguro que desea confirmar la cita para ${this.formatDate(
+        appointment.appointment_date
+      )} a las ${appointment.appointment_time}?`,
       buttons: [
         {
           text: 'Cancelar',
-          role: 'cancel'
+          role: 'cancel',
         },
         {
           text: 'Confirmar',
@@ -118,27 +264,40 @@ export class PendingCardComponent implements OnInit {
             // Actualizar estado de la cita
             const updatedAppointment = {
               ...appointment,
-              status: 'CONFIRMED'
+              status: 'CONFIRMED',
             };
-            
-            this.appointmentService.updateAppointment(appointment.id, updatedAppointment as Appointment)
+
+            this.appointmentService
+              .updateAppointment(
+                appointment.id,
+                updatedAppointment as Appointment
+              )
               .subscribe({
                 next: (response) => {
                   if (response && response.statusCode === 200) {
-                    this.toastService.presentToast('Cita confirmada exitosamente', 'success');
+                    this.toastService.presentToast(
+                      'Cita confirmada exitosamente',
+                      'success'
+                    );
                     // Emitir evento o recargar datos
                   } else {
-                    this.toastService.presentToast('Error al confirmar la cita', 'danger');
+                    this.toastService.presentToast(
+                      'Error al confirmar la cita',
+                      'danger'
+                    );
                   }
                 },
                 error: (error) => {
                   console.error('Error al confirmar cita:', error);
-                  this.toastService.presentToast('Error al confirmar la cita', 'danger');
-                }
+                  this.toastService.presentToast(
+                    'Error al confirmar la cita',
+                    'danger'
+                  );
+                },
               });
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
 
     await alert.present();

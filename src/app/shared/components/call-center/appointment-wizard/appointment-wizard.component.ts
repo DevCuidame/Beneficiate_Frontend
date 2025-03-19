@@ -118,15 +118,12 @@ export class AppointmentWizardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Verificar si estamos en modo de asignación de horario
     this.isScheduleAssignment = history.state.scheduleAssignment === true;
 
-    // Si estamos en modo de asignación de horario, ir directamente al paso 4
     if (this.isScheduleAssignment) {
       this.stateService.currentStep.set(4);
     }
 
-    // Si hay datos de navegación, cargarlos en el estado
     const navData = history.state.appointment;
     if (navData) {
       this.stateService.appointment.set(navData);
@@ -136,21 +133,16 @@ export class AppointmentWizardComponent implements OnInit {
 
   nextStep(): void {
     if (this.isStepValid()) {
-      // Actualizar los datos de la cita según el paso actual
       this.stateService.updateAppointmentForStep();
 
       if (this.isScheduleAssignment) {
-        // En modo de asignación de horario, confirmamos directamente
         this.confirmScheduleAssignment();
       } else if (this.currentStep() < 4) {
         this.stateService.nextStep();
       } else {
-        // Verificar si es agenda manual
         if (this.isAgendaManual()) {
-          // Para agenda manual, simplemente marcamos como éxito y mostramos pantalla de confirmación
           this.stateService.setSuccess(true);
         } else {
-          // Procesar la confirmación de la cita
           this.stateService.setSubmitting(true);
           this.sendAppointmentData();
         }
@@ -186,29 +178,44 @@ export class AppointmentWizardComponent implements OnInit {
 
   confirmScheduleAssignment(): void {
     this.stateService.setSubmitting(true);
-
+  
     const appointmentData = this.stateService.appointment();
-
+    console.log('Confirmando cita con datos:', appointmentData);
+  
     // Asegurarse de que el estado sea CONFIRMED
     const updatedAppointment = {
       ...appointmentData,
       status: 'CONFIRMED',
     };
-
+  
     this.appointmentService
       .updateAppointment(appointmentData.id, updatedAppointment as Appointment)
       .subscribe({
         next: (response) => {
           this.stateService.setSubmitting(false);
-
+  
           if (response && response.statusCode === 200) {
+            console.log('Respuesta exitosa al confirmar cita:', response);
+            
+            const updatedAppointment = {
+              ...response.data,
+              professionalData: appointmentData.professionalData,
+              specialtyData: appointmentData.specialtyData,
+              userData: appointmentData.userData,
+              specialty: appointmentData.specialty,
+              appointment_date: response.data.appointment_date?.split('T')[0] || response.data.appointment_date,
+            };
+            
+            this.stateService.appointment.set(updatedAppointment);
+            
             this.stateService.setSuccess(true);
-            this.stateService.appointment.set(response.data);
+            
             this.toastService.presentToast(
               'Horario asignado exitosamente',
               'success'
             );
           } else {
+            console.error('Error al confirmar horario:', response);
             this.toastService.presentToast(
               'Error al asignar horario. Intente nuevamente.',
               'danger'
@@ -216,6 +223,7 @@ export class AppointmentWizardComponent implements OnInit {
           }
         },
         error: (error) => {
+          console.error('Error al confirmar horario:', error);
           this.stateService.setSubmitting(false);
           this.toastService.presentToast(
             'Error al asignar horario. Intente nuevamente.',
@@ -306,7 +314,20 @@ export class AppointmentWizardComponent implements OnInit {
   // Verificar si el profesional tiene agenda manual
   isAgendaManual(): boolean {
     const professionalData = this.appointment().professionalData;
-    return professionalData?.scheduleInfo?.type === 'MANUAL';
+    // Considera primero el tipo de horario del profesional
+    if (professionalData?.scheduleInfo?.type === 'MANUAL') {
+      return true;
+    }
+    
+    // Si estamos en modo de asignación y es una cita pendiente por confirmar sin horario asignado
+    // también la tratamos como manual
+    if (this.isScheduleAssignment && 
+        this.appointment().status === 'TO_BE_CONFIRMED' && 
+        (!this.appointment().appointment_date || !this.appointment().appointment_time)) {
+      return true;
+    }
+    
+    return false;
   }
 
   // Verificar si la cita está pendiente
@@ -335,8 +356,6 @@ export class AppointmentWizardComponent implements OnInit {
 
   getProfessionalPhone(): string {
     const professionalData = this.appointment().professionalData;
-    // Aquí deberías devolver el número de teléfono del profesional si está disponible
-    // Por ahora devuelvo un string vacío que será reemplazado por un número predeterminado
     return professionalData?.user?.phone || '';
   }
 
