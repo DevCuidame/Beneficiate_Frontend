@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LoadingController, ModalController, ToastController } from '@ionic/angular';
 
@@ -62,6 +62,7 @@ export class HomePageComponent implements OnInit {
     this.beneficiaryService.beneficiaries$.subscribe((beneficiaries) => {
       if (Array.isArray(beneficiaries)) {
         this.numBeneficiary = beneficiaries.length;
+
         this.beneficiaries = beneficiaries.map((beneficiary) => ({
           ...beneficiary,
           image: Array.isArray(beneficiary.image) && beneficiary.image.length > 0 ? beneficiary.image[0] : null,
@@ -70,6 +71,10 @@ export class HomePageComponent implements OnInit {
     });
 
     this.loadPlans();
+  }
+
+  ngOnDestroy() {
+    console.log("uwu");
   }
 
   selectButton(panel: string) {
@@ -87,8 +92,6 @@ export class HomePageComponent implements OnInit {
 
     this.paymentService.getPlans().subscribe({
       next: (plans) => {
-        console.log('Planes recibidos:', plans);
-
         // Verificar si planes es un array
         if (Array.isArray(plans)) {
           this.plans = plans.filter(plan => plan && plan.is_active);

@@ -83,23 +83,23 @@
       </div>
 
       <div class="main-doc-schedule">
-        @for (prof of professionals(); track prof){
-        <div class="doc-card">
-          <img
-            src="../../../../assets/images/Desktop/home/doc-card-bg.jpg"
-            alt="doc-bg"
-          />
+        @for (prof of professionals; track prof){
+          <div class="doc-card" *ngFor="let prof of professionals; let i = index">
+            <img
+              src="../../../../assets/images/Desktop/home/doc-card-bg.jpg"
+              alt="doc-bg"
+            />
 
-          <div class="doc-info">
-            <h3 class="f-big">Dr. {{prof.user.first_name}} {{prof.user.last_name}}</h3>
-            <h4 class="f-small">{{prof.profession}}</h4>
-            <h3 class="f-big f-green">Agenda disponible</h3>
+            <div class="doc-info">
+              <h3 class="f-big">Dr. {{prof.user.first_name}} {{prof.user.last_name}}</h3>
+              <h4 class="f-small">{{prof.profession}}</h4>
+              <h3 class="f-big f-green">Agenda disponible</h3>
 
-            <button class="get-date" (click)="toggleCard(prof.id)">
-              <h3 class="f-big">Solicitar cita</h3>
-            </button>
+              <button class="get-date" (click)="toggleCard(prof.id)">
+                <h3 class="f-big">Solicitar cita</h3>
+              </button>
+            </div>
           </div>
-        </div>
         }
       </div>
 

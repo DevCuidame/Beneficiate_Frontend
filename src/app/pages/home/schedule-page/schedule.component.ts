@@ -40,7 +40,6 @@ export class ScheduleComponent  implements OnInit {
   idProfessional!: number | null;
   selectedSpecialtyName: string = 'Especialidad';
   selectedSpecialtyId = signal<number | null>(null);
-  appointments: any[] = [];
   profileImage: string = '';
 
   private wsSubscription!: Subscription;
@@ -48,30 +47,8 @@ export class ScheduleComponent  implements OnInit {
     const data = this.medicalSpecialtyService.specialties();
     return data;
   });
-  public professionals = computed(() => {
-    const profesional = this.medicalProfessionalService.professionals();
-    return profesional;
-  });
-  public appointment: Appointment = {
-    id: 0,
-    user_id: '',
-    beneficiary_id: '',
-    professional_id: '',
-    specialty_id: '',
-    appointment_date: '',
-    appointment_time: '',
-    status: 'PENDING',
-    notes: '',
-    specialty: '',
-    created_at: '',
-    created_at_formatted: '',
-    is_for_beneficiary: false,
-    first_time: false,
-    control: false,
-    userData: {} as any,
-    professionalData: {} as MedicalProfessional,
-    specialtyData: {} as MedicalSpecialty,
-  };
+  public professionals: MedicalProfessional[] = [];
+  public appointments: any[] = [];
   public user: User | any = null;
 
   constructor(
@@ -87,10 +64,15 @@ export class ScheduleComponent  implements OnInit {
   ngOnInit() {
     this.medicalSpecialtyService.fetchMedicalSpecialties().subscribe();
 
-    this.medicalProfessionalService.getMedicalProfessionals().subscribe((data) => {
-      this.medicalProfessionalService.professionals.set(data);
-    });
-
+    this.medicalProfessionalService.getMedicalProfessionals().subscribe(
+      (professionals) => {
+        console.log(professionals);
+        this.professionals = professionals;
+      },
+      (error) => {
+        this.professionals = [];
+      }
+    );
     this.userService.user$.subscribe((userData) => {
       this.user =
         Array.isArray(userData) && userData.length > 0 ? userData[0] : userData;
@@ -105,8 +87,13 @@ export class ScheduleComponent  implements OnInit {
 
     this.wsSubscription = this.websocketService.connect().subscribe(
       (data) => {
+        console.log(data);
         if (data.event === 'user_appointments') {
           this.appointments = data.appointments;
+          console.log(
+            '🚀 ~ AppointmentBookingComponent ~ ngOnInit ~ this.appointments:',
+            this.appointments
+          );
         }
       },
       (error) => {
@@ -189,7 +176,6 @@ export class ScheduleComponent  implements OnInit {
     loading.present();
     return loading;
   }
-
 
   // --------------- Acciones de botonoes --------------- //
 

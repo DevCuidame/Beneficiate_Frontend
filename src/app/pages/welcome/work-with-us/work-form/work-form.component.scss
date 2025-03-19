@@ -1,0 +1,151 @@
+.work-container {
+  background: #fff;
+  height: 100vh;
+  width: 100vw;
+  padding: 8% 20% 5%;
+  overflow-y: scroll;
+
+  h1 {
+    color: var(--ion-color-dark);
+    margin: 25px 0 50px;
+    text-align: center;
+    font-size: 2.25rem;
+    font-weight: bold;
+  }
+
+  form {
+    display: flex;
+    gap: 50px;
+
+    .form-part {
+      height: 100%;
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+
+      .error-text {
+        color: var(--ion-color-danger);
+        width: 75%;
+        margin-top: -15px;
+        font-size: smaller;
+        font-weight: 500;
+      }
+    }
+
+    .left-form {
+
+      label {
+        color: var(--ion-color-dark);
+        margin-bottom: 0;
+        font-size: 1.063rem;
+        font-weight: bold;
+      }
+
+      .id-div {
+        display: flex;
+
+        :nth-child(1) {
+          width: 25%;
+        }
+
+        :nth-child(2) {
+          width: 75%;
+          margin-left: 10px;
+        }
+      }
+    }
+
+    .right-form {
+
+      .city-department {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+
+        app-custom-input {
+          width: 47%;
+        }
+      }
+
+      .custom-checkbox {
+        color: var(--ion-color-dark);
+        display: flex;
+        align-self: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: 15px;
+        font-size: 14px;
+
+
+        input[type="checkbox"] {
+          appearance: none;
+          width: 20px;
+          height: 20px;
+          border: 2px solid var(--ion-color-primary);
+          border-radius: 4px;
+          position: relative;
+          cursor: pointer;
+          transition: background 0.2s ease-in-out;
+
+          &::after {
+            content: "✔";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            font-size: 14px;
+            color: white;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.2s ease-in-out;
+          }
+
+          &:checked {
+            background: var(--ion-color-primary);
+
+          }
+
+          &:checked::after {
+            transform: translate(-50%, -50%) scale(1);
+          }
+        }
+
+        .checkbox-label {
+          cursor: pointer;
+          font-weight: 500;
+
+          a {
+            color: var(--ion-color-primary);
+            text-decoration: none;
+            font-weight: 600;
+
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+        }
+      }
+
+      .register-button {
+        background-image: url('../../../../../assets/background/primary_button_bg.svg');
+        background-repeat: no-repeat;
+        background-size: cover;
+        color: var(--ion-color-dark);
+
+        height: 3.5rem;
+        width: 80%;
+        padding: 1rem 0;
+        margin-top: 25px;
+
+        align-self: center;
+        border: none;
+        border-radius: 30px;
+
+        font-size: 1.75rem;
+        font-weight: 600;
+
+        box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.5);
+        cursor: pointer;
+      }
+    }
+  }
+}

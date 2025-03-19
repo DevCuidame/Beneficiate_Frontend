@@ -10,6 +10,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { ChangePasswordComponent } from './auth/change-password/change-password.component';
 import { NosotrosPageComponent } from './nosotros-page/nosotros-page.component';
+import { WorkFormComponent } from './work-with-us/work-form/work-form.component';
 
 
 
@@ -31,6 +32,10 @@ const routes: Routes = [
   {
     path: 'about-us',
     component: NosotrosPageComponent,
+  },
+  {
+    path: 'work-with-us',
+    component: WorkFormComponent,
   },
   {
     path: 'register',

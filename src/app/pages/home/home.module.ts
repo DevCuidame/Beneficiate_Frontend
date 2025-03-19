@@ -5,7 +5,6 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AuthGuard } from 'src/app/core/guards/auth.guard';
-import { NewBeneficiaryFormComponent } from './new-beneficiary-form/new-beneficiary-form.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { BeneficiaryInfoComponent } from './beneficiary-info/beneficiary-info.component';
 import { ScheduleComponent } from './schedule-page/schedule.component';
@@ -14,7 +13,7 @@ const routes: Routes = [
   {
     path: '',
     component: HomePageComponent,
-    canActivate: [AuthGuard], 
+    canActivate: [AuthGuard],
   },
   {
     path: 'beneficiary-info',
@@ -27,7 +26,7 @@ const routes: Routes = [
   },
   {
     path: 'add',
-    component: NewBeneficiaryFormComponent,
+    loadComponent: () => import('./new-beneficiary-form/new-beneficiary-form.component').then(m => m.NewBeneficiaryFormComponent),
     canActivate: [AuthGuard],
   },
   {

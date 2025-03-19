@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -14,7 +14,7 @@ import {
   LoadingController,
   NavController,
 } from '@ionic/angular';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
 import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
@@ -44,8 +44,8 @@ export class NewBeneficiaryFormComponent implements OnInit {
   public selectedImage: string | ArrayBuffer | null = null;
   public file_pub_name: any;
   public databs64: any;
-  imageLoaded: string = '';
   public buttonBackground: string = 'assets/background/secondary_button_bg.svg';
+  public actionSubmit = () => this.editBeneficiary();
 
   errorMessages: any = {
     first_name: 'El nombre solo puede contener letras.',
@@ -58,6 +58,7 @@ export class NewBeneficiaryFormComponent implements OnInit {
   public citiesOption: any[] = [];
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private fb: FormBuilder,
     private beneficiaryService: BeneficiaryService,
@@ -67,6 +68,7 @@ export class NewBeneficiaryFormComponent implements OnInit {
     private locationService: LocationService
   ) {
     this.beneficiaryForm = this.fb.group({
+      id: [''],
       first_name: [
         '',
         [Validators.required, Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$')],
@@ -92,19 +94,21 @@ export class NewBeneficiaryFormComponent implements OnInit {
       work_risk_insurance: [''],
       funeral_insurance: [''],
       public_name: ['', Validators.maxLength(50)],
-      base_64: [''],
+      base_64: ['', Validators.required],
     });
 
     this.setupRealTimeValidation();
   }
 
   ngOnInit() {
-    this.loadDepartments();
+    this.beneficiaryForm.reset();
 
+    this.loadDepartments();
 
     this.route.queryParams.subscribe(params => {
       if (params['new']) {
         this.beneficiaryService.setActiveBeneficiary(null);
+        this.actionSubmit = () => this.saveBeneficiary();
       }
     });
 
@@ -119,75 +123,11 @@ export class NewBeneficiaryFormComponent implements OnInit {
       });
 
     this.loadBeneficiaryData();
-
   }
 
-    // -------------------------------------- Gets form -------------------------------------- //
+  ngOnDestroy() {
 
-    get first_name(): FormControl {
-      return this.beneficiaryForm.get('first_name') as FormControl;
-    }
-
-    get last_name(): FormControl {
-      return this.beneficiaryForm.get('last_name') as FormControl;
-    }
-
-    get identification_type(): FormControl {
-      return this.beneficiaryForm.get('identification_type') as FormControl;
-    }
-
-    get identification_number(): FormControl {
-      return this.beneficiaryForm.get('identification_number') as FormControl;
-    }
-
-    get address(): FormControl {
-      return this.beneficiaryForm.get('address') as FormControl;
-    }
-
-    get city_id(): FormControl {
-      return this.beneficiaryForm.get('city_id') as FormControl;
-    }
-
-    get department(): FormControl {
-      return this.beneficiaryForm.get('department') as FormControl;
-    }
-
-    get gender(): FormControl {
-      return this.beneficiaryForm.get('gender') as FormControl;
-    }
-
-    get birth_date(): FormControl {
-      return this.beneficiaryForm.get('birth_date') as FormControl;
-    }
-
-    get phone(): FormControl {
-      return this.beneficiaryForm.get('phone') as FormControl;
-    }
-
-    get blood_type(): FormControl {
-      return this.beneficiaryForm.get('blood_type') as FormControl;
-    }
-
-    get health_provider(): FormControl {
-      return this.beneficiaryForm.get('health_provider') as FormControl;
-    }
-
-    get prepaid_health(): FormControl {
-      return this.beneficiaryForm.get('prepaid_health') as FormControl;
-    }
-
-    get work_risk_insurance(): FormControl {
-      return this.beneficiaryForm.get('work_risk_insurance') as FormControl;
-    }
-
-    get funeral_insurance(): FormControl {
-      return this.beneficiaryForm.get('funeral_insurance') as FormControl;
-    }
-
-    get base_64(): FormControl {
-      return this.beneficiaryForm.get('base_64') as FormControl;
-    }
-
+  }
   // -------------------------------------- Load Select input options -------------------------------------- //
 
   loadBeneficiaryData() {
@@ -202,11 +142,20 @@ export class NewBeneficiaryFormComponent implements OnInit {
     }
 
     if (beneficiary) {
+      this.beneficiaryForm.reset();
       this.beneficiaryForm.patchValue(beneficiary);
 
-      this.imageLoaded = beneficiary.image?.image_path
+
+      this.beneficiaryForm.patchValue({
+        base_64: beneficiary.image?.image_path
+        ? `${environment.url}${beneficiary.image.image_path.replace('\\', '/')}`
+        : ''
+      });
+
+      this.selectedImage = beneficiary.image?.image_path
         ? `${environment.url}${beneficiary.image.image_path.replace('\\', '/')}`
         : '';
+
 
       this.locationService.fetchDepartments();
       this.locationService.departments$.subscribe((departments) => {
@@ -217,8 +166,6 @@ export class NewBeneficiaryFormComponent implements OnInit {
 
         if (beneficiary.location?.department_id) {
           this.beneficiaryForm.patchValue({ department: beneficiary.location.department_id });
-          console.log(this.departmentsOption);
-
           this.loadCities(beneficiary.location.department_id, beneficiary.location?.township_id);
         }
       });
@@ -292,7 +239,43 @@ export class NewBeneficiaryFormComponent implements OnInit {
               buttons: ['OK'],
             });
             await alert.present();
-            this.navCtrl.navigateRoot('/home-desktop/');
+            this.router.navigate(['/home-desktop/']);
+          },
+          async (error: any) => {
+            await loading.dismiss();
+            const alert = await this.alertCtrl.create({
+              header: 'Error',
+              message: 'Hubo un problema al agregar el beneficiario.',
+              buttons: ['OK'],
+            });
+            await alert.present();
+            console.error('Error al agregar beneficiario:', error);
+          }
+        );
+    }
+  }
+
+  async editBeneficiary() {
+    if (this.beneficiaryForm.valid) {
+      const loading = await this.loadingCtrl.create({
+        message: 'Guardando...',
+      });
+      await loading.present();
+
+      const beneficiaryData = { ...this.beneficiaryForm.value };
+
+      this.beneficiaryService
+        .updateBeneficiary(beneficiaryData.id, beneficiaryData as Beneficiary)
+        .subscribe(
+          async () => {
+            await loading.dismiss();
+            const alert = await this.alertCtrl.create({
+              header: 'Éxito',
+              message: 'El beneficiario ha sido agregado correctamente.',
+              buttons: ['OK'],
+            });
+            await alert.present();
+            this.router.navigate(['/home-desktop/']);
           },
           async (error: any) => {
             await loading.dismiss();
@@ -350,4 +333,72 @@ export class NewBeneficiaryFormComponent implements OnInit {
     };
     reader.readAsDataURL(file);
   }
+
+  // -------------------------------------- Gets form -------------------------------------- //
+
+  get first_name(): FormControl {
+    return this.beneficiaryForm.get('first_name') as FormControl;
+  }
+
+  get last_name(): FormControl {
+    return this.beneficiaryForm.get('last_name') as FormControl;
+  }
+
+  get identification_type(): FormControl {
+    return this.beneficiaryForm.get('identification_type') as FormControl;
+  }
+
+  get identification_number(): FormControl {
+    return this.beneficiaryForm.get('identification_number') as FormControl;
+  }
+
+  get address(): FormControl {
+    return this.beneficiaryForm.get('address') as FormControl;
+  }
+
+  get city_id(): FormControl {
+    return this.beneficiaryForm.get('city_id') as FormControl;
+  }
+
+  get department(): FormControl {
+    return this.beneficiaryForm.get('department') as FormControl;
+  }
+
+  get gender(): FormControl {
+    return this.beneficiaryForm.get('gender') as FormControl;
+  }
+
+  get birth_date(): FormControl {
+    return this.beneficiaryForm.get('birth_date') as FormControl;
+  }
+
+  get phone(): FormControl {
+    return this.beneficiaryForm.get('phone') as FormControl;
+  }
+
+  get blood_type(): FormControl {
+    return this.beneficiaryForm.get('blood_type') as FormControl;
+  }
+
+  get health_provider(): FormControl {
+    return this.beneficiaryForm.get('health_provider') as FormControl;
+  }
+
+  get prepaid_health(): FormControl {
+    return this.beneficiaryForm.get('prepaid_health') as FormControl;
+  }
+
+  get work_risk_insurance(): FormControl {
+    return this.beneficiaryForm.get('work_risk_insurance') as FormControl;
+  }
+
+  get funeral_insurance(): FormControl {
+    return this.beneficiaryForm.get('funeral_insurance') as FormControl;
+  }
+
+  get base_64(): FormControl {
+    return this.beneficiaryForm.get('base_64') as FormControl;
+  }
+
 }
+

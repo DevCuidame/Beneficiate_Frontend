@@ -57,7 +57,6 @@ export class MedicalProfessionalService {
 
 
   private saveToCache(data: MedicalProfessional[]): void {
-    console.log(data);
     this.professionals.set(data);
     localStorage.setItem(this.cacheKey, JSON.stringify(data));
   }

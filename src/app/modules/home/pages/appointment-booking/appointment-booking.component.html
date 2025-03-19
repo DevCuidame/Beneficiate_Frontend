@@ -14,7 +14,7 @@
     </div>
 
     <div style="display: flex; flex-direction: column; gap: 10px;">
-    @for(appointment of appointments; track appointment){
+      @for(appointment of appointments; track appointment){
         <app-appointment-card
           [appointmentId]="appointment.id"
           [first_name]="appointment.professionalData?.user?.first_name"

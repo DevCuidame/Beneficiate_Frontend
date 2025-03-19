@@ -1,0 +1,114 @@
+<div class="work-container">
+  <app-header [addBackground]="true"></app-header>
+
+  <h1>Información personal</h1>
+
+  <!--  (ngSubmit)="work()" -->
+  <form [formGroup]="workForm">
+    <section class="left-form form-part">
+
+      <app-custom-input
+        label="Nombres"
+        label_s="color: var(--ion-color-dark)"
+        [control]="first_name"
+        [errorMessage]="errorMessages.first_name">
+      </app-custom-input>
+
+      <app-custom-input
+        label="Apellidos"
+        label_s="color: var(--ion-color-dark)"
+        [control]="last_name"
+        [errorMessage]="errorMessages.last_name">
+      </app-custom-input>
+
+      <div>
+        <label>Identificación</label>
+        <div class="id-div">
+          <app-custom-input
+            type="select"
+            [options]="identificacionOptions"
+            [control]="identification_type">
+          </app-custom-input>
+
+          <app-custom-input
+            [control]="identification_number"
+            [errorMessage]="errorMessages.identification_number">
+          </app-custom-input>
+        </div>
+      </div>
+
+      <app-custom-input
+        label="Email"
+        label_s="color: var(--ion-color-dark)"
+        type="email"
+        [control]="email"
+        [errorMessage]="errorMessages.email">
+      </app-custom-input>
+
+      <app-custom-input
+        label="Genero"
+        label_s="color: var(--ion-color-dark)"
+        type="select"
+        [options]="generoOptions"
+        [control]="gender"
+        [errorMessage]="errorMessages.gender">
+      </app-custom-input>
+
+    </section>
+
+    <section class="right-form form-part">
+      <div class="city-department">
+        <app-custom-input
+          label="Departamento"
+          label_s="color: var(--ion-color-dark)"
+          type="select"
+          [options]="departmentsOptions"
+          [control]="department"
+          [errorMessage]="errorMessages.department">
+        </app-custom-input>
+
+        <app-custom-input
+          label="Ciudad"
+          label_s="color: var(--ion-color-dark)"
+          type="select"
+          [options]="citiesOptions"
+          [control]="city"
+          [errorMessage]="errorMessages.city">
+        </app-custom-input>
+      </div>
+
+      <app-custom-input
+        label="Dirección"
+        label_s="color: var(--ion-color-dark)"
+        [control]="address"
+        [errorMessage]="errorMessages.address">
+      </app-custom-input>
+
+      <app-custom-input
+        label="Teléfono"
+        label_s="color: var(--ion-color-dark)"
+        [control]="phone"
+        [errorMessage]="errorMessages.phone">
+      </app-custom-input>
+
+      <div class="custom-checkbox">
+        <input
+          id="privacy_policy"
+          type="checkbox"
+          formControlName="privacy_policy"
+          required
+        />
+        <label for="privacy_policy" class="checkbox-label">
+          <span class="checkmark"></span>
+          Acepto las
+          <a href="/privacy-policy" target="_blank">políticas de privacidad</a> y el
+          tratamiento de datos.
+        </label>
+      </div>
+
+      <button class="register-button" type="submit" [disabled]="workForm.invalid">
+        Enviar
+      </button>
+    </section>
+  </form>
+</div>
