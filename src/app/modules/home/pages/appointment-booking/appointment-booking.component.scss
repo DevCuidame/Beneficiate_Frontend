@@ -7,68 +7,119 @@ ion-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 30px;
+  padding: 20px 20px 10px;
   width: 100%;
   max-width: 600px;
   margin: auto;
 }
 
 .appointment-header .header-title {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: bold;
   color: var(--ion-color-dark);
   margin: 0;
 }
 
 .appointment-header .profile-image {
-  width: 73px;
-  height: 73px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #ddd;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .content-container {
   position: relative;
-  height: 80vh;
-  padding: 0 30px 300px;
+  height: calc(100vh - 150px);
+  padding: 0 20px 120px;
   overflow-y: auto;
 }
 
+.loading-container {
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-container p {
+  margin-top: 15px;
+  color: var(--ion-color-dark);
+}
+
+.empty-message {
+  text-align: center;
+  padding: 30px;
+  color: var(--ion-color-dark);
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  margin: 20px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.appointments-list {
+  margin-bottom: 30px;
+}
+
+.appointments-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--ion-color-dark);
+  margin: 20px 0 10px;
+}
+
 .profesional-scroll {
-  position: fixed;
-  bottom: 55px;
+  position: relative;
+  bottom: 0;
   left: 0;
   right: 0;
-  padding: 0 20px;
+  padding: 10px 0 30px;
 }
 
-.professional-card {
+.professional-cards-container {
   overflow-x: auto;
   display: flex;
-  gap: 40px;
-  width: 100%;
+  gap: 20px;
+  padding: 10px 0;
   scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
 }
 
-.empty-message{
-  color: var(--ion-color-dark);
+.professional-cards-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
 }
 
 app-health-professional-card {
   scroll-snap-align: start;
+  min-width: 320px;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+app-health-professional-card:hover {
+  transform: translateY(-5px);
 }
 
 .professional-indicators {
-  margin-top: 10px;
+  margin-top: 15px;
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .indicator {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   background-color: #ccc;
   border-radius: 50%;
   transition: all 0.3s ease;
@@ -76,6 +127,17 @@ app-health-professional-card {
 
 .indicator.active {
   width: 20px;
-  border-radius: 5px;
+  border-radius: 4px;
   background-color: var(--ion-color-dark);
+}
+
+/* Mejoras a las tarjetas de citas */
+app-appointment-card {
+  margin-bottom: 10px;
+  transition: transform 0.3s ease;
+  display: block;
+}
+
+app-appointment-card:hover {
+  transform: translateY(-2px);
 }

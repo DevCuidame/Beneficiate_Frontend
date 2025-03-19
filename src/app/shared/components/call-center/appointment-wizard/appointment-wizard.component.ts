@@ -9,6 +9,8 @@ import { ScheduleSelectionStepComponent } from '../schedule-selection-step/sched
 import { AppointmentAssignedComponent } from '../appointment-assigned/appointment-assigned.component';
 import { WizardStepperComponent } from '../wizard-stepper/wizard-stepper.component';
 import { AppointmentStateService } from 'src/app/core/services/appointment-state.service';
+import { Router } from '@angular/router';
+import { Appointment } from 'src/app/core/interfaces/appointment.interface';
 
 @Component({
   selector: 'app-appointment-wizard',
@@ -26,18 +28,20 @@ import { AppointmentStateService } from 'src/app/core/services/appointment-state
     @if(!success()) {
       <div class="wizard-container">
         <!-- Componente de stepper -->
-        <app-wizard-stepper [currentStep]="currentStep()"></app-wizard-stepper>
+        <app-wizard-stepper [currentStep]="currentStep()" [isScheduleAssignment]="isScheduleAssignment"></app-wizard-stepper>
 
         <!-- Contenido de los pasos -->
         <div class="wizard-content">
-          @if (currentStep() === 1) {
+          @if (currentStep() === 1 && !isScheduleAssignment) {
             <app-patient-data-step></app-patient-data-step>
-          } @else if (currentStep() === 2) {
+          } @else if (currentStep() === 2 && !isScheduleAssignment) {
             <app-specialty-selection-step></app-specialty-selection-step>
-          } @else if (currentStep() === 3) {
+          } @else if (currentStep() === 3 && !isScheduleAssignment) {
             <app-professional-selection-step></app-professional-selection-step>
-          } @else if (currentStep() === 4) {
-            <app-schedule-selection-step></app-schedule-selection-step>
+          } @else if (currentStep() === 4 || isScheduleAssignment) {
+            <app-schedule-selection-step
+              [isAssigningToPendingAppointment]="isScheduleAssignment"
+            ></app-schedule-selection-step>
           }
         </div>
 
@@ -46,7 +50,7 @@ import { AppointmentStateService } from 'src/app/core/services/appointment-state
           <button
             class="prev-button"
             (click)="prevStep()"
-            [disabled]="currentStep() === 1 || isSubmitting()"
+            [disabled]="(currentStep() === 1 && !isScheduleAssignment) || isSubmitting()"
           >
             Anterior
           </button>
@@ -56,7 +60,7 @@ import { AppointmentStateService } from 'src/app/core/services/appointment-state
             [disabled]="!isStepValid() || isSubmitting()"
           >
             <span *ngIf="!(currentStep() === 4 && isSubmitting())">
-              {{ currentStep() < 4 ? "Siguiente" : "Confirmar" }}
+              {{ isScheduleAssignment ? 'Confirmar horario' : (currentStep() < 4 ? "Siguiente" : "Confirmar") }}
             </span>
             <span *ngIf="currentStep() === 4 && isSubmitting()" class="button-loading">
               <i class="fas fa-spinner fa-spin"></i> Procesando...
@@ -78,23 +82,61 @@ import { AppointmentStateService } from 'src/app/core/services/appointment-state
         [appointment]="appointment()"
         (appointmentSaved)="onAppointmentSaved($event)"
       ></app-appointment-assigned>
+      
+      <div class="action-buttons">
+        <button class="back-button" (click)="goBackToAppointments()">
+          Volver a citas
+        </button>
+      </div>
     }
   `,
-  styleUrls: ['./appointment-wizard.component.scss']
+  styles: [`
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+    
+    .back-button {
+      padding: 0.75rem 1.5rem;
+      background-color: var(--ion-color-medium);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background-color: var(--ion-color-medium-shade);
+        transform: translateY(-2px);
+      }
+    }
+  `]
 })
 export class AppointmentWizardComponent implements OnInit {
   public currentStep = this.stateService.currentStep;
   public isSubmitting = this.stateService.isSubmitting;
   public success = this.stateService.success;
   public appointment = this.stateService.appointment;
+  public isScheduleAssignment: boolean = false;
   
   constructor(
     private stateService: AppointmentStateService,
     private appointmentService: AppointmentService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
+    // Verificar si estamos en modo de asignación de horario
+    this.isScheduleAssignment = history.state.scheduleAssignment === true;
+    
+    // Si estamos en modo de asignación de horario, ir directamente al paso 4
+    if (this.isScheduleAssignment) {
+      this.stateService.currentStep.set(4);
+    }
+    
     // Si hay datos de navegación, cargarlos en el estado
     const navData = history.state.appointment;
     if (navData) {
@@ -108,7 +150,10 @@ export class AppointmentWizardComponent implements OnInit {
       // Actualizar los datos de la cita según el paso actual
       this.stateService.updateAppointmentForStep();
       
-      if (this.currentStep() < 4) {
+      if (this.isScheduleAssignment) {
+        // En modo de asignación de horario, confirmamos directamente
+        this.confirmScheduleAssignment();
+      } else if (this.currentStep() < 4) {
         this.stateService.nextStep();
       } else {
         // Verificar si es agenda manual
@@ -130,11 +175,56 @@ export class AppointmentWizardComponent implements OnInit {
   }
 
   prevStep(): void {
-    this.stateService.prevStep();
+    if (this.isScheduleAssignment) {
+      // Si estamos en modo de asignación de horario, volver a la lista de citas
+      this.router.navigate(['/call-center/dash/assigment']);
+    } else {
+      this.stateService.prevStep();
+    }
   }
 
   isStepValid(): boolean {
+    // Para asignación de horario, solo validamos el paso 4
+    if (this.isScheduleAssignment) {
+      return this.stateService.isStepValid(4);
+    }
     return this.stateService.isStepValid(this.currentStep());
+  }
+
+  confirmScheduleAssignment(): void {
+    this.stateService.setSubmitting(true);
+    
+    const appointmentData = this.stateService.appointment();
+    
+    // Asegurarse de que el estado sea CONFIRMED
+    const updatedAppointment = {
+      ...appointmentData,
+      status: 'CONFIRMED'
+    };
+    
+    this.appointmentService.updateAppointment(appointmentData.id, updatedAppointment as Appointment).subscribe({
+      next: (response) => {
+        this.stateService.setSubmitting(false);
+        
+        if (response && response.statusCode === 200) {
+          this.stateService.setSuccess(true);
+          this.stateService.appointment.set(response.data);
+          this.toastService.presentToast('Horario asignado exitosamente', 'success');
+        } else {
+          this.toastService.presentToast(
+            'Error al asignar horario. Intente nuevamente.',
+            'danger'
+          );
+        }
+      },
+      error: (error) => {
+        this.stateService.setSubmitting(false);
+        this.toastService.presentToast(
+          'Error al asignar horario. Intente nuevamente.',
+          'danger'
+        );
+      }
+    });
   }
 
   sendAppointmentData(): void {
@@ -142,13 +232,6 @@ export class AppointmentWizardComponent implements OnInit {
     console.log('Enviando datos de la cita:', appointmentData);
 
     // Aquí se implementaría la llamada al servicio para crear/actualizar la cita
-    // Por ahora, simularemos una respuesta exitosa
-    setTimeout(() => {
-      this.stateService.setSubmitting(false);
-      this.stateService.setSuccess(true);
-      this.toastService.presentToast('Cita creada exitosamente', 'success');
-    }, 1500);
-
     if (appointmentData.id === 0) {
       this.appointmentService.createAppointment(appointmentData).subscribe({
         next: (response) => {
@@ -158,6 +241,11 @@ export class AppointmentWizardComponent implements OnInit {
             this.stateService.setSuccess(true);
             this.stateService.appointment.set(response.data);
             this.toastService.presentToast('Cita creada exitosamente', 'success');
+          } else {
+            this.toastService.presentToast(
+              'Error al crear la cita. Intente nuevamente.',
+              'danger'
+            );
           }
         },
         error: (error) => {
@@ -176,6 +264,11 @@ export class AppointmentWizardComponent implements OnInit {
           if (response.statusCode === 200) {
             this.stateService.setSuccess(true);
             this.toastService.presentToast('Cita actualizada exitosamente', 'success');
+          } else {
+            this.toastService.presentToast(
+              'Error al actualizar la cita. Intente nuevamente.',
+              'danger'
+            );
           }
         },
         error: (error) => {
@@ -187,7 +280,6 @@ export class AppointmentWizardComponent implements OnInit {
         }
       });
     }
-
   }
   
   // Método para manejar cuando se guarda una cita pendiente
@@ -198,6 +290,11 @@ export class AppointmentWizardComponent implements OnInit {
         this.stateService.resetState();
       }, 2000);
     }
+  }
+  
+  // Navegar de vuelta a la lista de citas
+  goBackToAppointments(): void {
+    this.router.navigate(['/call-center/dash/assigment']);
   }
 
   // Verificar si el profesional tiene agenda manual
@@ -227,6 +324,8 @@ export class AppointmentWizardComponent implements OnInit {
   
   getProfessionalPhone(): string {
     const professionalData = this.appointment().professionalData;
+    // Aquí deberías devolver el número de teléfono del profesional si está disponible
+    // Por ahora devuelvo un string vacío que será reemplazado por un número predeterminado
     return professionalData?.user?.phone || '';
   }
 

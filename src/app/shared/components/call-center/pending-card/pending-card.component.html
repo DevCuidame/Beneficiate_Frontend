@@ -28,8 +28,8 @@
         <div class="patient-status">
           <span
             class="status-badge"
-            style="background-color: var(--ion-color-secondary)"
-            >Pendiente por Confirmar</span
+            style="background-color: var(--ion-color-warning)"
+            >Pendiente por Asignar</span
           >
         </div>
         } @else if(appointment.status === 'CONFIRMED'){
@@ -83,21 +83,57 @@
       </div>
     </div>
       <p class="professional">Profesional: Dr. {{appointment.professionalData.user.first_name.split(" ")[0]}} {{appointment.professionalData.user.last_name.split(" ")[0]}}</p>
+    
+    <!-- Sección para fecha y hora si están disponibles -->
+    @if(appointment.appointment_date && appointment.appointment_time) {
+      <div class="appointment-datetime">
+        <p class="date-time-info">
+          <fa-icon [icon]="faCalendar"></fa-icon> {{formatDate(appointment.appointment_date)}} 
+          <fa-icon [icon]="faClock" class="time-icon"></fa-icon> {{appointment.appointment_time}}
+        </p>
+      </div>
+    }
+    
     <div class="appointment-footer">
       <p class="request-date">
         {{ appointment.created_at_formatted }}
       </p>
+      
+      <!-- Botón para citas PENDING -->
       @if (appointment.status === 'PENDING') {
-      <app-custom-button
-        label="Asignar"
-        fontSize="1.5rem"
-        padding="5px 10px"
-        [disabled]="false"
-        [textColor]="'var(--ion-color-dark)'"
-        [backgroundImage]="buttonBackground"
-        (click)="goToAppointment(appointment)"
-      ></app-custom-button>
-
+        <app-custom-button
+          label="Asignar"
+          fontSize="1.5rem"
+          padding="5px 10px"
+          [disabled]="false"
+          [textColor]="'var(--ion-color-dark)'"
+          [backgroundImage]="buttonBackground"
+          (click)="goToAppointment(appointment)"
+        ></app-custom-button>
+      }
+      
+      @if (appointment.status === 'TO_BE_CONFIRMED' && needsScheduleAssignment()) {
+        <app-custom-button
+          label="Asignar Horario"
+          fontSize="1.5rem"
+          padding="5px 10px"
+          [disabled]="false"
+          [textColor]="'var(--ion-color-dark)'"
+          [backgroundImage]="buttonBackground"
+          (click)="assignSchedule(appointment)"
+        ></app-custom-button>
+      }
+      
+      @if (appointment.status === 'TO_BE_CONFIRMED' && !needsScheduleAssignment()) {
+        <app-custom-button
+          label="Confirmar"
+          fontSize="1.5rem"
+          padding="5px 10px"
+          [disabled]="false"
+          [textColor]="'var(--ion-color-dark)'"
+          [backgroundImage]="confirmButtonBackground"
+          (click)="confirmAppointment(appointment)"
+        ></app-custom-button>
       }
     </div>
   </div>
