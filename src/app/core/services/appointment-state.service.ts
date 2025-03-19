@@ -314,9 +314,10 @@ export class AppointmentStateService {
   }
   
   private isScheduleSelectionValid(): boolean {
+
     const normalValid = this.selectedDayIndex() !== -1 && this.selectedHour() !== '';
     const appointment = this.appointment();
-    const manualValid = appointment.appointment_date && appointment.appointment_time;
+    const manualValid = true;
     return Boolean(normalValid || manualValid);
   }
 }

@@ -2,7 +2,10 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { tap, catchError, map } from 'rxjs/operators';
-import { Appointment, AppointmentResponse } from '../interfaces/appointment.interface';
+import {
+  Appointment,
+  AppointmentResponse,
+} from '../interfaces/appointment.interface';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -31,22 +34,26 @@ export class AppointmentService {
   }
 
   cancelAppointment(id: number): Observable<any> {
-    return this.http.delete(`${this.api}${this.version}medical-appointment/cancel/${id}`).pipe(
-      tap(() => {
-        const updatedAppointments = this.appointments().filter(appt => appt.id !== id);
-        this.appointments.set(updatedAppointments);
-      }),
-      catchError(error => {
-        console.error('Error al cancelar la cita:', error);
-        return of(null);
-      })
-    );
+    return this.http
+      .delete(`${this.api}${this.version}medical-appointment/cancel/${id}`)
+      .pipe(
+        tap(() => {
+          const updatedAppointments = this.appointments().filter(
+            (appt) => appt.id !== id
+          );
+          this.appointments.set(updatedAppointments);
+        }),
+        catchError((error) => {
+          console.error('Error al cancelar la cita:', error);
+          return of(null);
+        })
+      );
   }
 
   createAppointment(appointment: Appointment): Observable<any> {
     const isManualPending = appointment.status === 'TO_BE_CONFIRMED';
-    
-    const endpoint = isManualPending 
+
+    const endpoint = isManualPending
       ? `${this.api}${this.version}medical-appointment/create-pending`
       : `${this.api}${this.version}medical-appointment/create-new`;
 
@@ -61,7 +68,7 @@ export class AppointmentService {
         return of({
           message: 'Error al crear la cita',
           data: appointment,
-          statusCode: 500
+          statusCode: 500,
         } as AppointmentResponse);
       })
     );
@@ -70,44 +77,113 @@ export class AppointmentService {
   /**
    * Actualiza una cita existente en el backend
    */
-  updateAppointment(id: number, appointment: Partial<Appointment>): Observable<any> {
-    console.log("🚀 ~ AppointmentService ~ updateAppointment ~ appointment:", appointment);
-    
-    return this.http.put<AppointmentResponse>(`${this.api}${this.version}medical-appointment/update/${id}`, appointment).pipe(
-      tap((response) => {
-        if (response && response.data) {
-          const updatedAppointments = this.appointments().map((appt) =>
-            appt.id === id ? { ...appt, ...response.data } : appt
-          );
-          this.appointments.set(updatedAppointments);
-        }
-      }),
-      catchError((error) => {
-        console.log("🚀 ~ AppointmentService ~ catchError ~ error:", error);
-        return of({
-          message: 'Error al actualizar la cita',
-          data: appointment as Appointment,
-          statusCode: 500
-        } as AppointmentResponse);
-      })
-    );
+  updateAppointment(
+    id: number,
+    appointment: Partial<Appointment>
+  ): Observable<any> {
+
+    return this.http
+      .put<AppointmentResponse>(
+        `${this.api}${this.version}medical-appointment/update/${id}`,
+        appointment
+      )
+      .pipe(
+        tap((response) => {
+          if (response && response.data) {
+            const updatedAppointments = this.appointments().map((appt) =>
+              appt.id === id ? { ...appt, ...response.data } : appt
+            );
+            this.appointments.set(updatedAppointments);
+          }
+        }),
+        catchError((error) => {
+          return of({
+            message: 'Error al actualizar la cita',
+            data: appointment as Appointment,
+            statusCode: 500,
+          } as AppointmentResponse);
+        })
+      );
   }
 
   /**
    * Obtener todas las citas pendientes por confirmar (para agentes de call center)
    */
   getPendingAppointments(): Observable<Appointment[]> {
-    return this.http.get<{ data: Appointment[] }>(`${this.api}${this.version}medical-appointment/pending`).pipe(
-      map(response => response.data),
-      catchError(error => {
-        console.error('Error al obtener citas pendientes:', error);
-        return of([]);
-      })
-    );
+    return this.http
+      .get<{ data: Appointment[] }>(
+        `${this.api}${this.version}medical-appointment/pending`
+      )
+      .pipe(
+        map((response) => response.data),
+        catchError((error) => {
+          console.error('Error al obtener citas pendientes:', error);
+          return of([]);
+        })
+      );
   }
 
   clearCache(): void {
     this.appointments.set([]);
     localStorage.removeItem(this.cacheKey);
+  }
+
+  public updateAppointments(appointmentList: Appointment[]): void {
+    console.log('Updating appointments in service:', appointmentList);
+    this.appointments.set(appointmentList);
+    this.saveToCache(appointmentList);
+  }
+
+  addAppointment(appointment: Appointment): void {
+    const currentAppointments = this.appointments();
+    const updated = [...currentAppointments, appointment];
+    this.appointments.set(updated);
+    this.saveToCache(updated);
+  }
+
+  processAppointmentDates(appointments: Appointment[]): Appointment[] {
+    return appointments.map((appointment) => {
+      // Skip processing if appointment date is null
+      if (!appointment.appointment_date) {
+        return {
+          ...appointment,
+          appointment_date_formatted: 'Fecha por definir',
+          appointment_time_formatted: 'Hora por definir',
+          day: '',
+        };
+      }
+
+      try {
+        const appDate = new Date(appointment.appointment_date);
+
+        // Format the date
+        const formattedDate = appDate.toLocaleDateString('es-ES', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+        });
+
+        // Get day of week
+        const dayOfWeek = appDate.toLocaleDateString('es-ES', {
+          weekday: 'long',
+        });
+
+        // Format time (if exists)
+        let formattedTime = appointment.appointment_time || 'Hora por definir';
+        if (formattedTime && formattedTime.length >= 5) {
+          formattedTime = formattedTime.substring(0, 5);
+        }
+
+        return {
+          ...appointment,
+          appointment_date_formatted: formattedDate,
+          appointment_time_formatted: formattedTime,
+          day: dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1),
+        };
+      } catch (error) {
+        console.error('Error processing appointment date:', error);
+        return appointment;
+      }
+    });
   }
 }

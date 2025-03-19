@@ -216,6 +216,28 @@
   }
 }
 
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.back-button {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--ion-color-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: var(--ion-color-medium-dark);
+    transform: translateY(-2px);
+  }
+}
+
 .buttons-container {
   display: flex;
   justify-content: space-between;
