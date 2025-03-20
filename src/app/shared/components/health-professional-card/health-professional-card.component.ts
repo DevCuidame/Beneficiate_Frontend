@@ -1,19 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import {
   AlertController,
+  IonicModule,
   LoadingController,
   NavController,
 } from '@ionic/angular';
+import { ScheduleInfo } from 'src/app/core/interfaces/medicalProfessional.interface';
 import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-health-professional-card',
-  imports: [CommonModule],
+  imports: [CommonModule, IonicModule],
   templateUrl: './health-professional-card.component.html',
   styleUrls: ['./health-professional-card.component.scss'],
 })
-export class HealthProfessionalCardComponent implements OnInit {
+export class HealthProfessionalCardComponent {
   @Input() first_name: string = '';
   @Input() last_name: string = '';
   @Input() specialty_name: string = '';
@@ -21,16 +23,32 @@ export class HealthProfessionalCardComponent implements OnInit {
   @Input() buttonVisible: boolean = true;
   @Input() agendaColor: string = 'var(--ion-color-primary)';
   @Input() professionalId!: number;
+  @Input() lowResProfileImage: string = '';
+  @Input() scheduleInfo: ScheduleInfo = {
+    type: 'UNAVAILABLE',
+    description: '',
+    isBooking: false,
+  };
+  @Input() availability: boolean = false;
+  @Input() gender: string = '';
 
   public api = environment.url;
 
   constructor(
     private alertCtrl: AlertController,
     private navCtrl: NavController,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
+    private el: ElementRef 
   ) {}
 
-  ngOnInit() {}
+  ngAfterViewInit() {
+    const highResImg = this.el.nativeElement.querySelector('.high-res');
+    if (highResImg) {
+      highResImg.onload = () => {
+        highResImg.classList.add('loaded');
+      };
+    }
+  }
 
   async onSolicitarCita() {
     const alert = await this.alertCtrl.create({

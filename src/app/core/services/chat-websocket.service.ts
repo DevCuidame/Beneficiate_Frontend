@@ -17,8 +17,7 @@ export class ChatWebsocketService {
     const token = localStorage.getItem('token');
     if (!token) return;
 
-    const baseUrl = environment.url.replace(/^http/, 'ws').replace(/\/$/, '');
-    const wsUrl = `${baseUrl}/ws`;
+    const wsUrl =  environment.url.replace(/^http/, 'ws').replace(/\/$/, '');
 
     this.socket = new WebSocket(wsUrl, ['tokenAuth', token]);
 

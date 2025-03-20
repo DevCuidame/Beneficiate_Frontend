@@ -53,12 +53,10 @@ export class UserChatWidgetComponent implements OnInit, OnDestroy {
   }
 
   private handleWebSocketMessage(data: any): void {
-    console.log('WebSocket message received:', data);  // Add this for debugging
     
     switch (data.event) {
       case 'new_chat':
       case 'chat_initiated':  // Add handling for this event
-        console.log('New chat received:', data);
         
         // Ensure the chat object has a valid structure
         if (!data.chat) {
@@ -120,7 +118,6 @@ export class UserChatWidgetComponent implements OnInit, OnDestroy {
         // If we receive a message for a chat we don't have, request all chats
         const chatExists = this.activeChats.some(chat => chat.id === data.chat_id);
         if (!chatExists) {
-          console.log('Received message for unknown chat, fetching chats...');
           this.fetchUserChats();
           return;
         }
@@ -206,7 +203,6 @@ export class UserChatWidgetComponent implements OnInit, OnDestroy {
         break;
   
       default:
-        console.log('Unhandled event type:', data.event);
         break;
     }
   }

@@ -22,6 +22,13 @@ export interface MedicalProfessional {
     user: User;
     specialty_name: string;
     availability: Availability; 
+    scheduleInfo: ScheduleInfo
+}
+
+export interface ScheduleInfo {
+    type: 'UNAVAILABLE' | 'ONLINE' | 'MANUAL';
+    description: string;
+    isBooking: boolean;
 }
 
 export interface ProfessionalImage {

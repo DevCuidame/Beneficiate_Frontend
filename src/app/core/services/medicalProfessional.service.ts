@@ -12,7 +12,6 @@ export class MedicalProfessionalService {
   private apiMedicalProf = `${environment.url}api/v1/medical-professionals/all`;
   private cacheKey = 'medicalProfessionalsCache';
 
-  // Signal para almacenar los profesionales en caché
   public professionals = signal<MedicalProfessional[]>([]);
 
   constructor(private http: HttpClient) {}
@@ -22,7 +21,6 @@ export class MedicalProfessionalService {
    * @param specialtyId - ID de la especialidad médica.
    */
   fetchMedicalProfessionals(specialtyId: number): Observable<MedicalProfessional[]> {
-    console.log(specialtyId);
     if (this.professionals().length > 0 && specialtyId == null) {
       return of(this.professionals());
     }

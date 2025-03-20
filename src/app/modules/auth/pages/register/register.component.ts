@@ -51,7 +51,7 @@ export class RegisterComponent implements OnInit {
     first_name: 'El nombre solo puede contener letras.',
     last_name: 'El apellido solo puede contener letras.',
     identification_number: 'Debe ser un número válido.',
-    phone: 'Debe ser un número de teléfono válido.',
+    phone: 'Debe ser un número de teléfono válido con al menos 10 dígitos.',
     email: 'Ingrese un correo electrónico válido.',
     gender: 'El género es obligatorio.',
     birthdate: 'La fecha de cumpleaños es obligatoria.',
@@ -88,7 +88,14 @@ export class RegisterComponent implements OnInit {
         department: [null, Validators.required],
         gender: ['', Validators.required],
         birth_date: ['', Validators.required],
-        phone: ['', [Validators.required, Validators.pattern('^[0-9-]+$')]],
+        phone: [
+          '', 
+          [
+            Validators.required, 
+            Validators.pattern('^[0-9-]+$'),
+            Validators.minLength(10) 
+          ]
+        ],
         email: ['', [Validators.required, Validators.email]],
         password: [
           '',

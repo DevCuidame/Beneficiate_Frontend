@@ -8,58 +8,49 @@
             : "Activo Titular"
         }}</span>
       </div>
-      @if(appointment.status === 'EXPIRED'){
       <div class="patient-status">
-        <span
-          class="status-badge"
-          style="background-color: var(--ion-color-danger)"
-          >Vencida</span
-        >
-      </div>
-      }@else if(appointment.status === 'CANCELLED'){
-      <div class="patient-status">
-        <span
-          class="status-badge"
-          style="background-color: var(--ion-color-danger)"
-          >Cancelada</span
-        >
-      </div>
-      }@else if(appointment.status === 'TO_BE_CONFIRMED'){
-        <div class="patient-status">
+        <div class="status-dropdown">
           <span
-            class="status-badge"
-            style="background-color: var(--ion-color-secondary)"
-            >Pendiente por Confirmar</span
+            [ngClass]="getStatusBadgeClass()"
+            (click)="toggleStatusMenu($event)"
           >
+            {{ getStatusLabel() }}
+            <fa-icon [icon]="faEllipsisV" class="dropdown-icon"></fa-icon>
+          </span>
+          <div class="status-menu" *ngIf="showStatusMenu">
+            <div class="menu-item" 
+                 [class.active]="appointment.status === 'PENDING'"
+                 (click)="updateStatus('PENDING')">
+              <span class="status-dot pending"></span>Pendiente
+            </div>
+            <div class="menu-item" 
+                 [class.active]="appointment.status === 'CONFIRMED'"
+                 (click)="updateStatus('CONFIRMED')">
+              <span class="status-dot confirmed"></span>Confirmada
+            </div>
+            <div class="menu-item" 
+                 [class.active]="appointment.status === 'TO_BE_CONFIRMED'"
+                 (click)="updateStatus('TO_BE_CONFIRMED')">
+              <span class="status-dot to-be-confirmed"></span>Pendiente por Asignar
+            </div>
+            <div class="menu-item" 
+                 [class.active]="appointment.status === 'RESCHEDULED'"
+                 (click)="updateStatus('RESCHEDULED')">
+              <span class="status-dot rescheduled"></span>Reagendada
+            </div>
+            <div class="menu-item" 
+                 [class.active]="appointment.status === 'CANCELLED'"
+                 (click)="updateStatus('CANCELLED')">
+              <span class="status-dot cancelled"></span>Cancelada
+            </div>
+            <div class="menu-item" 
+                 [class.active]="appointment.status === 'EXPIRED'"
+                 (click)="updateStatus('EXPIRED')">
+              <span class="status-dot expired"></span>Vencida
+            </div>
+          </div>
         </div>
-        } @else if(appointment.status === 'CONFIRMED'){
-      <div class="patient-status">
-        <span
-          class="status-badge"
-          style="background-color: var(--ion-color-primary)"
-          >Confirmada</span
-        >
       </div>
-      } @else if(appointment.status === 'RESCHEDULED'){
-      <div class="patient-status">
-        <span
-          class="status-badge"
-          style="background-color: var(--ion-color-secondary)"
-          >Reagendada</span
-        >
-      </div>
-      }@else if(appointment.status === 'PENDING'){
-      <div class="patient-status">
-        <span
-          class="status-badge"
-          style="
-            background-color: var(--ion-color-secondary);
-            color: var(--ion-color-dark);
-          "
-          >Pendiente</span
-        >
-      </div>
-      }
     </div>
    @if(appointment.status !== 'CONFIRMED'){
     <fa-icon [icon]="faClock" [ngStyle]="{ color: getClockColor(appointment) }">
@@ -83,21 +74,56 @@
       </div>
     </div>
       <p class="professional">Profesional: Dr. {{appointment.professionalData.user.first_name.split(" ")[0]}} {{appointment.professionalData.user.last_name.split(" ")[0]}}</p>
+    
+    @if(appointment.appointment_date && appointment.appointment_time) {
+      <div class="appointment-datetime">
+        <p class="date-time-info">
+          <fa-icon [icon]="faCalendar"></fa-icon> {{formatDate(appointment.appointment_date)}} 
+          <fa-icon [icon]="faClock" class="time-icon"></fa-icon> {{appointment.appointment_time}}
+        </p>
+      </div>
+    }
+    
     <div class="appointment-footer">
       <p class="request-date">
         {{ appointment.created_at_formatted }}
       </p>
+      
+      <!-- Botón para citas PENDING -->
       @if (appointment.status === 'PENDING') {
-      <app-custom-button
-        label="Asignar"
-        fontSize="1.5rem"
-        padding="5px 10px"
-        [disabled]="false"
-        [textColor]="'var(--ion-color-dark)'"
-        [backgroundImage]="buttonBackground"
-        (click)="goToAppointment(appointment)"
-      ></app-custom-button>
-
+        <app-custom-button
+          label="Asignar"
+          fontSize="1.5rem"
+          padding="5px 10px"
+          [disabled]="false"
+          [textColor]="'var(--ion-color-dark)'"
+          [backgroundImage]="buttonBackground"
+          (click)="goToAppointment(appointment)"
+        ></app-custom-button>
+      }
+      
+      @if (appointment.status === 'TO_BE_CONFIRMED' && needsScheduleAssignment()) {
+        <app-custom-button
+          label="Asignar Horario"
+          fontSize="1.5rem"
+          padding="5px 10px"
+          [disabled]="false"
+          [textColor]="'var(--ion-color-dark)'"
+          [backgroundImage]="buttonBackground"
+          (click)="assignSchedule(appointment)"
+        ></app-custom-button>
+      }
+      
+      @if (appointment.status === 'TO_BE_CONFIRMED' && !needsScheduleAssignment()) {
+        <app-custom-button
+          label="Confirmar"
+          fontSize="1.5rem"
+          padding="5px 10px"
+          [disabled]="false"
+          [textColor]="'var(--ion-color-dark)'"
+          [backgroundImage]="confirmButtonBackground"
+          (click)="confirmAppointment(appointment)"
+        ></app-custom-button>
       }
     </div>
   </div>
