@@ -1,14 +1,16 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { BehaviorSubject, catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { User } from 'src/app/core/interfaces/auth.interface';
+import { UserHealthService } from 'src/app/core/services/user-health.service';
 import { environment } from 'src/environments/environment';
-
+export let appInjector: Injector;
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private userSubject = new BehaviorSubject<User | null>(
     this.getUserFromStorage()
   );
+  
   public user$: Observable<User | null> = this.userSubject.asObservable();
   private baseUrl = environment.url;
 
@@ -118,4 +120,12 @@ export class UserService {
   clearUser() {
     this.userSubject.next(null);
   }
+
+  
+  // Helper method to load user health data
+  getUserHealthData() {
+    // const userHealthService = window.Injector.get(UserHealthService);
+    // userHealthService.getUserHealthData();
+  }
+
 }

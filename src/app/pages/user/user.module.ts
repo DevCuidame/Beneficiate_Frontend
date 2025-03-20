@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule, Routes } from '@angular/router';
-import { UserHealthInfoComponent } from 'src/app/modules/user/user-health-info/user-health-info.component';
 import { UserProfileEditComponent } from './user-profile-edit/user-profile-edit/user-profile-edit.component';
+import { UserHealthInfoComponent } from 'src/app/modules/user/pages/user-health-info/user-health-info.component';
 
 // Importar los componentes standalone
 

@@ -117,12 +117,12 @@ export class DashboardComponent implements OnInit {
 
   async selectButton(buttonType: string) {
     if (buttonType === 'Beneficiarios') {
+      this.selectedButtonText = 'Beneficiarios';
     } else if (buttonType === 'Agenda') {
       if (this.user.plan) {
         this.selectedButtonText = 'Agenda';
         this.navController.navigateForward(['/home/appointment-booking']);
       } else {
-        // Mostrar alerta atractiva con botón de aceptar
         const alert = await this.alertController.create({
           cssClass: 'custom-alert',
           header: '¡Atención!',
@@ -140,6 +140,9 @@ export class DashboardComponent implements OnInit {
 
         await alert.present();
       }
+    } else if (buttonType === 'Mi Salud') {
+      this.selectedButtonText = 'Mi Salud';
+      this.navController.navigateForward(['/user/home']);
     }
   }
 }

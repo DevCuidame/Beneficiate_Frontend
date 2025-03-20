@@ -14,11 +14,11 @@ import { UserHealthService } from 'src/app/core/services/user-health.service';
 import { HeaderComponent } from 'src/app/pages/components/header/header.component';
 import { FooterComponent } from 'src/app/pages/components/footer-component/footer-component.component';
 import { CardInfoInputComponent } from 'src/app/pages/components/inputs/card-info-input/card-info-input.component';
-import { UserVacinationsFormComponent } from '../components/health/vacinations/user-vacinations-form/user-vacinations-form.component';
-import { UserMedicalHistoryFormComponent } from '../components/health/medical-history/user-medical-history-form/user-medical-history-form.component';
-import { UserHealthConditionFormComponent } from '../components/health/health-condition/user-health-condition-form/user-health-condition-form.component';
-import { UserMedicamentsAllergiesFormComponent } from '../components/health/allergies/user-medicaments-allergies-form/user-medicaments-allergies-form.component';
 import { UserProfileInfoComponent } from '../user-profile-info/user-profile-info.component';
+import { UserVacinationsFormComponent } from '../../components/health/vacinations/user-vacinations-form/user-vacinations-form.component';
+import { UserMedicalHistoryFormComponent } from '../../components/health/medical-history/user-medical-history-form/user-medical-history-form.component';
+import { UserHealthConditionFormComponent } from '../../components/health/health-condition/user-health-condition-form/user-health-condition-form.component';
+import { UserMedicamentsAllergiesFormComponent } from '../../components/health/allergies/user-medicaments-allergies-form/user-medicaments-allergies-form.component';
 
 @Component({
   selector: 'app-user-health-info',

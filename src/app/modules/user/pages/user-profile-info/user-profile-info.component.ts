@@ -17,7 +17,7 @@ export class UserProfileInfoComponent implements OnInit {
   public user: User | null = null;
   public profileImage: string = '';
   private apiUrl = environment.url;
-
+ 
   constructor(
     private userService: UserService,
     private router: Router

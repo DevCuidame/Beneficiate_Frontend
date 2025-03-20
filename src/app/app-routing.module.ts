@@ -57,6 +57,12 @@ const routes: Routes = [
     loadChildren: () => import('./modules/beneficiary/beneficiary.module').then(m => m.BeneficiaryModule) 
   },
 
+  { 
+    path: 'user', 
+    loadChildren: () => import('./modules/user/user.module').then(m => m.UserModule) 
+  },
+
+
 
   { path: '**', redirectTo: '' },
 
