@@ -1,0 +1,54 @@
+<div class="profile-container">
+  <div class="profile-header">
+    <div class="profile-image">
+      <img [src]="profileImage" alt="Foto de perfil" />
+    </div>
+    <h2>{{ user?.first_name }} {{ user?.last_name }}</h2>
+  </div>
+
+  <div class="profile-details">
+    <div class="detail-item">
+      <span class="label">ID:</span>
+      <span class="value">{{ user?.identification_number }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="label">Tipo ID:</span>
+      <span class="value">{{ user?.identification_type }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="label">Email:</span>
+      <span class="value">{{ user?.email }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="label">Teléfono:</span>
+      <span class="value">{{ user?.phone }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="label">Dirección:</span>
+      <span class="value">{{ user?.address }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="label">Ciudad:</span>
+      <span class="value">{{ user?.location?.township_name }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="label">Departamento:</span>
+      <span class="value">{{ user?.location?.department_name }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="label">Género:</span>
+      <span class="value">{{ user?.gender === 'M' ? 'Masculino' : user?.gender === 'F' ? 'Femenino' : 'Otro' }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="label">F. Nacimiento:</span>
+      <span class="value">{{ user?.birth_date | date:'dd/MM/yyyy' }}</span>
+    </div>
+  </div>
+
+  <div class="profile-actions">
+    <button class="edit-button" (click)="goToEditProfile()">
+      <ion-icon name="create-outline"></ion-icon>
+      Editar perfil
+    </button>
+  </div>
+</div>

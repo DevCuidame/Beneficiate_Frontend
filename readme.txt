@@ -61,3 +61,14 @@ ng generate component modules/beneficiary/components/vacinations-form
 
 
 
+ng generate component modules/user/userHealthInfo
+ng generate component modules/user/userProfileInfo
+
+
+ng generate component modules/user/components/health/vacinations/userVacinationsForm
+ng generate component modules/user/components/health/medical-history/userMedicalHistoryForm 
+ng generate component modules/user/components/health/health-condition/userHealthConditionForm
+ng generate component modules/user/components/health/allergies/userMedicamentsAllergiesForm
+ng generate component pages/user/user-profile-edit/userProfileEdit
+ng generate component pages/user/user-profile/userProfile
+

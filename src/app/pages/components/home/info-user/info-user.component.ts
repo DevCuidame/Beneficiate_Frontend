@@ -21,6 +21,7 @@ import { AuthService } from 'src/app/modules/auth/services/auth.service';
 import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
 import { User } from 'src/app/core/interfaces/auth.interface';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-info-user',
@@ -55,6 +56,7 @@ export class InfoUserComponent  implements OnInit {
     private userService: UserService,
     private beneficiaryService: BeneficiaryService,
     private authService: AuthService,
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -86,4 +88,13 @@ export class InfoUserComponent  implements OnInit {
 
     this.authService.refreshUserData();
   }
+
+  goToEditProfile(): void {
+    this.router.navigate(['/home-desktop/user/edit']);
+  }
+
+  goToHealthInfo(): void {
+    this.router.navigate(['/home-desktop/user/health']);
+  }
+
 }

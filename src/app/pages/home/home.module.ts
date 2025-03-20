@@ -8,6 +8,8 @@ import { AuthGuard } from 'src/app/core/guards/auth.guard';
 import { HomePageComponent } from './home-page/home-page.component';
 import { BeneficiaryInfoComponent } from './beneficiary-info/beneficiary-info.component';
 import { ScheduleComponent } from './schedule-page/schedule.component';
+import { UserProfileEditComponent } from '../user/user-profile-edit/user-profile-edit/user-profile-edit.component';
+import { UserHealthInfoComponent } from 'src/app/modules/user/user-health-info/user-health-info.component';
 
 const routes: Routes = [
   {
@@ -29,6 +31,15 @@ const routes: Routes = [
     loadComponent: () => import('./new-beneficiary-form/new-beneficiary-form.component').then(m => m.NewBeneficiaryFormComponent),
     canActivate: [AuthGuard],
   },
+  {
+    path: 'user/edit',
+    component: UserProfileEditComponent,
+  },
+  {
+    path: 'user/health',
+    component: UserHealthInfoComponent,
+  },
+
   {
     path: '**',
     redirectTo: 'home-desktop'
