@@ -15,13 +15,16 @@
         [control]="first_name"
         [errorMessage]="errorMessages.first_name">
       </app-custom-input>
+      <p class="error-text" *ngIf="getErrorMessage('first_name')">
+        {{ getErrorMessage('first_name') }}
+      </p>
 
       <app-custom-input
-      label="Apellidos"
-      label_s="color: var(--ion-color-dark)"
-      [control]="last_name"
-      [errorMessage]="errorMessages.last_name">
-    </app-custom-input>
+        label="Apellidos"
+        label_s="color: var(--ion-color-dark)"
+        [control]="last_name"
+        [errorMessage]="errorMessages.last_name">
+      </app-custom-input>
 
       <div>
         <label>Identificación</label>
