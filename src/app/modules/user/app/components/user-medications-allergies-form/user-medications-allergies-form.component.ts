@@ -189,12 +189,14 @@ export class UserMedicationsAllergiesFormComponent implements OnInit {
   async submitForm() {
     if (this.form.valid && this.user) {
       const payload = {
+        user_id: this.user.id,
         allergies: this.form.value.allergies,
         medications: this.form.value.medications,
       };
 
       this.userHealthService.saveAllergiesAndMedications(payload).subscribe(
         async (response) => {
+         if(response.statusCode === 200)
           await this.toastService.presentToast(
             'Medicamentos y alergias guardados correctamente',
             'success'

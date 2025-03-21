@@ -100,16 +100,16 @@ export class UserHealthConditionFormComponent implements OnInit {
         ) || []
       )
     );
-    
+
     // If no existing data, add empty form groups
     if (this.diseases.length === 0) {
       this.addDisease();
     }
-    
+
     if (this.disabilities.length === 0) {
       this.addDisability();
     }
-    
+
     if (this.distinctives.length === 0) {
       this.addDistinctive();
     }
@@ -122,7 +122,7 @@ export class UserHealthConditionFormComponent implements OnInit {
       (this.distinctives.length > 0 && this.distinctives.valid)
     );
   }
-  
+
   get diseases(): FormArray {
     return this.form.get('diseases') as FormArray;
   }
@@ -156,7 +156,7 @@ export class UserHealthConditionFormComponent implements OnInit {
       user_id: this.user?.id,
       disease: ['', [Validators.required]],
       diagnosed_date: ['', [Validators.required]],
-      treatment_required: [false]
+      treatment_required: [false],
     });
   }
 
@@ -207,17 +207,23 @@ export class UserHealthConditionFormComponent implements OnInit {
   async submitForm() {
     if (this.form.valid && this.user) {
       const payload = {
+        user_id: this.user.id,
         diseases: this.form.value.diseases,
         disabilities: this.form.value.disabilities,
         distinctives: this.form.value.distinctives,
       };
+      console.log(
+        '🚀 ~ UserHealthConditionFormComponent ~ submitForm ~ payload:',
+        payload
+      );
 
       this.userHealthService.saveHealthData(payload).subscribe(
         async (response) => {
-          await this.toastService.presentToast(
-            'Información de salud guardada correctamente',
-            'success'
-          );
+          if (response.statusCode === 200)
+            await this.toastService.presentToast(
+              'Información de salud guardada correctamente',
+              'success'
+            );
           this.navCtrl.navigateRoot('/user/home/conditions');
         },
         async (error) => {

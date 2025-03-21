@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { getLabel, historyTypeOptions, relativeOptions } from 'src/app/core/constants/options';
 import { User } from 'src/app/core/interfaces/auth.interface';
+import { UserHealthService } from 'src/app/core/services/user-health.service';
 import { UserService } from 'src/app/modules/auth/services/user.service';
 import { EditButtonComponent } from 'src/app/shared/components/edit-button/edit-button.component';
 import { PrimaryCardComponent } from 'src/app/shared/components/primary-card/primary-card.component';
@@ -20,7 +21,8 @@ export class UserMedicalHistoryListComponent implements OnInit {
   public relativeOptions = relativeOptions;
 
   constructor(
-    private userService: UserService
+    private userService: UserService,
+    private userHealthService: UserHealthService
   ) {}
 
   ngOnInit() {
@@ -33,6 +35,7 @@ export class UserMedicalHistoryListComponent implements OnInit {
     });
     
     // Ensure health data is loaded
-    this.userService.getUserHealthData();
+    this.userHealthService.getUserHealthData();
+
   }
 }

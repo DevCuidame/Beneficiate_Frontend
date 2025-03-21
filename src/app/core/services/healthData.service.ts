@@ -27,13 +27,10 @@ export class HealthDataService {
     return this.http.post(`${apiUrl}api/v1/beneficiary/allergies-medications/create`, data);
   }
 
-  // Helper method to load user health data
   getUserHealthData() {
     if (this.userHealthService) {
-      // Use injected service if available
       this.userHealthService.getUserHealthData();
     } else if ((window as any).Injector) {
-      // Fallback to window injector
       try {
         const healthService = (window as any).Injector.get(UserHealthService);
         healthService.getUserHealthData();

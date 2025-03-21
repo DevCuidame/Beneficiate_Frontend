@@ -1,1 +1,18 @@
 @import url('../../../../../shared/styles/shared.styles.scss');
+h2 {
+    color: #fff !important;
+}
+
+.container-item {
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    background-color: var(--ion-color-light);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  
+  .container-item:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }

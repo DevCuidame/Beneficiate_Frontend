@@ -7,6 +7,7 @@ import { EditButtonComponent } from 'src/app/shared/components/edit-button/edit-
 import { PrimaryCardComponent } from 'src/app/shared/components/primary-card/primary-card.component';
 import { SecondaryCardComponent } from 'src/app/shared/components/secondary-card/secondary-card.component';
 import { faPills } from '@fortawesome/free-solid-svg-icons';
+import { UserHealthService } from 'src/app/core/services/user-health.service';
 
 @Component({
   selector: 'app-user-medications-allergies-list',
@@ -31,7 +32,7 @@ export class UserMedicationsAllergiesListComponent implements OnInit {
     SEVERE: 'Severo'
   };
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private userHealthService: UserHealthService) {}
 
   ngOnInit() {
     this.userService.user$.subscribe((userData) => {
@@ -42,7 +43,6 @@ export class UserMedicationsAllergiesListComponent implements OnInit {
       }
     });
     
-    // Ensure health data is loaded
-    this.userService.getUserHealthData();
+    this.userHealthService.getUserHealthData();
   }
 }

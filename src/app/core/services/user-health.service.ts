@@ -48,15 +48,13 @@ export class UserHealthService {
       .subscribe(healthData => {
         this.userHealthSubject.next(healthData);
         
-        // Actualizar los datos del usuario con la información de salud
         if (healthData) {
           this.userService.updateUserWithHealthData(healthData);
         }
       });
   }
-  
-  saveVaccinations(vaccinations: Vaccination[]): Observable<any> {
-    return this.http.post(`${this.apiUrl}api/v1/user/health/vaccinations/create`, { vaccinations })
+  saveVaccinations(data: {user_id: number, vaccinations: Vaccination[]}): Observable<any> {
+    return this.http.post(`${this.apiUrl}api/v1/user/health/vaccinations/create`, data)
       .pipe(
         tap(() => this.getUserHealthData()),
         catchError(error => {

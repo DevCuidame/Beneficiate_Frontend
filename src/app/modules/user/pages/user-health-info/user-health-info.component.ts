@@ -63,7 +63,6 @@ export class UserHealthInfoComponent implements OnInit {
 
   private loadUserData(): void {
     this.userService.user$.subscribe(userData => {
-      // Si es un array, tomar el primer elemento
       if (Array.isArray(userData) && userData.length > 0) {
         this.user = userData[0];
       } else {

@@ -13,6 +13,8 @@ import { UserFormComponent } from './app/pages/user-form/user-form.component';
 import { UserMedicalHistoryFormComponent } from './app/components/user-medical-history-form/user-medical-history-form.component';
 import { UserMedicationsAllergiesFormComponent } from './app/components/user-medications-allergies-form/user-medications-allergies-form.component';
 import { VacinationsFormComponent } from '../beneficiary/components/health/vacinations/vacinations-form/vacinations-form.component';
+import { UserHealthConditionFormComponent } from './app/components/user-health-condition-form/user-health-condition-form.component';
+import { UserVaccinationsFormComponent } from './app/components/user-vaccinations-form/user-vaccinations-form.component';
 
 // Import page components
 
@@ -46,13 +48,13 @@ const routes: Routes = [
 
       
       // **Rutas para los formularios**
-      { path: 'conditions/form', component: UserMedicalHistoryFormComponent},
+      { path: 'conditions/form', component: UserHealthConditionFormComponent},
 
       { path: 'medical-history/form', component: UserMedicalHistoryFormComponent },
 
       { path: 'medicaments-allergies/form', component: UserMedicationsAllergiesFormComponent },
 
-      { path: 'vaccinations/form', component: VacinationsFormComponent },
+      { path: 'vaccinations/form', component: UserVaccinationsFormComponent },
 
       {
         path: '**',

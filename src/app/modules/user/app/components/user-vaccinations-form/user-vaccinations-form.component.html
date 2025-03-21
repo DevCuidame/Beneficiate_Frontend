@@ -7,12 +7,18 @@
         type="text"
         placeholder="Ej. Hepatitis B"
         [control]="getFormControl(getVaccinationFormGroup(i), 'vaccine')"
+        [textColor]="'var(--ion-color-dark)'"
+        [borderBottom]="'1px solid var(--ion-color-dark)'"
+        [inputTextColor]="'var(--ion-color-dark)'"
       ></app-input>
 
       <app-input
         label="Fecha de Vacunación"
         type="date"
         [control]="getFormControl(getVaccinationFormGroup(i), 'vaccination_date')"
+        [textColor]="'var(--ion-color-dark)'"
+        [borderBottom]="'1px solid var(--ion-color-dark)'"
+        [inputTextColor]="'var(--ion-color-dark)'"
       ></app-input>
 
       <button type="button" class="remove" (click)="removeVaccination(i)">

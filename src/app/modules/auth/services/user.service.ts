@@ -122,10 +122,9 @@ export class UserService {
   }
 
   
-  // Helper method to load user health data
   getUserHealthData() {
-    // const userHealthService = window.Injector.get(UserHealthService);
-    // userHealthService.getUserHealthData();
+    const userHealthService = appInjector.get(UserHealthService);
+    userHealthService.getUserHealthData();
   }
 
 }

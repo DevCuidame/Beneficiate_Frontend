@@ -73,7 +73,6 @@ export class UserFormComponent implements OnInit {
       phone: ['', [Validators.required, Validators.pattern('^[0-9-]+$')]],
       birth_date: ['', Validators.required],
       gender: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
       public_name: ['', Validators.maxLength(50)],
       base_64: [''],
     });

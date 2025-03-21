@@ -125,10 +125,15 @@ export class UserVaccinationsFormComponent implements OnInit {
 
   async submitForm() {
     if (this.form.valid && this.user) {
-      const payload = this.form.value.vaccinations;
+      const payload = {
+        user_id: this.user.id,
+        vaccinations: this.form.value.vaccinations,
+      };
+      console.log("🚀 ~ UserVaccinationsFormComponent ~ submitForm ~ payload:", payload)
 
       this.userHealthService.saveVaccinations(payload).subscribe(
         async (response) => {
+         if(response.statusCode === 200)
           await this.toastService.presentToast(
             'Vacunas guardadas correctamente',
             'success'

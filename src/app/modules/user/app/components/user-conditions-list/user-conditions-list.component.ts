@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/core/interfaces/auth.interface';
+import { UserHealthService } from 'src/app/core/services/user-health.service';
 import { UserService } from 'src/app/modules/auth/services/user.service';
 import { EditButtonComponent } from 'src/app/shared/components/edit-button/edit-button.component';
 import { PrimaryCardComponent } from 'src/app/shared/components/primary-card/primary-card.component';
@@ -15,7 +16,7 @@ import { SecondaryCardComponent } from 'src/app/shared/components/secondary-card
 export class UserConditionsListComponent implements OnInit {
   public user: User | null = null;
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private userHealthService: UserHealthService) {}
 
   ngOnInit() {
     this.userService.user$.subscribe((userData) => {
@@ -27,6 +28,7 @@ export class UserConditionsListComponent implements OnInit {
     });
     
     // Load health data
-    this.userService.getUserHealthData();
+    this.userHealthService.getUserHealthData();
+
   }
 }

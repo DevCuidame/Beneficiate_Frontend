@@ -28,7 +28,6 @@ export class BeneficiaryCardComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log("plan", this.plan);
     this.beneficiaryService.beneficiaryCount$.subscribe((count) => {
       this.beneficiaryCount = count;
     });

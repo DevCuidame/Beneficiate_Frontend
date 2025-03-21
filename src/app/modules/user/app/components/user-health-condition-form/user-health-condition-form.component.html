@@ -11,12 +11,20 @@
         type="text"
         placeholder="Ej. Diabetes"
         [control]="getFormControl(getDiseaseFormGroup(i), 'disease')"
+        [textColor]="'var(--ion-color-dark)'"
+        [borderBottom]="'1px solid var(--ion-color-dark)'"
+        [inputTextColor]="'var(--ion-color-dark)'"
+
       ></app-input>
 
       <app-input
         label="Fecha de Diagnóstico"
         type="date"
         [control]="getFormControl(getDiseaseFormGroup(i), 'diagnosed_date')"
+        [inputTextColor]="'var(--ion-color-dark)'"
+
+        [textColor]="'var(--ion-color-dark)'"
+        [borderBottom]="'1px solid var(--ion-color-dark)'"
       ></app-input>
 
       <button type="button" class="remove" (click)="removeDisease(i)">
@@ -41,6 +49,10 @@
         type="text"
         placeholder="Ej. Ceguera"
         [control]="getFormControl(getDisabilityFormGroup(i), 'name')"
+        [inputTextColor]="'var(--ion-color-dark)'"
+
+        [textColor]="'var(--ion-color-dark)'"
+        [borderBottom]="'1px solid var(--ion-color-dark)'"
       ></app-input>
 
       <button type="button" class="remove" (click)="removeDisability(i)">
@@ -65,6 +77,9 @@
         type="text"
         placeholder="Ej. Lunar grande en la mejilla"
         [control]="getFormControl(getDistinctiveFormGroup(i), 'description')"
+        [inputTextColor]="'var(--ion-color-dark)'"
+        [textColor]="'var(--ion-color-dark)'"
+        [borderBottom]="'1px solid var(--ion-color-dark)'"
       ></app-input>
 
       <button type="button" class="remove" (click)="removeDistinctive(i)">
