@@ -70,17 +70,23 @@ main {
 
         .doc-info {
           height: 50%;
+          width: 100%;
           display: flex;
           align-items: center;
+          justify-content: space-between;
 
           .appointment-date {
             display: flex;
 
+            .info-appoiment-schedule {
+              color: var(--ion-color-dark);
+            }
+
             i {
               background-color: var(--ion-color-medium);
               color: var(--ion-color-dark);
-              width: 35%;
-              height: 80%;
+              width: 3.5rem;
+              aspect-ratio: 1 / 1;
               margin-right: 15px;
               display: flex;
               align-items: center;
@@ -136,15 +142,17 @@ main {
           gap: 5px;
 
           .appointment-date {
-            height: 50%;
             display: flex;
-            align-items: center;
+
+            .info-appoiment-schedule {
+              color: var(--ion-color-dark);
+            }
 
             i {
               background-color: var(--ion-color-medium);
               color: var(--ion-color-dark);
-              width: 20%;
-              height: 90%;
+              width: 3.5rem;
+              aspect-ratio: 1 / 1;
               margin-right: 15px;
               display: flex;
               align-items: center;
