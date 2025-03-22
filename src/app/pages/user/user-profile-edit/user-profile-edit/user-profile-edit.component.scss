@@ -1,0 +1,196 @@
+main {
+    background-color: white;
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+    
+    .edit-profile-container {
+      height: 100%;
+      width: 100%;
+      padding: 12vh 10vw;
+      display: flex;
+      justify-content: center;
+      overflow-y: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      
+      .profile-form-container {
+        max-width: 800px;
+        width: 100%;
+        margin-bottom: 20vh;
+        
+        h2 {
+          color: var(--ion-color-dark);
+          font-size: 2rem;
+          font-weight: 600;
+          margin-bottom: 1.5rem;
+          text-align: center;
+        }
+        
+        form {
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+      }
+    }
+    
+    .image-upload-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      
+      .image-circle {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background-color: #eee;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        overflow: hidden;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+        
+        .small-circle {
+          position: absolute;
+          bottom: 5px;
+          right: 5px;
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background-color: var(--ion-color-secondary);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 1;
+          box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+          
+          .camera-icon {
+            font-size: 24px;
+            color: var(--ion-color-dark);
+          }
+        }
+      }
+    }
+    
+    .form-section {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+      
+      h3 {
+        color: var(--ion-color-dark);
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1.25rem;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 0.5rem;
+      }
+      
+      .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        
+        .form-group {
+          flex: 1;
+          min-width: 250px;
+        }
+      }
+    }
+    
+    .button-container {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+      
+      button {
+        min-width: 150px;
+        padding: 1rem 1.5rem;
+        border-radius: 50px;
+        border: none;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        
+        &.cancel-button {
+          background-color: #f1f3f5;
+          color: var(--ion-color-dark);
+          
+          &:hover {
+            background-color: #e9ecef;
+          }
+        }
+        
+        &.save-button {
+          background-color: var(--ion-color-primary);
+          color: white;
+          
+          &:hover:not(:disabled) {
+            background-color: var(--ion-color-primary-shade);
+          }
+          
+          &:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+          }
+          
+          ion-spinner {
+            margin-left: 8px;
+          }
+        }
+      }
+    }
+    
+    .footer {
+      background-color: white;
+      height: 12vh;
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+      z-index: 10;
+      
+      app-footer-component {
+        margin-left: 25px;
+        position: absolute;
+        bottom: 4vh;
+      }
+    }
+  }
+  
+  @media (max-width: 768px) {
+    main .edit-profile-container {
+      padding: 12vh 5vw;
+    }
+    
+    .button-container {
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      
+      button {
+        width: 100%;
+      }
+    }
+  }

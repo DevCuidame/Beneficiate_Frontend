@@ -1,7 +1,7 @@
 import { AgentChatPanelComponent } from './pages/callCenter/agent-chat-panel/agent-chat-panel.component';
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { AutoRedirectGuard } from './core/guards/auth.guard';
+import { AuthGuard, AutoRedirectGuard } from './core/guards/auth.guard';
 import { BrowserRedirectGuard } from './core/guards/redirect.guard';
 import { VerifyEmailComponent } from './modules/auth/pages/verify-email/verify-email.component';
 import { UserChatWidgetComponent } from './shared/components/user-chat-widget/user-chat-widget.component';
@@ -56,7 +56,16 @@ const routes: Routes = [
     path: 'beneficiary', 
     loadChildren: () => import('./modules/beneficiary/beneficiary.module').then(m => m.BeneficiaryModule) 
   },
-  { path: '**', redirectTo: '' }
+
+  { 
+    path: 'user', 
+    loadChildren: () => import('./modules/user/user.module').then(m => m.UserModule) 
+  },
+
+
+
+  { path: '**', redirectTo: '' },
+
 ];
 
 @NgModule({

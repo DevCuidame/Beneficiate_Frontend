@@ -1,0 +1,112 @@
+<form [formGroup]="medicationsAllergiesForm" (ngSubmit)="saveMedicationsAllergies()">
+  <h3>Medicamentos</h3>
+  
+  <div formArrayName="medications">
+    <div *ngFor="let medication of medicationsArray.controls; let i = index" [formGroupName]="i" class="container-item">
+      <button type="button" class="remove" (click)="removeMedication(i)" *ngIf="medicationsArray.length > 1">
+        Eliminar
+      </button>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <app-custom-input
+            label="Nombre del medicamento"
+            type="text"
+            [control]="getControl(medication, 'medication')"
+          ></app-custom-input>
+        </div>
+        
+        <div class="form-group">
+          <app-custom-input
+            label="Laboratorio"
+            type="text"
+            [control]="getControl(medication, 'laboratory')"
+          ></app-custom-input>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <app-custom-input
+            label="Prescripción"
+            type="text"
+            [control]="getControl(medication, 'prescription')"
+          ></app-custom-input>
+        </div>
+        
+        <div class="form-group">
+          <app-custom-input
+            label="Dosis"
+            type="text"
+            [control]="getControl(medication, 'dosage')"
+          ></app-custom-input>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group full-width">
+          <app-custom-input
+            label="Frecuencia"
+            type="text"
+            [control]="getControl(medication, 'frequency')"
+          ></app-custom-input>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="add-box">
+    <button type="button" class="add" (click)="addAllergy()">
+      Añadir Alergia
+    </button>
+  </div>
+  
+  <div class="button-container">
+    <button type="submit" class="save-button" [disabled]="isSubmitting">
+      <span *ngIf="!isSubmitting">Guardar Medicamentos y Alergias</span>
+      <ion-spinner *ngIf="isSubmitting" name="crescent"></ion-spinner>
+    </button>
+  </div>
+  
+  <div class="add-box">
+    <button type="button" class="add" (click)="addMedication()">
+      Añadir Medicamento
+    </button>
+  </div>
+  
+  <h3>Alergias</h3>
+  
+  <div formArrayName="allergies">
+    <div *ngFor="let allergy of allergiesArray.controls; let i = index" [formGroupName]="i" class="container-item">
+      <button type="button" class="remove" (click)="removeAllergy(i)" *ngIf="allergiesArray.length > 1">
+        Eliminar
+      </button>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <app-custom-input
+            label="Tipo de alergia"
+            type="text"
+            [control]="getControl(allergy, 'allergy_type')"
+          ></app-custom-input>
+        </div>
+        
+        <div class="form-group">
+          <app-custom-input
+            label="Severidad"
+            type="select"
+            [control]="getControl(allergy, 'severity')"
+            [options]="severityOptions"
+          ></app-custom-input>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group full-width">
+          <app-custom-input
+            label="Descripción"
+            type="text"
+            [control]="getControl(allergy, 'description')"
+          ></app-custom-input>
+        </div>
+      </div>

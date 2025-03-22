@@ -1,0 +1,24 @@
+<div class="user-header">
+  <div class="info">
+    <div class="user-name" style="font-size: 4.5vw">
+      <p>
+        @if(user){
+        <span class="bold"
+          >{{ user.first_name.split(" ")[0] }}
+          {{ user.last_name.split(" ")[0] }}</span
+        >
+
+        }
+      </p>
+    </div>
+    <div class="user-name">
+      <p>
+        <span class="normal">¡Mi información personal</span> <br />
+        <span class="normal">y de salud!</span>
+      </p>
+    </div>
+  </div>
+  <div class="circle">
+    <img [src]="userImagePath" [alt]="user?.first_name" />
+  </div>
+</div>

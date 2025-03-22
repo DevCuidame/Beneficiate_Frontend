@@ -20,6 +20,9 @@ export class InputComponent {
   @Input() control!: FormControl;
   @Input() options: SelectOption[] = []; 
   @Input() showCounter: boolean = false;
+  @Input() textColor: string = 'var(--ion-color-dark)';
+  @Input() borderBottom: string = '1px solid var(--ion-color-light);';
+  @Input() inputTextColor: string = 'var(--ion-color-light)';
 
   get errorMessage(): string {
     if (!this.control || !this.control.errors || !this.control.touched) return '';

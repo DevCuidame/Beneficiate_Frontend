@@ -31,7 +31,7 @@ import { UserChatWidgetComponent } from 'src/app/shared/components/user-chat-wid
     PrimaryCardComponent,
     PlanSelectionComponent,
     GreetingComponent,
-    UserChatWidgetComponent
+    // UserChatWidgetComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
@@ -58,7 +58,6 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.userService.user$.subscribe((userData) => {
-
       this.user = userData;
       this.cdRef.detectChanges();
 
@@ -80,7 +79,7 @@ export class DashboardComponent implements OnInit {
           environment.url
         }${this.user.image.image_path.replace(/\\/g, '/')}`;
       } else {
-        this.profileImage = ''
+        this.profileImage = '';
         this.profileImage = 'assets/images/default_user.png';
       }
     });
@@ -117,25 +116,53 @@ export class DashboardComponent implements OnInit {
 
   async selectButton(buttonType: string) {
     if (buttonType === 'Beneficiarios') {
+      this.selectedButtonText = 'Beneficiarios';
     } else if (buttonType === 'Agenda') {
       if (this.user.plan) {
         this.selectedButtonText = 'Agenda';
         this.navController.navigateForward(['/home/appointment-booking']);
       } else {
-        // Mostrar alerta atractiva con botón de aceptar
         const alert = await this.alertController.create({
           cssClass: 'custom-alert',
           header: '¡Atención!',
           subHeader: 'Plan no disponible',
-          message: 'Actualmente no cuentas con un plan activo para acceder a la agenda.',
-          buttons: [{
-            text: 'Aceptar',
-            cssClass: 'alert-button-confirm',
-            handler: () => {
-              this.activeTab = 'plans-selection';
-            }
-          }],
-          backdropDismiss: false
+          message:
+            'Actualmente no cuentas con un plan activo para acceder a la agenda.',
+          buttons: [
+            {
+              text: 'Aceptar',
+              cssClass: 'alert-button-confirm',
+              handler: () => {
+                this.activeTab = 'plans-selection';
+              },
+            },
+          ],
+          backdropDismiss: false,
+        });
+
+        await alert.present();
+      }
+    } else if (buttonType === 'Mi Salud') {
+      if (this.user.plan) {
+        this.selectedButtonText = 'Mi Salud';
+        this.navController.navigateForward(['/user/home']);
+      } else {
+        const alert = await this.alertController.create({
+          cssClass: 'custom-alert',
+          header: '¡Atención!',
+          subHeader: 'Plan no disponible',
+          message:
+            'Actualmente no cuentas con un plan activo para acceder a la agenda.',
+          buttons: [
+            {
+              text: 'Aceptar',
+              cssClass: 'alert-button-confirm',
+              handler: () => {
+                this.activeTab = 'plans-selection';
+              },
+            },
+          ],
+          backdropDismiss: false,
         });
 
         await alert.present();

@@ -1,0 +1,161 @@
+<main>
+  <app-header [addBackground]="true"></app-header>
+  
+  <div class="edit-profile-container">
+    <div class="profile-form-container">
+      <h2>Editar Perfil</h2>
+      
+      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+        <div class="image-upload-container">
+          <div class="image-circle" (click)="selectImage()">
+            <img
+              [src]="selectedImage || imageLoaded || 'assets/images/default-profile.png'"
+              alt="Foto de perfil"
+            />
+            <div class="small-circle">
+              <ion-icon class="camera-icon" name="camera"></ion-icon>
+            </div>
+          </div>
+          <input
+            type="file"
+            id="imageInput"
+            (change)="onImageSelected($event)"
+            hidden
+            accept="image/*"
+          />
+        </div>
+        
+        <div class="form-section">
+          <h3>Datos Personales</h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <app-custom-input 
+                label="Nombres" 
+                type="text" 
+                [control]="first_name!"
+              ></app-custom-input>
+            </div>
+            
+            <div class="form-group">
+              <app-custom-input 
+                label="Apellidos" 
+                type="text" 
+                [control]="last_name!"
+              ></app-custom-input>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <app-custom-input
+                label="Tipo de Identificación"
+                type="select"
+                [control]="identification_type!"
+                [options]="identificationOptions"
+              ></app-custom-input>
+            </div>
+            
+            <div class="form-group">
+              <app-custom-input 
+                label="Número de Identificación" 
+                type="text" 
+                [control]="identification_number!"
+              ></app-custom-input>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <app-custom-input 
+                label="Fecha de Nacimiento" 
+                type="date" 
+                [control]="birth_date!"
+              ></app-custom-input>
+            </div>
+            
+            <div class="form-group">
+              <app-custom-input
+                label="Género"
+                type="select"
+                [control]="gender!"
+                [options]="[
+                  { value: 'M', label: 'Masculino' },
+                  { value: 'F', label: 'Femenino' },
+                  { value: 'Other', label: 'Otro' }
+                ]"
+              ></app-custom-input>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-section">
+          <h3>Datos de Contacto</h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <app-custom-input 
+                label="Correo Electrónico" 
+                type="text" 
+                [control]="email!"
+              ></app-custom-input>
+            </div>
+            
+            <div class="form-group">
+              <app-custom-input 
+                label="Teléfono" 
+                type="text" 
+                [control]="phone!"
+              ></app-custom-input>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <app-custom-input 
+                label="Dirección" 
+                type="text" 
+                [control]="address!"
+              ></app-custom-input>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <app-custom-input
+                label="Departamento"
+                type="select"
+                [control]="department!"
+                [options]="departmentsOption"
+              ></app-custom-input>
+            </div>
+            
+            <div class="form-group">
+              <app-custom-input
+                label="Ciudad"
+                type="select"
+                [control]="city_id!"
+                [options]="citiesOption"
+              ></app-custom-input>
+            </div>
+          </div>
+        </div>
+        
+        <div class="button-container">
+          <button type="button" class="cancel-button" (click)="goBack()">
+            Cancelar
+          </button>
+          
+          <button type="submit" class="save-button" [disabled]="isSubmitting">
+            <span *ngIf="!isSubmitting">Guardar Cambios</span>
+            <ion-spinner *ngIf="isSubmitting" name="crescent"></ion-spinner>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <app-footer-component></app-footer-component>
+  </div>
+</main>

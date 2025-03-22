@@ -34,6 +34,16 @@ input:focus, select:focus {
   border-bottom-color: var(--ion-color-primary);
 }
 
+input[type="date"]::placeholder {
+  color: var(--ion-color-medium-tint) !important;
+  opacity: 1;
+}
+
+input[type="date"] {
+  color: var(--ion-color-medium-tint);
+}
+
+
 input::placeholder {
   color: var(--ion-color-medium-tint);
   opacity: 0.7;

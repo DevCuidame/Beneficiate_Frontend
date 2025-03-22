@@ -1,0 +1,42 @@
+<h2>Registro de Vacunas</h2>
+<form [formGroup]="form" (ngSubmit)="submitForm()">
+  <div formArrayName="vaccinations">
+    <div class="container-item" *ngFor="let vaccination of vaccinations.controls; let i = index" [formGroup]="getVaccinationFormGroup(i)">
+      <app-input
+        label="Vacuna"
+        type="text"
+        placeholder="Ej. Hepatitis B"
+        [control]="getFormControl(getVaccinationFormGroup(i), 'vaccine')"
+        [textColor]="'var(--ion-color-dark)'"
+        [borderBottom]="'1px solid var(--ion-color-dark)'"
+        [inputTextColor]="'var(--ion-color-dark)'"
+      ></app-input>
+
+      <app-input
+        label="Fecha de Vacunación"
+        type="date"
+        [control]="getFormControl(getVaccinationFormGroup(i), 'vaccination_date')"
+        [textColor]="'var(--ion-color-dark)'"
+        [borderBottom]="'1px solid var(--ion-color-dark)'"
+        [inputTextColor]="'var(--ion-color-dark)'"
+      ></app-input>
+
+      <button type="button" class="remove" (click)="removeVaccination(i)">
+        Quitar
+      </button>
+    </div>
+  </div>
+
+  <div class="add-box">
+    <button type="button" class="add" (click)="addVaccination()">Añadir</button>
+  </div>
+
+  <app-custom-button
+  label="Guardar"
+  type="submit"
+  [disabled]="!isFormValid()"
+  [textColor]="'var(--ion-color-light)'"
+  [backgroundImage]="buttonBackground"
+></app-custom-button>
+
+</form>

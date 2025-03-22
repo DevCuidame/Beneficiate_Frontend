@@ -1,0 +1,23 @@
+<app-primary-card maxHeight="500px">
+  <h2>Vacunas</h2>
+  <div class="h-container">
+    @if (user?.health?.vaccinations?.length ?? 0 > 0) { @for (item of
+    user?.health?.vaccinations; track item){
+    <app-secondary-card style="width: 100%">
+      <div class="vaccine-box">
+        <fa-icon [icon]="faSyringe"></fa-icon>
+        <div class="h-card">
+          <p>{{ item.vaccine }}</p>
+          <p>{{ item.vaccination_date | date:'dd/MM/yyyy' }}</p>
+        </div>
+      </div>
+    </app-secondary-card>
+    } }@else {
+    <p style="text-align: start; width: 100%; color: var(--ion-color-dark)">
+      No hay vacunas registradas.
+    </p>
+    }
+  </div>
+</app-primary-card>
+
+<app-edit-button route="/user/home/vaccinations/form"></app-edit-button>

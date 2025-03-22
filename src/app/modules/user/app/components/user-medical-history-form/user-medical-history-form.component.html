@@ -1,0 +1,123 @@
+<h2>¿Tienes algún antecedente médico personal?</h2>
+<form [formGroup]="form" (ngSubmit)="submitForm()">
+  <div formArrayName="medicalHistory">
+    <div
+      class="container-item"
+      *ngFor="let history of medicalHistory.controls; let i = index"
+      [formGroup]="getMedicalHistoryFormGroup(i)"
+    >
+      <app-input
+        label="Tipo de Historial"
+        type="select"
+        placeholder="Ej. Patológico"
+        [control]="
+          getFormControl(getMedicalHistoryFormGroup(i), 'history_type')
+        "
+        [textColor]="'var(--ion-color-dark)'"
+        [borderBottom]="'1px solid var(--ion-color-dark)'"
+        [inputTextColor]="'var(--ion-color-dark)'"
+        [options]="historyTypeOptions"
+      ></app-input>
+
+      <app-input
+        label="Descripción"
+        type="text"
+        placeholder="Ej. Apendicectomía"
+        [control]="getFormControl(getMedicalHistoryFormGroup(i), 'description')"
+        [textColor]="'var(--ion-color-dark)'"
+        [borderBottom]="'1px solid var(--ion-color-dark)'"
+        [inputTextColor]="'var(--ion-color-dark)'"
+      ></app-input>
+
+      <app-input
+        label="Fecha"
+        type="date"
+        [control]="
+          getFormControl(getMedicalHistoryFormGroup(i), 'history_date')
+        "
+        [textColor]="'var(--ion-color-dark)'"
+        [borderBottom]="'1px solid var(--ion-color-dark)'"
+        [inputTextColor]="'var(--ion-color-dark)'"
+      ></app-input>
+
+      <button type="button" class="remove" (click)="removeMedicalHistory(i)">
+        Quitar
+      </button>
+    </div>
+  </div>
+
+  <div class="add-box">
+    <button type="button" class="add" (click)="addMedicalHistory()">
+      Añadir
+    </button>
+  </div>
+
+  <h2>¿Tienes algún antecedente familiar de salud?</h2>
+  <div formArrayName="familyHistory">
+    <div
+      class="container-item"
+      *ngFor="let family of familyHistory.controls; let i = index"
+      [formGroup]="getFamilyHistoryFormGroup(i)"
+    >
+      <app-input
+        label="Tipo de Historial"
+        type="select"
+        placeholder="Ej. Patológico"
+        [control]="getFormControl(getFamilyHistoryFormGroup(i), 'history_type')"
+        [inputTextColor]="'var(--ion-color-dark)'"
+        [textColor]="'var(--ion-color-dark)'"
+        [borderBottom]="'1px solid var(--ion-color-dark)'"
+        [options]="historyTypeOptions"
+      ></app-input>
+
+      <app-input
+        label="Relación"
+        type="select"
+        placeholder="Ej. Padre"
+        [control]="getFormControl(getFamilyHistoryFormGroup(i), 'relationship')"
+        [inputTextColor]="'var(--ion-color-dark)'"
+        [textColor]="'var(--ion-color-dark)'"
+        [borderBottom]="'1px solid var(--ion-color-dark)'"
+        [options]="relativeOptions"
+      ></app-input>
+
+      <app-input
+        label="Descripción"
+        type="text"
+        placeholder="Ej. Diagnosticado a los 50 años"
+        [inputTextColor]="'var(--ion-color-dark)'"
+        [control]="getFormControl(getFamilyHistoryFormGroup(i), 'description')"
+        [textColor]="'var(--ion-color-dark)'"
+        [borderBottom]="'1px solid var(--ion-color-dark)'"
+      ></app-input>
+
+      <app-input
+        label="Fecha"
+        type="date"
+        [inputTextColor]="'var(--ion-color-dark)'"
+        [control]="getFormControl(getFamilyHistoryFormGroup(i), 'history_date')"
+        [inputTextColor]="'var(--ion-color-dark)'"
+        [textColor]="'var(--ion-color-dark)'"
+        [borderBottom]="'1px solid var(--ion-color-dark)'"
+      ></app-input>
+
+      <button type="button" class="remove" (click)="removeFamilyHistory(i)">
+        Quitar
+      </button>
+    </div>
+  </div>
+
+  <div class="add-box">
+    <button type="button" class="add" (click)="addFamilyHistory()">
+      Añadir
+    </button>
+  </div>
+
+  <app-custom-button
+    label="Guardar"
+    type="submit"
+    [disabled]="!isFormValid()"
+    [textColor]="'var(--ion-color-light)'"
+    [backgroundImage]="buttonBackground"
+  ></app-custom-button>
+</form>

@@ -1,0 +1,42 @@
+<form [formGroup]="vaccinationsForm" (ngSubmit)="saveVaccinations()">
+  <h3>Registro de Vacunas</h3>
+  
+  <div formArrayName="vaccinations">
+    <div *ngFor="let vaccination of vaccinationsArray.controls; let i = index" [formGroupName]="i" class="container-item">
+      <button type="button" class="remove" (click)="removeVaccination(i)" *ngIf="vaccinationsArray.length > 1">
+        Eliminar
+      </button>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <app-custom-input
+            label="Nombre de la vacuna"
+            type="text"
+            [control]="getControl(vaccination, 'vaccine')"
+          ></app-custom-input>
+        </div>
+        
+        <div class="form-group">
+          <app-custom-input
+            label="Fecha de aplicación"
+            type="date"
+            [control]="getControl(vaccination, 'vaccination_date')"
+          ></app-custom-input>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="add-box">
+    <button type="button" class="add" (click)="addVaccination()">
+      Añadir Vacuna
+    </button>
+  </div>
+  
+  <div class="button-container">
+    <button type="submit" class="save-button" [disabled]="isSubmitting">
+      <span *ngIf="!isSubmitting">Guardar Vacunas</span>
+      <ion-spinner *ngIf="isSubmitting" name="crescent"></ion-spinner>
+    </button>
+  </div>
+</form>

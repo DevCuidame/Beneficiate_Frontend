@@ -29,5 +29,6 @@ export interface User extends RegisterData {
   contacts: UserEmergencyContact,
   isAgent?: boolean,
   agentActive?: boolean
-  agentId?: any
+  agentId?: any,
+  health: any
 }
