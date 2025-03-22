@@ -26,43 +26,43 @@ export class AuthService {
   }
 
 
- login(credentials: { email: string; password: string }): Observable<any> {
-  return this.http.post(`${apiUrl}api/v1/auth/login`, credentials).pipe(
-    map((response: any) => {
-      localStorage.setItem('token', response.data.token.accessToken);
-      localStorage.setItem('refresh-token', response.data.token.refreshToken);
-      this.authState.next(true);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-      this.userService.setUser(response.data.user as User);
+  login(credentials: { email: string; password: string }): Observable<any> {
+    return this.http.post(`${apiUrl}api/v1/auth/login`, credentials).pipe(
+      map((response: any) => {
+        // Store tokens
+        localStorage.setItem('token', response.data.token.accessToken);
+        localStorage.setItem('refresh-token', response.data.token.refreshToken);
+        
+        // Set user data in UserService and localStorage
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        this.userService.setUser(response.data.user as User);
 
-      if (response.data.plan?.max_beneficiaries) {
-        this.beneficiaryService.maxBeneficiariesSubject.next(response.data.plan.max_beneficiaries);
-      }
+        // Set plan details if available
+        if (response.data.plan?.max_beneficiaries) {
+          this.beneficiaryService.maxBeneficiariesSubject.next(response.data.plan.max_beneficiaries);
+        }
 
-      // Guardar beneficiarios
-      if (response.data.beneficiaries) {
-        localStorage.setItem('beneficiaries', JSON.stringify(response.data.beneficiaries));
-        this.beneficiaryService.setBeneficiaries(response.data.beneficiaries as Beneficiary[]);
-      }
-      this.authState.next(true);
-      console.log('🔥 authState actualizado a TRUE');
+        // Set beneficiaries if available
+        if (response.data.beneficiaries) {
+          localStorage.setItem('beneficiaries', JSON.stringify(response.data.beneficiaries));
+          this.beneficiaryService.setBeneficiaries(response.data.beneficiaries as Beneficiary[]);
+        }
+        
+        // Update authentication state
+        this.authState.next(true);
 
-      return response;
-    }),
-    catchError(error => {
-      // Simplemente registra y pasa el error HTTP tal como es
-      console.error('Login error:', error);
-      
-      // Asegúrate de que el error devuelto contenga la información completa
-      // del error HTTP, incluyendo status y mensaje de error
-      return throwError(() => ({
-        status: error.status,
-        error: error.error,
-        message: error.error?.error || 'Error de autenticación'
-      }));
-    })
-  );
-}
+        return response;
+      }),
+      catchError(error => {
+        console.error('Login error:', error);
+        return throwError(() => ({
+          status: error.status,
+          error: error.error,
+          message: error.error?.error || 'Authentication error'
+        }));
+      })
+    );
+  }
 
   register(credentials: RegisterData): Observable<any> {
     return this.http.post(`${apiUrl}api/v1/auth/register`, credentials);
@@ -130,22 +130,27 @@ resendVerificationEmail(email: string): Observable<any> {
     );
   }
 
-  refreshUserData(): void {
-    const user = this.getUserData();
+ // Add this improved refreshUserData method to your AuthService
 
-    if (user) {
-      this.userService.setUser(user);
-    } else {
-      console.warn('⚠️ No se encontró usuario en localStorage.');
+refreshUserData(): void {
+  const user = this.getUserData();
+
+  if (user) {
+    const normalizedUser = Array.isArray(user) ? user[0] : user;
+    
+    if (normalizedUser.location && Array.isArray(normalizedUser.location) && normalizedUser.location.length > 0) {
+      normalizedUser.location = normalizedUser.location[0];
     }
+    
+    this.userService.setUser(normalizedUser);
+  } 
 
-    const beneficiaries = this.getBeneficiariesData();
+  const beneficiaries = this.getBeneficiariesData();
 
-    if (beneficiaries.length > 0) {
-      this.beneficiaryService.setBeneficiaries(beneficiaries);
-    }
+  if (beneficiaries.length > 0) {
+    this.beneficiaryService.setBeneficiaries(beneficiaries);
   }
-
+}
 
   private hasToken(): boolean {
     return !!localStorage.getItem('token');

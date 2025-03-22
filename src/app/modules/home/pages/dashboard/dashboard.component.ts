@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { IonicModule, NavController, AlertController } from '@ionic/angular';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
 import { TabBarComponent } from 'src/app/shared/components/tab-bar/tab-bar.component';
@@ -13,10 +13,9 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCrown } from '@fortawesome/free-solid-svg-icons';
 import { PrimaryCardComponent } from 'src/app/shared/components/primary-card/primary-card.component';
 import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
-import { Plan } from 'src/app/core/interfaces/plan.interface';
 import { PlanSelectionComponent } from 'src/app/shared/components/plan-selection/plan-selection/plan-selection.component';
 import { GreetingComponent } from 'src/app/shared/components/greeting/greeting.component';
-import { UserChatWidgetComponent } from 'src/app/shared/components/user-chat-widget/user-chat-widget.component';
+import { Subscription, interval } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -31,12 +30,11 @@ import { UserChatWidgetComponent } from 'src/app/shared/components/user-chat-wid
     PrimaryCardComponent,
     PlanSelectionComponent,
     GreetingComponent,
-    // UserChatWidgetComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   public user: User | any = null;
   public beneficiaries: Beneficiary[] = [];
   public environment = environment.url;
@@ -46,6 +44,9 @@ export class DashboardComponent implements OnInit {
   public selectedIndicatorBorder: string = '20px';
   public showCards: boolean = true;
   public faCrown = faCrown;
+  
+  private subscriptions: Subscription[] = [];
+  private refreshInterval: Subscription | null = null;
 
   constructor(
     private userService: UserService,
@@ -57,10 +58,54 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.userService.user$.subscribe((userData) => {
-      this.user = userData;
-      this.cdRef.detectChanges();
-
+    // Load initial data
+    this.loadUserData();
+    this.loadBeneficiaries();
+    
+    // Initial refresh from localStorage
+    this.authService.refreshUserData();
+    
+    // Start automatic refresh cycle
+    this.startAutoRefresh();
+  }
+  
+  ngOnDestroy() {
+    // Clean up all subscriptions to prevent memory leaks
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    
+    // Stop automatic refresh interval
+    if (this.refreshInterval) {
+      this.refreshInterval.unsubscribe();
+    }
+  }
+  
+  startAutoRefresh() {
+    this.refreshInterval = interval(30000).subscribe(() => {
+      if (this.user?.id) {
+        this.refreshFromLocalStorage();
+      }
+    });
+    
+    document.addEventListener('visibilitychange', this.handleVisibilityChange.bind(this));
+    window.addEventListener('focus', this.handleWindowFocus.bind(this));
+  }
+  
+  handleVisibilityChange() {
+    if (document.visibilityState === 'visible' && this.user?.id) {
+      // When tab becomes visible again, refresh from server
+      this.refreshUserDataFromServer();
+    }
+  }
+  
+  handleWindowFocus() {
+    if (this.user?.id) {
+      this.refreshUserDataFromServer();
+    }
+  }
+  
+  loadUserData() {
+    const userSub = this.userService.user$.subscribe((userData) => {
+      
       if (Array.isArray(userData) && userData.length > 0) {
         this.user = userData[0];
       } else {
@@ -74,17 +119,19 @@ export class DashboardComponent implements OnInit {
       ) {
         this.user.location = this.user.location[0];
       }
-      if (this.user?.image?.image_path) {
-        this.profileImage = `${
-          environment.url
-        }${this.user.image.image_path.replace(/\\/g, '/')}`;
-      } else {
-        this.profileImage = '';
-        this.profileImage = 'assets/images/default_user.png';
-      }
+      
+      this.updateProfileImage();
+      this.cdRef.detectChanges();
     });
-
-    this.beneficiaryService.beneficiaries$.subscribe((beneficiaries) => {
+    
+    this.subscriptions.push(userSub);
+  }
+  
+  /**
+   * Loads beneficiaries data from the BeneficiaryService
+   */
+  loadBeneficiaries() {
+    const beneficiarySub = this.beneficiaryService.beneficiaries$.subscribe((beneficiaries) => {
       if (Array.isArray(beneficiaries)) {
         this.beneficiaries = beneficiaries.map((beneficiary) => ({
           ...beneficiary,
@@ -96,7 +143,44 @@ export class DashboardComponent implements OnInit {
       }
       this.cdRef.detectChanges();
     });
+    
+    this.subscriptions.push(beneficiarySub);
+  }
+  
+  /**
+   * Updates the profile image URL
+   */
+  updateProfileImage() {
+    if (this.user?.image?.image_path) {
+      this.profileImage = `${
+        environment.url
+      }${this.user.image.image_path.replace(/\\/g, '/')}`;
+    } else {
+      this.profileImage = 'assets/images/default_user.png';
+    }
+  }
 
+  /**
+   * Refreshes user data from the server
+   */
+  refreshUserDataFromServer() {
+    if (this.user?.id) {
+      const refreshSub = this.userService.refreshUserData(this.user.id).subscribe(
+        () => {
+        },
+        (error) => {
+          this.refreshFromLocalStorage();
+        }
+      );
+      
+      this.subscriptions.push(refreshSub);
+    }
+  }
+  
+  /**
+   * Refreshes user data from localStorage
+   */
+  refreshFromLocalStorage() {
     this.authService.refreshUserData();
   }
 
@@ -104,10 +188,8 @@ export class DashboardComponent implements OnInit {
     this.activeTab = tab;
   }
 
-  // Método para manejar la selección de plan
   onPlanSelected(plan: any) {
-    // console.log('Plan seleccionado:', plan);
-    // Puedes agregar lógica adicional aquí si es necesario
+    // Handle plan selection
   }
 
   goToPlans() {

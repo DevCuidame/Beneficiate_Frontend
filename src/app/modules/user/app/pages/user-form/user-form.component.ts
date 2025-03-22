@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -13,7 +13,7 @@ import {
   LoadingController,
   NavController,
 } from '@ionic/angular';
-import { debounceTime } from 'rxjs';
+import { debounceTime, finalize, Subscription } from 'rxjs';
 import { TabBarComponent } from 'src/app/shared/components/tab-bar/tab-bar.component';
 import { CustomButtonComponent } from 'src/app/shared/components/custom-button/custom-button.component';
 import { environment } from 'src/environments/environment';
@@ -34,7 +34,7 @@ import { LocationService } from 'src/app/modules/auth/services/location.service'
   templateUrl: './user-form.component.html',
   styleUrls: ['./user-form.component.scss'],
 })
-export class UserFormComponent implements OnInit {
+export class UserFormComponent implements OnInit, OnDestroy {
   public userForm: FormGroup;
   public newImage: boolean = false;
   public selectedImage: string | ArrayBuffer | null = null;
@@ -43,6 +43,8 @@ export class UserFormComponent implements OnInit {
 
   public departments: any[] = [];
   public cities: any[] = [];
+  
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -82,8 +84,8 @@ export class UserFormComponent implements OnInit {
 
   ngOnInit() {
     this.loadDepartments();
-
-    this.userForm
+    
+    const deptSub = this.userForm
       .get('department')
       ?.valueChanges.subscribe((departmentId) => {
         if (departmentId) {
@@ -91,12 +93,21 @@ export class UserFormComponent implements OnInit {
           this.loadCities(departmentId);
         }
       });
+      
+    if (deptSub) {
+      this.subscriptions.push(deptSub);
+    }
 
     this.loadUserData();
   }
+  
+  ngOnDestroy() {
+    // Clean up all subscriptions to prevent memory leaks
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+  }
 
   loadUserData() {
-    this.userService.user$.subscribe(userData => {
+    const userSub = this.userService.user$.subscribe(userData => {
       // If userData is an array, take the first element
       const user = Array.isArray(userData) ? userData[0] : userData;
 
@@ -107,6 +118,8 @@ export class UserFormComponent implements OnInit {
         });
         return;
       }
+
+      console.log('Loading user data into form:', user);
 
       this.userForm.patchValue({
         id: user.id,
@@ -125,49 +138,67 @@ export class UserFormComponent implements OnInit {
         this.imageLoaded = `${environment.url}${user.image.image_path.replace('\\', '/')}`;
       }
 
+      // Handle location data correctly
       this.locationService.fetchDepartments();
-      this.locationService.departments$.subscribe((departments) => {
+      const deptsSub = this.locationService.departments$.subscribe((departments) => {
         this.departments = departments;
 
-        if (user.location?.department_id) {
-          this.userForm.patchValue({ department: user.location.department_id });
-
-          this.loadCities(user.location.department_id, user.location?.township_id);
+        // Check if user has location data
+        if (user.location) {
+          const locationData = Array.isArray(user.location) ? user.location[0] : user.location;
+          
+          if (locationData?.department_id) {
+            console.log(`Setting department to: ${locationData.department_id} (${locationData.department_name})`);
+            this.userForm.patchValue({ department: locationData.department_id });
+            
+            // Load cities for the selected department
+            this.loadCities(locationData.department_id, locationData?.township_id);
+          }
         }
       });
+      
+      this.subscriptions.push(deptsSub);
     });
+    
+    this.subscriptions.push(userSub);
   }
-
 
   loadDepartments() {
     this.locationService.fetchDepartments();
-    this.locationService.departments$.subscribe((departments) => {
+    const deptsSub = this.locationService.departments$.subscribe((departments) => {
       this.departments = departments;
     });
+    
+    this.subscriptions.push(deptsSub);
   }
 
   loadCities(departmentId: any, cityId?: any) {
+    console.log(`Loading cities for department ID: ${departmentId}, selected city: ${cityId}`);
     this.locationService.fetchCitiesByDepartment(departmentId);
 
-    this.locationService.cities$.subscribe((cities) => {
+    const citiesSub = this.locationService.cities$.subscribe((cities) => {
       this.cities = cities;
 
       if (cityId && cities.some(city => city.id === cityId)) {
+        console.log(`Setting city_id to: ${cityId}`);
         setTimeout(() => {
           this.userForm.patchValue({ city_id: cityId });
         }, 100);
       }
     });
+    
+    this.subscriptions.push(citiesSub);
   }
 
-
   setupRealTimeValidation() {
-    this.userForm.valueChanges.pipe(debounceTime(300)).subscribe(() => {
+    const formSub = this.userForm.valueChanges.pipe(debounceTime(300)).subscribe(() => {
       this.userForm.updateValueAndValidity({
         onlySelf: true,
         emitEvent: false,
       });
     });
+    
+    this.subscriptions.push(formSub);
   }
 
   async saveUser() {
@@ -176,17 +207,36 @@ export class UserFormComponent implements OnInit {
       await loading.present();
 
       const userData = { ...this.userForm.value };
-
+      
+      console.log('Saving user data:', userData);
+      
+      // First update the profile
       this.userService.updateProfile(userData).subscribe(
         async () => {
-          await loading.dismiss();
-          const alert = await this.alertCtrl.create({
-            header: 'Éxito',
-            message: 'Perfil actualizado correctamente.',
-            buttons: ['OK'],
-          });
-          await alert.present();
-          this.navCtrl.navigateBack('/user/home');
+          // After successful update, refresh the user data from server
+          const userId = userData.id;
+          
+          this.userService.refreshUserData(userId).pipe(
+            finalize(async () => {
+              await loading.dismiss();
+              const alert = await this.alertCtrl.create({
+                header: 'Éxito',
+                message: 'Perfil actualizado correctamente.',
+                buttons: ['OK'],
+              });
+              await alert.present();
+              this.navCtrl.navigateBack('/user/home');
+            })
+          ).subscribe(
+            (refreshedData) => {
+              console.log('User data refreshed after update:', refreshedData);
+            },
+            async (error) => {
+              console.error('Error refreshing user data:', error);
+              // Even if refresh fails, we consider the update successful
+              // since the profile was updated
+            }
+          );
         },
         async (error: any) => {
           console.error("Error actualizando perfil:", error);
@@ -199,9 +249,25 @@ export class UserFormComponent implements OnInit {
           await alert.present();
         }
       );
+    } else {
+      console.warn('Form is not valid', this.userForm.errors);
+      
+      // Find which fields are invalid for debugging
+      Object.keys(this.userForm.controls).forEach(key => {
+        const control = this.userForm.get(key);
+        if (control && control.invalid) {
+          console.warn(`Field ${key} is invalid:`, control.errors);
+        }
+      });
+      
+      const alert = await this.alertCtrl.create({
+        header: 'Formulario Incompleto',
+        message: 'Por favor complete todos los campos requeridos correctamente.',
+        buttons: ['OK'],
+      });
+      await alert.present();
     }
   }
-
 
   // Image Controller
   selectImage() {

@@ -1,16 +1,26 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Injector } from '@angular/core';
-import { BehaviorSubject, catchError, map, Observable, of, tap, throwError } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  map,
+  Observable,
+  of,
+  tap,
+  throwError,
+} from 'rxjs';
 import { User } from 'src/app/core/interfaces/auth.interface';
 import { UserHealthService } from 'src/app/core/services/user-health.service';
 import { environment } from 'src/environments/environment';
+
 export let appInjector: Injector;
+
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private userSubject = new BehaviorSubject<User | null>(
     this.getUserFromStorage()
   );
-  
+
   public user$: Observable<User | null> = this.userSubject.asObservable();
   private baseUrl = environment.url;
 
@@ -18,6 +28,8 @@ export class UserService {
 
   setUser(userData: User) {
     this.userSubject.next(userData);
+    // Ensure localStorage is updated when user is set
+    localStorage.setItem('user', JSON.stringify(userData));
   }
 
   private getUserFromStorage(): User | null {
@@ -46,6 +58,48 @@ export class UserService {
     );
   }
 
+  /**
+   * Refreshes user data by fetching the latest from the server
+   * @param userId The ID of the user to refresh
+   * @returns Observable of the user data
+   */
+  refreshUserData(userId: number): Observable<any> {
+    const apiUrl = `${this.baseUrl}api/v1/user/id/${userId}`;
+
+    return this.http.get(apiUrl).pipe(
+      tap((response: any) => {
+        if (response && response.data) {
+          const userData = response.data;
+
+          // Ensure location data is properly structured
+          if (
+            userData.location &&
+            Array.isArray(userData.location) &&
+            userData.location.length > 0
+          ) {
+            // If location is an array, use the first element for consistency
+            userData.location = userData.location[0] || userData.location;
+          }
+
+          // Update the BehaviorSubject with the fresh data
+          this.userSubject.next(userData);
+
+          // Update localStorage
+          localStorage.setItem('user', JSON.stringify(userData));
+
+          console.log('✅ User data refreshed from server:', userData);
+        }
+      }),
+      map((response) => response.data),
+      catchError((error) => {
+        console.error('Error refreshing user data:', error);
+        return throwError(
+          () => new Error(error.message || 'Error refreshing user data')
+        );
+      })
+    );
+  }
+
   updateUserWithHealthData(healthData: any): void {
     const currentUser = this.userSubject.getValue();
 
@@ -53,78 +107,84 @@ export class UserService {
       return;
     }
 
+    let updatedUser: User;
     if (Array.isArray(currentUser)) {
-      const updatedUser = {
+      updatedUser = {
         ...currentUser[0],
         health: healthData,
       };
-
-      this.userSubject.next(updatedUser);
     } else {
-      const updatedUser = {
+      updatedUser = {
         ...currentUser,
         health: healthData,
       };
-
-      this.userSubject.next(updatedUser);
     }
 
-    localStorage.setItem(
-      'userData',
-      JSON.stringify(this.userSubject.getValue())
-    );
+    this.userSubject.next(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
   }
 
-  // Este es un archivo de actualización parcial, añade este método al servicio UserService existente
-
-  // Dentro de la clase UserService, añade este método:
   updateProfile(userData: any): Observable<any> {
     const apiUrl = `${this.baseUrl}api/v1/user/update/${userData.id}`;
 
     return this.http.put(apiUrl, userData).pipe(
       tap((response: any) => {
         if (response && response.data) {
-          // Actualizar el usuario actual en el subject
-          const currentUser = this.userSubject.getValue();
+          console.log('Profile update response:', response.data);
+
+          // Get the current user from storage
+          const currentUser = this.getUserFromStorage();
+
+          // Create the updated user object by merging current user with response data
+          let updatedUser: User;
 
           if (Array.isArray(currentUser)) {
-            const updatedUsers = currentUser.map((user) =>
-              user.id === userData.id ? { ...user, ...response.data } : user
-            );
-            this.userSubject.next(updatedUsers[0]);
+            updatedUser = {
+              ...currentUser[0],
+              ...response.data,
+            };
           } else {
-            const updatedUser = { ...currentUser, ...response.data };
-            this.userSubject.next(updatedUser);
+            updatedUser = {
+              ...currentUser,
+              ...response.data,
+            };
           }
 
-          // Actualizar en localStorage
-          localStorage.setItem(
-            'userData',
-            JSON.stringify(this.userSubject.getValue())
-          );
+          // Ensure location data is properly structured
+          if (response.data.location && Array.isArray(response.data.location)) {
+            updatedUser.location =
+              response.data.location[0] || response.data.location;
+            console.log('Updated location data:', updatedUser.location);
+          }
+
+          // Update the BehaviorSubject with the complete merged data
+          this.userSubject.next(updatedUser);
+
+          // Update localStorage with the merged user data
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+
+          console.log('✅ User profile updated successfully:', updatedUser);
         }
       }),
       catchError((error) => {
-        console.error('Error actualizando perfil de usuario:', error);
+        console.error('Error updating user profile:', error);
         return throwError(
-          () => new Error(error.message || 'Error al actualizar el perfil')
+          () => new Error(error.message || 'Error updating profile')
         );
       })
     );
   }
-
   getUser(): User | null {
     return this.userSubject.value;
   }
 
   clearUser() {
     this.userSubject.next(null);
+    localStorage.removeItem('user');
   }
 
-  
   getUserHealthData() {
     const userHealthService = appInjector.get(UserHealthService);
     userHealthService.getUserHealthData();
   }
-
 }
