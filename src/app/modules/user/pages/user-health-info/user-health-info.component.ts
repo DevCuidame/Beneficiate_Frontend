@@ -11,7 +11,7 @@ import { getLabel, historyTypeOptions, relativeOptions } from 'src/app/core/cons
 
 // Importar los componentes de salud para el usuario (estos serán creados posteriormente)
 import { UserHealthService } from 'src/app/core/services/user-health.service';
-import { HeaderComponent } from 'src/app/pages/components/header/header.component';
+import { HeaderComponent } from 'src/app/pages/components/home/header/header.component';
 import { FooterComponent } from 'src/app/pages/components/footer-component/footer-component.component';
 import { CardInfoInputComponent } from 'src/app/pages/components/inputs/card-info-input/card-info-input.component';
 import { UserProfileInfoComponent } from '../user-profile-info/user-profile-info.component';

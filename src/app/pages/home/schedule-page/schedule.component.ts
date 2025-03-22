@@ -7,9 +7,7 @@ import { environment } from 'src/environments/environment';
 import { MedicalProfessionalService } from 'src/app/core/services/medicalProfessional.service';
 import { MedicalSpecialtyService } from 'src/app/core/services/medicalSpecialty.service';
 import { AppointmentService } from 'src/app/core/services/appointment.service';
-import { Appointment } from 'src/app/core/interfaces/appointment.interface';
 import { MedicalProfessional } from 'src/app/core/interfaces/medicalProfessional.interface';
-import { MedicalSpecialty } from 'src/app/core/interfaces/medicalSpecialty.interface';
 import { UserService } from 'src/app/modules/auth/services/user.service';
 import { User } from 'src/app/core/interfaces/auth.interface';
 import { WebsocketService } from 'src/app/core/services/websocket.service';
@@ -66,7 +64,6 @@ export class ScheduleComponent  implements OnInit {
 
     this.medicalProfessionalService.getMedicalProfessionals().subscribe(
       (professionals) => {
-        console.log(professionals);
         this.professionals = professionals;
       },
       (error) => {
@@ -180,13 +177,15 @@ export class ScheduleComponent  implements OnInit {
   // --------------- Acciones de botonoes --------------- //
 
   toggleDropdown(specialty?: any): void {
+
     if (specialty) {
       this.selectedSpecialtyName = specialty.name;
       this.selectedSpecialtyId = specialty.id;
 
-      this.medicalProfessionalService
-          .fetchMedicalProfessionals(specialty.id)
-          .subscribe();
+      this.medicalProfessionalService.fetchMedicalProfessionals(specialty.id).subscribe((professionals) => {
+        console.log(professionals);
+        this.professionals = professionals;
+      },);
 
       this.isDropdownOpen = false;
     } else {

@@ -114,16 +114,14 @@ main {
 
       .schedule-card-edit {
         background: radial-gradient(circle, rgb(211, 226, 235) 0%, rgb(198, 216, 228) 25%, rgb(184, 204, 220) 50%, rgb(159, 183, 206) 75%, rgb(148, 174, 199) 100%);
-        height: 275px;
+        height: 200px;
         width: 400px;
         padding: 15px;
         position: relative;
         border-radius: 30px;
 
         .top-side {
-          height: 40%;
           width: 100%;
-          margin-bottom: 10px;
           display: flex;
           align-items: center;
 
@@ -135,10 +133,11 @@ main {
         }
 
         .doc-info {
-          height: 60%;
+          height: 50%;
           display: flex;
           align-items: center;
-          flex-direction: column;
+          justify-content: space-between;
+          flex-direction: row;
           gap: 5px;
 
           .appointment-date {
@@ -163,7 +162,7 @@ main {
 
           .buttons {
             height: 50%;
-            width: 100%;
+            width: 30%;
             display: flex;
             align-items: center;
             justify-content: space-evenly;

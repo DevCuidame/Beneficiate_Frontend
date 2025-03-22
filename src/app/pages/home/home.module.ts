@@ -8,7 +8,7 @@ import { AuthGuard } from 'src/app/core/guards/auth.guard';
 import { HomePageComponent } from './home-page/home-page.component';
 import { BeneficiaryInfoComponent } from './beneficiary-info/beneficiary-info.component';
 import { ScheduleComponent } from './schedule-page/schedule.component';
-import { UserProfileEditComponent } from '../user/user-profile-edit/user-profile-edit/user-profile-edit.component';
+import { UserProfileEditComponent } from './user-profile-edit/user-profile-edit.component';
 import { UserHealthInfoComponent } from 'src/app/modules/user/pages/user-health-info/user-health-info.component';
 
 const routes: Routes = [

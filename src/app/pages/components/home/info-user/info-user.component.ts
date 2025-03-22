@@ -89,10 +89,6 @@ export class InfoUserComponent  implements OnInit {
     this.authService.refreshUserData();
   }
 
-  goToEditProfile(): void {
-    this.router.navigate(['/home-desktop/user/edit']);
-  }
-
   goToHealthInfo(): void {
     this.router.navigate(['/home-desktop/user/health']);
   }

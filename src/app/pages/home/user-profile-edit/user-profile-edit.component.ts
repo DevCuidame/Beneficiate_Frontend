@@ -32,7 +32,7 @@ export class UserProfileEditComponent implements OnInit {
   isSubmitting = false;
   selectedImage: string | ArrayBuffer | null = null;
   imageLoaded: string = '';
-  
+
   departmentsOption: any[] = [];
   citiesOption: any[] = [];
   identificationOptions = identificationOptions;
@@ -182,7 +182,7 @@ export class UserProfileEditComponent implements OnInit {
         const control = this.profileForm.get(key);
         control?.markAsTouched();
       });
-      
+
       const toast = await this.toastCtrl.create({
         message: 'Por favor complete todos los campos requeridos correctamente.',
         duration: 3000,
@@ -219,7 +219,7 @@ export class UserProfileEditComponent implements OnInit {
       next: async (response) => {
         this.isSubmitting = false;
         await loading.dismiss();
-        
+
         const toast = await this.toastCtrl.create({
           message: 'Perfil actualizado correctamente',
           duration: 3000,
@@ -227,13 +227,13 @@ export class UserProfileEditComponent implements OnInit {
           color: 'success'
         });
         await toast.present();
-        
+
         this.router.navigate(['/profile']);
       },
       error: async (error) => {
         this.isSubmitting = false;
         await loading.dismiss();
-        
+
         const toast = await this.toastCtrl.create({
           message: 'Error al actualizar el perfil: ' + (error.message || 'Intente nuevamente'),
           duration: 3000,
@@ -247,7 +247,7 @@ export class UserProfileEditComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/profile']);
+    this.router.navigate(['/home-desktop']);
   }
 
 get first_name() { return this.profileForm.get('first_name') as FormControl; }

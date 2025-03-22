@@ -123,4 +123,26 @@
   .health-info {
     margin-top: 50px;
   }
+
+  .profile-actions {
+    .plan-button {
+      background-image: url('../../../../../assets/background/primary_button_bg.svg');
+      background-repeat: no-repeat;
+      background-size: cover;
+      color: var(--ion-color-dark);
+      height: 2.5rem;
+      width: 100%;
+      margin-top: 25px;
+      padding: 8px 20px;
+      border: none;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  }
 }

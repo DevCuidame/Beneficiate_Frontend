@@ -2,20 +2,20 @@
     background: radial-gradient(circle, rgb(211, 226, 235) 0%, rgb(198, 216, 228) 25%, rgb(184, 204, 220) 50%, rgb(159, 183, 206) 75%, rgb(148, 174, 199) 100%);
     border-radius: 20px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
+    width: 25vw;
     padding: 25px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px;
   }
-  
+
   .profile-header {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 15px;
-    
+
     .profile-image {
       width: 120px;
       height: 120px;
@@ -23,14 +23,14 @@
       overflow: hidden;
       border: 3px solid var(--ion-color-primary);
       box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
-      
+
       img {
         width: 100%;
         height: 100%;
         object-fit: cover;
       }
     }
-    
+
     h2 {
       font-size: 1.5rem;
       font-weight: bold;
@@ -39,24 +39,24 @@
       text-align: center;
     }
   }
-  
+
   .profile-details {
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    
+
     .detail-item {
       display: flex;
       justify-content: space-between;
       padding: 5px 0;
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-      
+
       .label {
         font-weight: bold;
         color: var(--ion-color-dark);
       }
-      
+
       .value {
         color: var(--ion-color-dark);
         text-align: right;
@@ -65,13 +65,13 @@
       }
     }
   }
-  
+
   .profile-actions {
     width: 100%;
     display: flex;
     justify-content: center;
     margin-top: 10px;
-    
+
     .edit-button {
       background-color: var(--ion-color-secondary);
       color: var(--ion-color-dark);
@@ -84,11 +84,11 @@
       gap: 8px;
       cursor: pointer;
       transition: background-color 0.3s ease;
-      
+
       &:hover {
         background-color: var(--ion-color-secondary-tint);
       }
-      
+
       ion-icon {
         font-size: 1.2rem;
       }
