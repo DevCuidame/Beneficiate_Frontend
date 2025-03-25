@@ -10,12 +10,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { debounceTime, timer } from 'rxjs';
 
 import { HeaderComponent } from '../../../components/header/header.component';
 import { CustomInputComponent } from '../../../components/inputs/custom-input/custom-input.component';
 import { LocationService } from '../../../../modules/auth/services/location.service';
-import { AuthService } from '../../../../modules/auth/services/auth.service';
+import { WorkWithUsService } from '../../../../core/services/workWithUs.service';
 
 
 @Component({
@@ -70,6 +70,9 @@ export class WorkFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private locationService: LocationService,
+    private workWithUsService: WorkWithUsService,
+    private loadingCtrl: LoadingController,
+    private alertCtrl: AlertController,
     private router: Router,
   ) {
     this.workForm = this.fb.group(
@@ -91,7 +94,6 @@ export class WorkFormComponent implements OnInit {
         city: [null, Validators.required],
         department: [null, Validators.required],
         gender: ['', Validators.required],
-        birth_date: ['', Validators.required],
         phone: ['', [Validators.required, Validators.pattern('^[0-9-]+$')]],
         email: ['', [Validators.required, Validators.email]],
         privacy_policy: [false, Validators.requiredTrue],
@@ -103,7 +105,6 @@ export class WorkFormComponent implements OnInit {
 
   ngOnInit() {
     this.loadDepartments();
-    console.log(this.departmentsOptions);
 
     this.workForm
       .get('department')
@@ -124,6 +125,18 @@ export class WorkFormComponent implements OnInit {
     });
   }
 
+  changeValueDepartments(valueId: number): Promise<string | undefined> {
+    return new Promise((resolve) => {
+      timer(1000).subscribe(() => {
+        this.locationService.fetchDepartments();
+        this.locationService.departments$.subscribe((departments) => {
+          const selectedDepartment = departments.find(dept => dept.id === valueId);
+          resolve(selectedDepartment.name);
+        });
+      });
+    });
+  }
+
   loadCities(departmentId: number) {
     this.locationService.fetchCitiesByDepartment(departmentId);
     this.locationService.cities$.subscribe((cities) => {
@@ -134,7 +147,55 @@ export class WorkFormComponent implements OnInit {
     });
   }
 
+  changeValueCities(departmentId: number, valueId: number): Promise<string | undefined> {
+    return new Promise((resolve) => {
+      timer(1000).subscribe(() => {
+        this.locationService.fetchCitiesByDepartment(departmentId);
+        this.locationService.cities$.subscribe((cities) => {
+          const selectedCity = cities.find(city => city.id === valueId);
+          resolve(selectedCity.name); // Resuelve con el nombre de la ciudad
+        });
+      });
+    });
+  }
+
   // -------------------------------------- Form Controller -------------------------------------- //
+
+   async submitForm() {
+    const formData = this.workForm.value;
+
+    // Mostrar el loading
+    const loading = await this.loadingCtrl.create({
+      message: 'Enviando formulario...',
+    });
+    await loading.present();
+
+    formData.city = await this.changeValueCities(formData.department, formData.city);
+    formData.department = await this.changeValueDepartments(formData.department);
+
+    this.workWithUsService.sendWorkForm(formData).subscribe(
+      async (response) => {
+        await loading.dismiss();
+        this.registerSuccess.emit();  // Emitir evento de éxito
+        const alert = await this.alertCtrl.create({
+          header: '¡Formulario enviado!',
+          message: 'Gracias por tu interés en trabajar con nosotros.',
+          buttons: ['OK'],
+        });
+        await alert.present();
+        this.router.navigate(['/desktop/']);
+      },
+      async (error) => {
+        await loading.dismiss();
+        const alert = await this.alertCtrl.create({
+          header: 'Error',
+          message: 'Hubo un error al enviar el formulario. Intenta nuevamente.',
+          buttons: ['OK'],
+        });
+        await alert.present();
+      }
+    );
+  }
 
   setupRealTimeValidation() {
     this.workForm.valueChanges.pipe(debounceTime(300)).subscribe(() => {
@@ -189,32 +250,12 @@ export class WorkFormComponent implements OnInit {
     return this.workForm.get('gender') as FormControl;
   }
 
-  get birth_date(): FormControl {
-    return this.workForm.get('birth_date') as FormControl;
-  }
-
   get phone(): FormControl {
     return this.workForm.get('phone') as FormControl;
   }
 
   get email(): FormControl {
     return this.workForm.get('email') as FormControl;
-  }
-
-  get password(): FormControl {
-    return this.workForm.get('password') as FormControl;
-  }
-
-  get confirmPassword(): FormControl {
-    return this.workForm.get('confirmPassword') as FormControl;
-  }
-
-  get publicName(): FormControl {
-    return this.workForm.get('public_name') as FormControl;
-  }
-
-  get base64(): FormControl {
-    return this.workForm.get('base_64') as FormControl;
   }
 
   get privacyPolicy(): FormControl {

@@ -17,7 +17,7 @@ export class UserProfileInfoComponent implements OnInit {
   public user: User | null = null;
   public profileImage: string = '';
   private apiUrl = environment.url;
- 
+
   constructor(
     private userService: UserService,
     private router: Router
@@ -45,6 +45,6 @@ export class UserProfileInfoComponent implements OnInit {
   }
 
   public goToEditProfile(): void {
-    this.router.navigate(['/profile/edit']);
+    this.router.navigate(['/home-desktop/user/edit']);
   }
 }

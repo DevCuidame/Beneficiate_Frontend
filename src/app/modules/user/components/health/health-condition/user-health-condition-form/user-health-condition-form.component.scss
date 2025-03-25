@@ -17,16 +17,17 @@ h3 {
 
 .form-row {
   display: flex;
+  flex-direction: column;
   gap: 15px;
   margin-bottom: 15px;
-  
+
   .form-group {
     flex: 1;
-    
+
     &.full-width {
       flex: 2;
     }
-    
+
     &.checkbox-group {
       display: flex;
       align-items: center;
@@ -41,7 +42,7 @@ h3 {
   cursor: pointer;
   font-size: 1rem;
   color: var(--ion-color-dark);
-  
+
   input[type="checkbox"] {
     margin-right: 8px;
     width: 18px;
@@ -69,16 +70,16 @@ h3 {
   justify-content: center;
   min-width: 200px;
   transition: background-color 0.3s ease;
-  
+
   &:hover {
     background-color: var(--ion-color-primary-shade);
   }
-  
+
   &:disabled {
     opacity: 0.7;
     cursor: not-allowed;
   }
-  
+
   ion-spinner {
     margin-left: 8px;
   }
@@ -113,11 +114,11 @@ h3 {
 .add {
   background-color: var(--ion-color-secondary);
   color: var(--ion-color-dark);
-  
+
   &:hover {
     background-color: var(--ion-color-secondary-tint);
   }
-  
+
   &::before {
     content: "+";
     margin-right: 5px;
@@ -133,7 +134,7 @@ h3 {
   color: white;
   font-size: 0.9rem;
   padding: 6px 12px;
-  
+
   &:hover {
     background-color: var(--ion-color-danger-tint);
   }

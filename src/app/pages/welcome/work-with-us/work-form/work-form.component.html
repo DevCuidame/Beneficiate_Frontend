@@ -3,8 +3,7 @@
 
   <h1>Información personal</h1>
 
-  <!--  (ngSubmit)="work()" -->
-  <form [formGroup]="workForm">
+  <form [formGroup]="workForm" (ngSubmit)="submitForm()">
     <section class="left-form form-part">
 
       <app-custom-input
@@ -106,7 +105,7 @@
         </label>
       </div>
 
-      <button class="register-button" type="submit" [disabled]="workForm.invalid">
+      <button class="register-button" type="submit" [disabled]="workForm.invalid" [ngClass]="{'invalid': workForm.invalid}">
         Enviar
       </button>
     </section>

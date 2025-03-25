@@ -23,4 +23,8 @@ export class HeaderComponent {
   navigateToAboutUs() {
     this.router.navigate(['/desktop/about-us']);
   }
+
+  navigateToWorkWithUs() {
+    this.router.navigate(['/desktop/work-with-us']);
+  }
 }
