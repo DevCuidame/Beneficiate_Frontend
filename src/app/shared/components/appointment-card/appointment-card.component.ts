@@ -63,7 +63,6 @@ export class AppointmentCardComponent implements OnInit {
 
     this.appointmentService.cancelAppointment(this.appointmentId).subscribe(
       () => {
-        console.log(`Cita ${this.appointmentId} cancelada exitosamente.`);
         this.edit_button = false;
         this.appointmentCanceled.emit(this.appointmentId);
       },

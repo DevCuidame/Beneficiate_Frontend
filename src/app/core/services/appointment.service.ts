@@ -175,7 +175,6 @@ export class AppointmentService {
   }
 
   public updateAppointments(appointmentList: Appointment[]): void {
-    console.log('Updating appointments in service:', appointmentList);
     this.appointments.set(appointmentList);
     this.saveToCache(appointmentList);
   }

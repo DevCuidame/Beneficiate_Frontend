@@ -1,22 +1,22 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { IonicModule, NavController, IonContent, Platform } from '@ionic/angular';
+import { Subscription } from 'rxjs';
+import { UserService } from 'src/app/modules/auth/services/user.service';
+import { WebsocketService } from 'src/app/core/services/websocket.service';
+import { ToastService } from 'src/app/core/services/toast.service';
+import { ActivatedRoute } from '@angular/router';
+import { User } from 'src/app/core/interfaces/auth.interface';
+import { Message } from 'src/app/core/interfaces/message.interface';
+import { environment } from 'src/environments/environment';
+import { Keyboard } from '@capacitor/keyboard';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TabBarComponent } from 'src/app/shared/components/tab-bar/tab-bar.component';
 import { MessageComponent } from 'src/app/shared/components/message/message.component';
-import { Message } from 'src/app/core/interfaces/message.interface';
-import { ToastService } from 'src/app/core/services/toast.service';
-import { Subscription } from 'rxjs';
-import { UserService } from 'src/app/modules/auth/services/user.service';
-import { User } from 'src/app/core/interfaces/auth.interface';
-import { WebsocketService } from 'src/app/core/services/websocket.service';
-import { ActivatedRoute } from '@angular/router';
-import { environment } from 'src/environments/environment';
-import { Keyboard } from '@capacitor/keyboard';
 
 @Component({
   selector: 'app-chat',
-  standalone: true,
+  templateUrl: './chat.component.html',
   imports: [
     CommonModule,
     IonicModule,
@@ -24,7 +24,6 @@ import { Keyboard } from '@capacitor/keyboard';
     TabBarComponent,
     MessageComponent,
   ],
-  templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent implements OnInit, OnDestroy {
@@ -39,10 +38,21 @@ export class ChatComponent implements OnInit, OnDestroy {
   private wsSubscription!: Subscription;
   public user!: User | null;
   public professionalId!: number | null;
+  public isConnecting: boolean = false;
+  public connectionError: boolean = false;
+  
+  // Estados para los diferentes pasos del flujo
+  public documentEntered: boolean = false;
+  public citySelected: boolean = false;
   public specialtySelected: boolean = false;
+  public visitTypeSelected: boolean = false; // Nuevo estado para tipo de visita
+  public descriptionEntered: boolean = false;
   public confirmationSelected: boolean = false;
-  public currentStep: 'specialty' | 'confirmation' = 'specialty';
-  public api = environment.url
+  
+  // Estado actual del chatbot
+  public currentStep: 'document' | 'city' | 'specialty' | 'visitType' | 'description' | 'confirmation' = 'document';
+  
+  public api = environment.url;
 
   cardDefaultHeight: string = '50%';
   cardHeight: string = this.cardDefaultHeight;
@@ -59,7 +69,13 @@ export class ChatComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    if (this.inputProfessionalId !== null ) {
+    this.user = this.userService.getUser();
+    
+    if (this.platform.is('capacitor') || this.platform.is('cordova')) {
+      this.setupKeyboardListeners();
+    }
+
+    if (this.inputProfessionalId !== null) {
       this.setProfessionalId();
       this.connectWebSocket();
     } else {
@@ -70,57 +86,138 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.professionalId = params['professionalId']
           ? +params['professionalId']
           : null;
-        console.log('Professional ID recibido:', this.professionalId);
         this.connectWebSocket();
       });
     }
-
-    this.user = this.userService.getUser();
   }
 
+
   connectWebSocket() {
+    if (this.isConnecting) {
+      return;
+    }
+    
+    this.isConnecting = true;
+    this.connectionError = false;
+    
+    if (this.wsSubscription) {
+      this.wsSubscription.unsubscribe();
+    }
+    
     this.wsSubscription = this.websocketService
       .connect(this.professionalId!)
-      .subscribe(
-        (data) => {
+      .subscribe({
+        next: (data) => {
+          this.isConnecting = false;
+          this.connectionError = false;
+          
           // Validamos que el mensaje tenga contenido antes de añadirlo
           if (data && data.message && data.message.trim() !== '') {
-            console.log('Mensaje recibido por WebSocket:', data);
-
+            // Procesar el evento de chatbot
             if (data.event === 'chatbot_message') {
-              if (
-                data.options &&
-                data.options.includes('si') &&
-                data.options.includes('no')
-              ) {
+              // Crear objeto de mensaje con el formato adecuado para nuestro componente
+              const newMessage: Message = {
+                id: this.messages.length + 1,
+                chat_id: 4, // Valor predeterminado
+                sender_id: 0, // Bot o sistema no tiene ID relevante
+                message: data.message,
+                sender_type: 'BOT',
+                sent_at: new Date().toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: true,
+                }),
+                status: 'sent',
+                // Agregar propiedades para las opciones seleccionables
+                list: data.list,
+                options: data.options || []
+              };
+              
+              // Determinar el paso actual basado en el contenido del mensaje
+              if (data.message.toLowerCase().includes('documento')) {
+                this.currentStep = 'document';
+                this.documentEntered = false;
+              } else if (data.message.toLowerCase().includes('ciudad')) {
+                this.currentStep = 'city';
+                this.citySelected = false;
+              } else if (data.message.toLowerCase().includes('especialidad')) {
+                this.currentStep = 'specialty';
+                this.specialtySelected = false;
+              } else if (data.message.toLowerCase().includes('primera vez') || data.message.toLowerCase().includes('control')) {
+                this.currentStep = 'visitType';
+                this.visitTypeSelected = false;
+              } else if (data.message.toLowerCase().includes('motivo') || data.message.toLowerCase().includes('descripción')) {
+                this.currentStep = 'description';
+                this.descriptionEntered = false;
+              } else if (data.message.toLowerCase().includes('confirmar')) {
                 this.currentStep = 'confirmation';
                 this.confirmationSelected = false;
               }
+              
+              // Manejar redirección si existe
               if (data.redirectUrl) {
                 setTimeout(() => {
                   this.navCtrl.navigateRoot(data.redirectUrl);
                 }, 5000);
               }
+              
+              this.messages.push(newMessage);
+            } else {
+              // Otros tipos de mensajes
+              this.messages.push(data);
             }
-
-            this.messages.push(data);
+            
             this.scrollToBottom();
-          } else {
-            console.warn('Mensaje vacío recibido, ignorando:', data);
           }
         },
-        (error) => {
-          console.error('WebSocket error:', error);
-          this.toastService.presentToast(
-            'Error en la conexión WebSocket',
-            'danger'
-          );
+        error: (error) => {
+          this.isConnecting = false;
+          this.connectionError = true;
+          console.error('Error en la conexión WebSocket:', error);
+          
+          // Solo mostrar una notificación si hay un error genuino (no durante reconexiones)
+          if (!error.message || !error.message.includes('Reconectando')) {
+            this.toastService.presentToast(
+              'Error en la conexión WebSocket. Intentando reconectar...',
+              'danger'
+            );
+          }
+          
+          // Agregar mensaje de error al chat para el usuario
+          const errorMessage: Message = {
+            id: this.messages.length + 1,
+            chat_id: 4,
+            sender_id: 0,
+            message: 'Tenemos problemas con la conexión. Por favor, espere mientras nos reconectamos...',
+            sender_type: 'BOT',
+            sent_at: new Date().toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true,
+            }),
+            status: 'sent'
+          };
+          
+          this.messages.push(errorMessage);
+          this.scrollToBottom();
+          
+          // Intentar reconectar manualmente después de un tiempo
+          setTimeout(() => {
+            if (this.connectionError) {
+              this.connectWebSocket();
+            }
+          }, 5000); // Esperar 5 segundos antes de reintentar
         },
-        () => {
-          console.log('Conexión WebSocket cerrada');
-          this.toastService.presentToast('Conexión cerrada', 'warning');
+        complete: () => {
+          this.isConnecting = false;
+          
+          // Solo mostrar el mensaje si no hay error de conexión
+          if (!this.connectionError) {
+            console.log('Conexión WebSocket cerrada normalmente');
+            this.toastService.presentToast('Conexión cerrada', 'warning');
+          }
         }
-      );
+      });
   }
 
   sendMessage() {
@@ -142,6 +239,29 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.messages.push(newMessage);
       this.websocketService.send(newMessage);
       this.messageText = '';
+      
+      // Actualizar el estado del paso actual
+      switch (this.currentStep) {
+        case 'document':
+          this.documentEntered = true;
+          break;
+        case 'city':
+          this.citySelected = true;
+          break;
+        case 'specialty':
+          this.specialtySelected = true;
+          break;
+        case 'visitType':
+          this.visitTypeSelected = true;
+          break;
+        case 'description':
+          this.descriptionEntered = true;
+          break;
+        case 'confirmation':
+          this.confirmationSelected = true;
+          break;
+      }
+      
       this.scrollToBottom();
     }
   }
@@ -173,24 +293,27 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   handleOptionSelected(option: string) {
-    console.log('Opción seleccionada:', option, 'Paso actual:', this.currentStep);
 
-    if (this.currentStep === 'specialty') {
-      if (this.specialtySelected) {
-        console.log('Especialidad ya seleccionada, ignorando.');
-        return;
-      }
-      this.specialtySelected = true;
-      console.log('Especialidad marcada como seleccionada');
-    }
-
-    if (this.currentStep === 'confirmation') {
-      if (this.confirmationSelected) {
-        console.log('Confirmación ya seleccionada, ignorando.');
-        return;
-      }
-      this.confirmationSelected = true;
-      console.log('Confirmación marcada como seleccionada');
+    // Evitar selecciones duplicadas en el mismo paso
+    switch (this.currentStep) {
+      case 'document':
+        if (this.documentEntered) return;
+        break;
+      case 'city':
+        if (this.citySelected) return;
+        break;
+      case 'specialty':
+        if (this.specialtySelected) return;
+        break;
+      case 'visitType':
+        if (this.visitTypeSelected) return;
+        break;
+      case 'description':
+        if (this.descriptionEntered) return;
+        break;
+      case 'confirmation':
+        if (this.confirmationSelected) return;
+        break;
     }
 
     this.messageText = option;

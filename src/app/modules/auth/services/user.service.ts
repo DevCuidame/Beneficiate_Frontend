@@ -87,7 +87,6 @@ export class UserService {
           // Update localStorage
           localStorage.setItem('user', JSON.stringify(userData));
 
-          console.log('✅ User data refreshed from server:', userData);
         }
       }),
       map((response) => response.data),
@@ -130,7 +129,6 @@ export class UserService {
     return this.http.put(apiUrl, userData).pipe(
       tap((response: any) => {
         if (response && response.data) {
-          console.log('Profile update response:', response.data);
 
           // Get the current user from storage
           const currentUser = this.getUserFromStorage();
@@ -154,7 +152,6 @@ export class UserService {
           if (response.data.location && Array.isArray(response.data.location)) {
             updatedUser.location =
               response.data.location[0] || response.data.location;
-            console.log('Updated location data:', updatedUser.location);
           }
 
           // Update the BehaviorSubject with the complete merged data
@@ -163,7 +160,6 @@ export class UserService {
           // Update localStorage with the merged user data
           localStorage.setItem('user', JSON.stringify(updatedUser));
 
-          console.log('✅ User profile updated successfully:', updatedUser);
         }
       }),
       catchError((error) => {

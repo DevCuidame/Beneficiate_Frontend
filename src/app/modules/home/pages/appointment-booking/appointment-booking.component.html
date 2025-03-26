@@ -1,6 +1,9 @@
 <ion-content scroll-y="false">
   <div class="appointment-header">
+    <div style="display: flex; flex-direction: column; gap: 5px;">
     <p class="header-title">Tu Agenda</p>
+    <button class="schedule-btn" (click)="goToChat()">Agenda tu cita</button>
+    </div>
     <img
       [src]="profileImage"
       [alt]="'Foto de ' + (user?.first_name || 'usuario')"
@@ -29,7 +32,7 @@
       }
     </div>
 
-    <div class="profesional-scroll">
+    <!-- <div class="profesional-scroll">
       <div class="professional-card" (scroll)="onScroll($event)">
         @for (profesional of professionals; track profesional){
           <app-health-professional-card
@@ -52,7 +55,7 @@
           [ngClass]="{ active: i === currentProfessionalIndex }"
         ></span>
       </div>
-    </div>
+    </div> -->
   </div>
 </ion-content>
 

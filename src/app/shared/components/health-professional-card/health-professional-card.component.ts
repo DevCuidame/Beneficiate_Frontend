@@ -67,7 +67,6 @@ export class HealthProfessionalCardComponent {
           text: 'Chat',
           cssClass: 'chat-button',
           handler: () => {
-            console.log('Chat presionado');
             this.navCtrl.navigateForward(['/home/chat'], {
               queryParams: { professionalId: this.professionalId },
             });

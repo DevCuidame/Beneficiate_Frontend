@@ -8,7 +8,7 @@ import {
   DestroyRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule, AlertController } from '@ionic/angular';
+import { IonicModule, AlertController, NavController } from '@ionic/angular';
 import { User } from 'src/app/core/interfaces/auth.interface';
 import { UserService } from 'src/app/modules/auth/services/user.service';
 import { AppointmentCardComponent } from 'src/app/shared/components/appointment-card/appointment-card.component';
@@ -30,7 +30,7 @@ import { AppointmentService } from 'src/app/core/services/appointment.service';
     IonicModule,
     TabBarComponent,
     AppointmentCardComponent,
-    HealthProfessionalCardComponent,
+    // HealthProfessionalCardComponent,
   ],
   templateUrl: './appointment-booking.component.html',
   styleUrls: ['./appointment-booking.component.scss'],
@@ -55,7 +55,8 @@ export class AppointmentBookingComponent implements OnInit, OnDestroy {
     private websocketService: WebsocketService,
     private medicalProfessionalService: MedicalProfessionalService,
     private alertController: AlertController,
-    private appointmentService: AppointmentService
+    private appointmentService: AppointmentService,
+    private navCtrl: NavController
   ) {
     effect(() => {
       const appointments = this.appointmentService.appointments();
@@ -145,6 +146,10 @@ export class AppointmentBookingComponent implements OnInit, OnDestroy {
         console.error('Error al cargar profesionales médicos:', error);
       }
     );
+  }
+
+  goToChat(){
+    this.navCtrl.navigateForward('/home/chat');
   }
 
   async presentErrorMessage() {
