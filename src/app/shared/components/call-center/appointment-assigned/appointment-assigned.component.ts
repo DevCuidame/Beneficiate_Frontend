@@ -28,21 +28,35 @@ import { ToastService } from 'src/app/core/services/toast.service';
         
         @if(isManual) {
           <p>
-            El profesional seleccionado no cuenta con su agenda en línea. 
-            Por favor comuníquese con el profesional mediante WhatsApp para coordinar la cita.
+            La cita con el profesional <strong>{{professionalName || 'seleccionado'}}</strong> 
+            queda pendiente por asignación. 
+            @if (professionalPhone) {
+              Por favor comuníquese con el profesional mediante WhatsApp para coordinar la cita.
+            } @else {
+              El equipo de atención se comunicará con usted para coordinar la fecha y hora exacta.
+            }
           </p>
-          <div class="actions-container">
-            <button class="whatsapp-button" (click)="openWhatsApp()">
-              Contactar por WhatsApp
-            </button>
-            <button class="save-button" (click)="savePendingAppointment()">
-              Guardar cita pendiente
-            </button>
-          </div>
+          @if (professionalPhone) {
+            <div class="actions-container">
+              <button class="whatsapp-button" (click)="openWhatsApp()">
+                Contactar por WhatsApp
+              </button>
+              <button class="save-button" (click)="savePendingAppointment()">
+                Guardar cita pendiente
+              </button>
+            </div>
+          } @else {
+            <div class="actions-container">
+              <button class="save-button" (click)="savePendingAppointment()">
+                Guardar cita pendiente
+              </button>
+            </div>
+          }
         } @else if(isPending) {
           <p>
-            El profesional seleccionado no tiene su agenda disponible, se genera cita
-            pendiente por asignación que será confirmada máximo en 72 horas.
+            La cita con <strong>{{professionalName || 'el profesional seleccionado'}}</strong> 
+            para la especialidad de <strong>{{specialty}}</strong> queda pendiente por asignación 
+            y será confirmada máximo en 72 horas.
           </p>
           <p class="additional-info">
             ¿Necesitas indicaciones para llegar a la clínica?
@@ -53,7 +67,9 @@ import { ToastService } from 'src/app/core/services/toast.service';
             La hora de atención para <strong>{{ patientName || 'el paciente' }}</strong> ya está
             reservada para el próximo <strong>{{ dayOfWeek || 'día' }}, {{ getFormattedDate() }}</strong> a
             las <strong>{{ time || '(por confirmar)' }}</strong> Hrs. con 
-            <strong>{{ professionalName || 'el profesional' }}</strong> ({{ specialty || 'especialidad seleccionada' }}).
+            <strong>{{ professionalName || 'el profesional' }}</strong> 
+            ({{ specialty || 'especialidad seleccionada' }}) en 
+            <strong>{{ getDoctorLocation() }}</strong>.
           </p>
           <p>
             Se ha enviado un correo con la confirmación de la cita al paciente y a la
@@ -136,6 +152,26 @@ export class AppointmentAssignedComponent implements OnInit {
     } catch (e) {
       console.error('Error formatting date:', e);
       return this.date;
+    }
+  }
+  
+  getDoctorLocation(): string {
+    if (!this.appointment || !this.appointment.professionalData) {
+      return 'la dirección indicada';
+    }
+    
+    const doctorData = this.appointment.professionalData;
+    const address = doctorData.consultation_address || '';
+    const city = doctorData.attention_township_id || '';
+    
+    if (address && city) {
+      return `${address}, ${city}`;
+    } else if (address) {
+      return address;
+    } else if (city) {
+      return city;
+    } else {
+      return 'la dirección indicada';
     }
   }
   

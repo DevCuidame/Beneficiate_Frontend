@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, ElementRef, computed } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  computed,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PatientSearchBarComponent } from '../patient-search-bar/patient-search-bar.component';
@@ -13,7 +19,7 @@ import { AppointmentStateService } from 'src/app/core/services/appointment-state
     CommonModule,
     FormsModule,
     PatientSearchBarComponent,
-    SpecialityCardComponent
+    SpecialityCardComponent,
   ],
   template: `
     <div class="step-content">
@@ -23,25 +29,27 @@ import { AppointmentStateService } from 'src/app/core/services/appointment-state
         [first_name]="patientData.first_name"
         [last_name]="patientData.last_name"
         [firstTime]="appointmentFirstTime"
+        [cityName]="cityName"
+        [ticketNumber]="ticketNumber"
         (searchTermChanged)="updateSearchTerm($event)"
       ></app-patient-search-bar>
 
       <h2>Selecciona la especialidad médica que requieres:</h2>
-      
+
       <!-- Carrusel de especialidades -->
       <div class="carousel-container">
         <button class="arrow left-arrow" (click)="scrollLeft()">
           &#10094;
         </button>
-        
+
         <div class="carousel-content" #carouselContent>
           @for (spec of specialties(); track spec.id) {
-            <app-speciality-card
-              [speciality]="spec.name"
-              [image]="spec.image_path"
-              [class.selected]="isSelected(spec.id)"
-              (click)="selectSpecialty(spec.id)"
-            ></app-speciality-card>
+          <app-speciality-card
+            [speciality]="spec.name"
+            [image]="spec.image_path"
+            [class.selected]="isSelected(spec.id)"
+            (click)="selectSpecialty(spec.id)"
+          ></app-speciality-card>
           }
         </div>
 
@@ -51,7 +59,7 @@ import { AppointmentStateService } from 'src/app/core/services/appointment-state
       </div>
     </div>
   `,
-  styleUrls: ['./specialty-selection-step.component.scss']
+  styleUrls: ['./specialty-selection-step.component.scss'],
 })
 export class SpecialtySelectionStepComponent implements OnInit {
   @ViewChild('carouselContent', { static: false })
@@ -59,6 +67,8 @@ export class SpecialtySelectionStepComponent implements OnInit {
 
   public patientData: any;
   public appointmentFirstTime: boolean = false;
+  public ticketNumber: string = '';
+  public cityName: string = '';
 
   constructor(
     private stateService: AppointmentStateService,
@@ -69,7 +79,17 @@ export class SpecialtySelectionStepComponent implements OnInit {
     const appointment = this.stateService.appointment();
     this.patientData = appointment.userData;
     this.appointmentFirstTime = appointment.first_time;
-    
+    this.ticketNumber = appointment.ticket_number!;
+    if (
+      appointment.location &&
+      Array.isArray(appointment.location) &&
+      appointment.location.length > 0
+    ) {
+      this.cityName = appointment.location[0].township_name;
+    } else {
+      this.cityName = 'No especificada';
+    }
+
     if (!this.medicalSpecialtyService.specialties().length) {
       this.medicalSpecialtyService.fetchMedicalSpecialties().subscribe();
     }
@@ -87,11 +107,13 @@ export class SpecialtySelectionStepComponent implements OnInit {
   }
 
   selectSpecialty(specialtyId: number): void {
-    const index = this.specialties().findIndex(spec => spec.id === specialtyId);
-    
+    const index = this.specialties().findIndex(
+      (spec) => spec.id === specialtyId
+    );
+
     if (index !== -1) {
       this.stateService.selectSpecialty(index, specialtyId);
-      
+
       this.loadProfessionals(specialtyId);
     }
   }
@@ -99,12 +121,14 @@ export class SpecialtySelectionStepComponent implements OnInit {
   loadProfessionals(specialtyId: number): void {
     this.stateService.selectedSpecialtyId.set(specialtyId);
 
-    const selectedSpecialty = this.specialties().find(spec => spec.id === specialtyId);
-    
-    this.stateService.appointment.update(app => ({
+    const selectedSpecialty = this.specialties().find(
+      (spec) => spec.id === specialtyId
+    );
+
+    this.stateService.appointment.update((app) => ({
       ...app,
       specialty_id: specialtyId.toString(),
-      specialty: selectedSpecialty?.name || '', 
+      specialty: selectedSpecialty?.name || '',
     }));
   }
 

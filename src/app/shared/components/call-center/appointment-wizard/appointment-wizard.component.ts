@@ -4,7 +4,6 @@ import { ToastService } from 'src/app/core/services/toast.service';
 import { AppointmentService } from 'src/app/core/services/appointment.service';
 import { PatientDataStepComponent } from '../patient-data-step/patient-data-step.component';
 import { SpecialtySelectionStepComponent } from '../specialty-selection-step/specialty-selection-step.component';
-import { ProfessionalSelectionStepComponent } from '../professional-selection-step/professional-selection-step.component';
 import { ScheduleSelectionStepComponent } from '../schedule-selection-step/schedule-selection-step.component';
 import { AppointmentAssignedComponent } from '../appointment-assigned/appointment-assigned.component';
 import { WizardStepperComponent } from '../wizard-stepper/wizard-stepper.component';
@@ -19,7 +18,6 @@ import { Appointment } from 'src/app/core/interfaces/appointment.interface';
     CommonModule,
     PatientDataStepComponent,
     SpecialtySelectionStepComponent,
-    ProfessionalSelectionStepComponent,
     ScheduleSelectionStepComponent,
     AppointmentAssignedComponent,
     WizardStepperComponent,
@@ -31,6 +29,7 @@ import { Appointment } from 'src/app/core/interfaces/appointment.interface';
       <app-wizard-stepper
         [currentStep]="currentStep()"
         [isScheduleAssignment]="isScheduleAssignment"
+        [isModifiedFlow]="true"
       ></app-wizard-stepper>
 
       <!-- Contenido de los pasos -->
@@ -39,9 +38,7 @@ import { Appointment } from 'src/app/core/interfaces/appointment.interface';
         <app-patient-data-step></app-patient-data-step>
         } @else if (currentStep() === 2 && !isScheduleAssignment) {
         <app-specialty-selection-step></app-specialty-selection-step>
-        } @else if (currentStep() === 3 && !isScheduleAssignment) {
-        <app-professional-selection-step></app-professional-selection-step>
-        } @else if (currentStep() === 4 || isScheduleAssignment) {
+        } @else if (currentStep() === 3 || isScheduleAssignment) {
         <app-schedule-selection-step
           [isAssigningToPendingAppointment]="isScheduleAssignment"
         ></app-schedule-selection-step>
@@ -64,14 +61,23 @@ import { Appointment } from 'src/app/core/interfaces/appointment.interface';
           (click)="nextStep()"
           [disabled]="!isStepValid() || isSubmitting()"
         >
-          <span *ngIf="!(currentStep() === 4 && isSubmitting())">
-            @if (isScheduleAssignment) { @if (isAgendaManual()) { Confirmar cita
-            } @else { Confirmar horario } } @else { @if (currentStep() < 4) {
-            Siguiente } @else { @if (isAgendaManual()) { Confirmar cita } @else
-            { Confirmar } } }
+          <span *ngIf="!(currentStep() === 3 && isSubmitting())">
+            @if (isScheduleAssignment) { 
+              @if (isManualAgenda()) { 
+                Confirmar cita 
+              } @else { 
+                Confirmar horario 
+              } 
+            } @else { 
+              @if (currentStep() < 3) {
+                Siguiente 
+              } @else { 
+                Confirmar cita
+              } 
+            }
           </span>
           <span
-            *ngIf="currentStep() === 4 && isSubmitting()"
+            *ngIf="currentStep() === 3 && isSubmitting()"
             class="button-loading"
           >
             <i class="fas fa-spinner fa-spin"></i> Procesando...
@@ -82,7 +88,7 @@ import { Appointment } from 'src/app/core/interfaces/appointment.interface';
     } @else {
     <app-appointment-assigned
       [isPending]="isAgendaPendiente()"
-      [isManual]="isAgendaManual()"
+      [isManual]="isManualAgenda()"
       [patientName]="getFullName()"
       [professionalName]="getSelectedProfessionalName()"
       [professionalPhone]="getProfessionalPhone()"
@@ -121,7 +127,7 @@ export class AppointmentWizardComponent implements OnInit {
     this.isScheduleAssignment = history.state.scheduleAssignment === true;
 
     if (this.isScheduleAssignment) {
-      this.stateService.currentStep.set(4);
+      this.stateService.currentStep.set(3);
     }
 
     const navData = history.state.appointment;
@@ -137,15 +143,11 @@ export class AppointmentWizardComponent implements OnInit {
 
       if (this.isScheduleAssignment) {
         this.confirmScheduleAssignment();
-      } else if (this.currentStep() < 4) {
+      } else if (this.currentStep() < 3) {
         this.stateService.nextStep();
       } else {
-        if (this.isAgendaManual()) {
-          this.stateService.setSuccess(true);
-        } else {
-          this.stateService.setSubmitting(true);
-          this.sendAppointmentData();
-        }
+        this.stateService.setSubmitting(true);
+        this.sendAppointmentData();
       }
     } else {
       this.toastService.presentToast(
@@ -165,14 +167,11 @@ export class AppointmentWizardComponent implements OnInit {
   }
 
   isStepValid(): boolean {
-    if (this.isScheduleAssignment && this.isAgendaManual()) {
-      return true;
-    }
-
     if (this.isScheduleAssignment) {
-      return this.stateService.isStepValid(4);
+      return true; // Siempre permitimos continuar en modo de asignación de horario
     }
 
+    // En el flujo normal verificamos cada paso
     return this.stateService.isStepValid(this.currentStep());
   }
 
@@ -311,23 +310,9 @@ export class AppointmentWizardComponent implements OnInit {
     this.router.navigate(['/call-center/dash/assigment']);
   }
 
-  // Verificar si el profesional tiene agenda manual
-  isAgendaManual(): boolean {
-    const professionalData = this.appointment().professionalData;
-    // Considera primero el tipo de horario del profesional
-    if (professionalData?.scheduleInfo?.type === 'MANUAL') {
-      return true;
-    }
-    
-    // Si estamos en modo de asignación y es una cita pendiente por confirmar sin horario asignado
-    // también la tratamos como manual
-    if (this.isScheduleAssignment && 
-        this.appointment().status === 'TO_BE_CONFIRMED' && 
-        (!this.appointment().appointment_date || !this.appointment().appointment_time)) {
-      return true;
-    }
-    
-    return false;
+  // La agenda siempre es manual en este nuevo flujo
+  isManualAgenda(): boolean {
+    return true;
   }
 
   // Verificar si la cita está pendiente

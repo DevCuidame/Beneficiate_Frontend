@@ -16,9 +16,6 @@ export class AppointmentStateService {
   public selectedSpecialtyIndex = signal<number | null>(null);
   public selectedSpecialtyId = signal<number | null>(null);
   
-  // Selección de profesional
-  public selectedProfessionalIndex = signal<number | null>(null);
-  
   // Selección de horario
   public selectedDayIndex = signal<number>(-1);
   public selectedHour = signal<string>('');
@@ -77,7 +74,8 @@ export class AppointmentStateService {
   // Métodos para manejar el estado
   
   public nextStep(): void {
-    if (this.currentStep() < 4) {
+    // En el nuevo flujo, solo tenemos 3 pasos
+    if (this.currentStep() < 3) {
       this.currentStep.update(step => step + 1);
     }
   }
@@ -95,13 +93,6 @@ export class AppointmentStateService {
   public selectSpecialty(index: number, specialtyId: number): void {
     this.selectedSpecialtyIndex.set(index);
     this.selectedSpecialtyId.set(specialtyId);
-    
-    // Reset profesional selection when specialty changes
-    this.selectedProfessionalIndex.set(null);
-  }
-  
-  public selectProfessional(index: number): void {
-    this.selectedProfessionalIndex.set(index);
   }
   
   public selectDay(index: number): void {
@@ -118,8 +109,6 @@ export class AppointmentStateService {
   }
   
   public toggleSelectionType(selected: 'firstTime' | 'control'): void {
-    const currentAppointment = this.appointment();
-    
     if (selected === 'firstTime') {
       this.appointment.update(app => ({
         ...app,
@@ -175,35 +164,14 @@ export class AppointmentStateService {
     }
     
     if (currentStep === 3) {
-      const selectedIndex = this.selectedProfessionalIndex();
-      if (selectedIndex !== null) {
-      }
+      // En el paso 3 ahora incluimos información del profesional y horario
+      // Los datos del profesional se actualizan en el componente de horario
       
-      if (currentAppointment.professionalData?.scheduleInfo?.type === 'MANUAL') {
-        currentAppointment.status = 'TO_BE_CONFIRMED';
-      }
-    }
-    
-    if (currentStep === 4) {
-      if (currentAppointment.professionalData?.scheduleInfo?.type === 'MANUAL') {
-        if (this.manualDate() && this.selectedHour()) {
-          currentAppointment.appointment_date = this.manualDate();
-          currentAppointment.appointment_time = this.selectedHour();
-        }
-        currentAppointment.status = 'TO_BE_CONFIRMED';
+      // Si se seleccionó fecha y hora, actualizamos el estado a PENDING, si no a TO_BE_CONFIRMED
+      if (currentAppointment.appointment_date && currentAppointment.appointment_time) {
+        currentAppointment.status = 'PENDING';
       } else {
-        const dayIndex = this.selectedDayIndex();
-        const hour = this.selectedHour();
-        
-        if (dayIndex !== -1) {
-          const selectedDayAvailability = this.selectedProfessionalAvailability()[dayIndex];
-          
-          if (selectedDayAvailability) {
-            currentAppointment.appointment_date = selectedDayAvailability.date;
-            currentAppointment.appointment_time = hour;
-            currentAppointment.status = 'CONFIRMED';
-          }
-        }
+        currentAppointment.status = 'TO_BE_CONFIRMED';
       }
     }
     
@@ -224,7 +192,6 @@ export class AppointmentStateService {
     this.searchTerm.set('');
     this.selectedSpecialtyIndex.set(null);
     this.selectedSpecialtyId.set(null);
-    this.selectedProfessionalIndex.set(null);
     this.selectedDayIndex.set(-1);
     this.selectedHour.set('');
     this.selectedProfessionalAvailability.set([]);
@@ -281,9 +248,7 @@ export class AppointmentStateService {
       case 2:
         return this.isSpecialtySelectionValid();
       case 3:
-        return this.isProfessionalSelectionValid();
-      case 4:
-        return this.isScheduleSelectionValid();
+        return this.isScheduleAndDoctorValid();
       default:
         return false;
     }
@@ -309,15 +274,47 @@ export class AppointmentStateService {
     return this.selectedSpecialtyId() !== null;
   }
   
-  private isProfessionalSelectionValid(): boolean {
-    return this.selectedProfessionalIndex() !== null;
+  private isScheduleAndDoctorValid(): boolean {
+    // Verificamos si hay información básica del profesional
+    const professionalData = this.appointment().professionalData || {};
+    const hasProfessionalInfo = 
+      professionalData.user &&
+      (professionalData.user.first_name || professionalData.user.last_name);
+    
+    // En el nuevo flujo, siempre permitimos avanzar en este paso
+    // La información del doctor es opcional, pero si se proporciona,
+    // podemos validar que al menos tenga un nombre
+    if (hasProfessionalInfo) {
+      return true;
+    }
+    
+    // Si no se ha proporcionado información del doctor,
+    // es válido continuar sin ella (cita pendiente por confirmar)
+    return true;
   }
   
-  private isScheduleSelectionValid(): boolean {
-
-    const normalValid = this.selectedDayIndex() !== -1 && this.selectedHour() !== '';
+  // Método especial para validar antes de enviar la cita
+  public validateBeforeSubmit(): boolean {
+    // Verificamos si todos los pasos son válidos
+    const patientDataValid = this.isPatientDataValid();
+    const specialtyValid = this.isSpecialtySelectionValid();
+    
+    // En este caso podemos ser más estrictos con la información del doctor
     const appointment = this.appointment();
-    const manualValid = true;
-    return Boolean(normalValid || manualValid);
+    const professionalData = appointment.professionalData || {};
+    
+    const hasDoctorName = !!(
+      professionalData.user && 
+      (professionalData.user.first_name || professionalData.user.last_name)
+    );
+    
+    const hasAppointmentSchedule = !!(appointment.appointment_date && appointment.appointment_time);
+    
+    // Si tiene fecha y hora asignadas, debe tener al menos el nombre del doctor
+    if (hasAppointmentSchedule && !hasDoctorName) {
+      return false;
+    }
+    
+    return patientDataValid && specialtyValid;
   }
 }

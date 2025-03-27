@@ -1,5 +1,6 @@
 import { User } from "./auth.interface";
 import { Beneficiary } from "./beneficiary.interface";
+import { Location } from "./city.interface";
 import { MedicalProfessional } from "./medicalProfessional.interface";
 import { MedicalSpecialty, MedicalSpecialtyResponse } from "./medicalSpecialty.interface";
 
@@ -22,6 +23,8 @@ export interface Appointment {
   userData: any; 
   specialtyData: MedicalSpecialty;
   professionalData: MedicalProfessional;
+  ticket_number?: string;
+  location?: Location
 }
 
 export interface appointmentCounts {

@@ -15,6 +15,8 @@ export class PatientSearchBarComponent {
   @Input() public last_name: string = '';
   @Input() public image_path: string = '';
   @Input() public firstTime: boolean = false;
+  @Input() public cityName: string = '';
+  @Input() public ticketNumber: string = '';
 
   @Output() searchTermChanged = new EventEmitter<string>();
 
