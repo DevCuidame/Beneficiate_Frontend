@@ -24,7 +24,10 @@ export interface Appointment {
   specialtyData: MedicalSpecialty;
   professionalData: MedicalProfessional;
   ticket_number?: string;
-  location?: Location
+  location?: Location,
+  City_id?: number;
+  temp_address?: number;
+  temp_doctor_name?: number;
 }
 
 export interface appointmentCounts {

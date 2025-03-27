@@ -1,4 +1,5 @@
 import { User } from "./auth.interface";
+import { Location } from "./city.interface";
 
 export interface MedicalProfessional {
     id: number;
@@ -22,7 +23,8 @@ export interface MedicalProfessional {
     user: User;
     specialty_name: string;
     availability: Availability; 
-    scheduleInfo: ScheduleInfo
+    scheduleInfo: ScheduleInfo;
+    location?: Location;
 }
 
 export interface ScheduleInfo {
