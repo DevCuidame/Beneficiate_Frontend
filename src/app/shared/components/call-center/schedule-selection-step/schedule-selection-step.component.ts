@@ -72,7 +72,6 @@ import { LocationService } from 'src/app/modules/auth/services/location.service'
               />
             </div>
 
-            <!-- Selección de departamento/ciudad con actualización corregida -->
             <div class="form-field">
               <label for="doctorDepartment">Departamento</label>
               <select
@@ -448,7 +447,11 @@ export class ScheduleSelectionStepComponent implements OnInit {
       appointment_date: this.selectedDate,
       appointment_time: this.selectedTime,
       status: this.isAssigningToPendingAppointment ? 'CONFIRMED' : 'TO_BE_CONFIRMED',
-      professionalData: professionalData
+      professionalData: professionalData,
+      // Utilizamos los nuevos campos de la interfaz Appointment
+      city_id: this.selectedCity ? parseInt(this.selectedCity.toString()) : undefined,
+      temp_address: this.doctorAddress ? this.doctorAddress : undefined,
+      temp_doctor_name: this.doctorName ? this.doctorName : undefined
     }));
 
     this.stateService.selectHour(this.selectedTime);

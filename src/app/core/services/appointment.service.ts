@@ -97,6 +97,7 @@ export class AppointmentService {
           }
         }),
         catchError((error) => {
+          console.log("🚀 ~ AppointmentService ~ catchError ~ error:", error)
           return of({
             message: 'Error al actualizar la cita',
             data: appointment as Appointment,

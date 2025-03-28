@@ -134,6 +134,8 @@ export class AppointmentWizardComponent implements OnInit {
     if (navData) {
       this.stateService.appointment.set(navData);
       localStorage.setItem('selectedAppointment', JSON.stringify(navData));
+    }else{
+      localStorage.removeItem('selectedAppointment');
     }
   }
 

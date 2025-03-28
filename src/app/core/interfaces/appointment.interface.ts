@@ -26,8 +26,8 @@ export interface Appointment {
   ticket_number?: string;
   location?: Location,
   City_id?: number;
-  temp_address?: number;
-  temp_doctor_name?: number;
+  temp_address?: number | string;
+  d?: number | string;
 }
 
 export interface appointmentCounts {
