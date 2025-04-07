@@ -107,8 +107,6 @@
     </div>
   </div>
 
-
-
   <div class="custom-input full-width">
     <label for="address">Dirección</label>
     <input id="address" type="text" formControlName="address" required />
@@ -133,7 +131,6 @@
       </select>
     </div>
   </div>
-
 
   <div class="custom-input full-width">
     <label for="phone">Teléfono</label>
@@ -171,10 +168,12 @@
       formControlName="confirmPassword"
       required
     />
-    <p class="error-text" *ngIf="registerForm.get('confirmPassword')?.hasError('mismatch')">
+    <p
+      class="error-text"
+      *ngIf="registerForm.get('confirmPassword')?.hasError('mismatch')"
+    >
       Las contraseñas no coinciden.
     </p>
-
   </div>
 
   <div class="custom-checkbox">
@@ -184,12 +183,23 @@
       formControlName="privacy_policy"
       required
     />
-    <label for="privacy_policy" class="checkbox-label" (ionChange)="registerForm.updateValueAndValidity()">
+    <label for="privacy_policy" class="checkbox-label">
       <span class="checkmark"></span>
       Acepto las
-      <a href="/privacy-policy" target="_blank">políticas de privacidad</a> y el
-      tratamiento de datos.
+      <a href="#" (click)="showPrivacyPolicy($event)"
+        >políticas de privacidad</a
+      >
+      y el tratamiento de datos.
     </label>
+    <p
+      class="error-text"
+      *ngIf="
+        registerForm.get('privacy_policy')?.invalid &&
+        registerForm.get('privacy_policy')?.touched
+      "
+    >
+      Debes aceptar las políticas de privacidad para continuar.
+    </p>
   </div>
 
   <div class="button-container">

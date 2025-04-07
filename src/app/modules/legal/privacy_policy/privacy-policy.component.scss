@@ -1,0 +1,108 @@
+/* src/app/modules/legal/privacy-policy/privacy-policy.component.scss */
+.privacy-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding-bottom: 40px;
+  
+  h1 {
+    color: var(--ion-color-primary);
+    font-size: 22px;
+    margin-bottom: 10px;
+    font-weight: 700;
+    text-align: center;
+  }
+  
+  h2 {
+    color: var(--ion-color-dark);
+    font-size: 18px;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-weight: 600;
+  }
+  
+  .last-updated {
+    color: var(--ion-color-medium);
+    font-style: italic;
+    margin-bottom: 25px;
+    text-align: center;
+  }
+  
+  section {
+    margin-bottom: 25px;
+    
+    &:not(:last-child) {
+      border-bottom: 1px solid rgba(var(--ion-color-medium-rgb), 0.2);
+      padding-bottom: 15px;
+    }
+  }
+  
+  p {
+    color: var(--ion-color-dark);
+    line-height: 1.6;
+    margin-bottom: 15px;
+    text-align: justify;
+  }
+  
+  ul {
+    padding-left: 20px;
+    margin-bottom: 15px;
+    
+    li {
+      margin-bottom: 8px;
+      color: var(--ion-color-dark);
+      line-height: 1.4;
+    }
+  }
+  
+  a {
+    color: var(--ion-color-primary);
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  
+  .acceptance {
+    margin-top: 30px;
+    padding: 15px;
+    background-color: rgba(var(--ion-color-primary-rgb), 0.1);
+    border-radius: 8px;
+    
+    p {
+      font-weight: 500;
+      margin-bottom: 0;
+      text-align: center;
+    }
+  }
+}
+
+/* Estilos para iOS safe area */
+ion-content {
+  --padding-top: var(--ion-safe-area-top);
+  --padding-bottom: var(--ion-safe-area-bottom);
+  --background: #fff;
+}
+
+/* Para hacer destacar los títulos de secciones */
+ion-toolbar {
+  --background: var(--ion-color-primary);
+  --color: var(--ion-color-primary-contrast);
+}
+
+/* Ajustes para dispositivos pequeños */
+@media (max-width: 576px) {
+  .privacy-container {
+    h1 {
+      font-size: 20px;
+    }
+    
+    h2 {
+      font-size: 16px;
+    }
+    
+    p, li {
+      font-size: 14px;
+    }
+  }
+}

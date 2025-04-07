@@ -17,6 +17,7 @@ import { CustomInputComponent } from '../../../components/inputs/custom-input/cu
 import { LocationService } from '../../../../modules/auth/services/location.service';
 import { AuthService } from '../../../../modules/auth/services/auth.service';
 import { RegisterData } from 'src/app/core/interfaces/auth.interface';
+import { PrivacyDialogService } from 'src/app/modules/legal/services/privacy-dialog.service';
 
 @Component({
   selector: 'app-register',
@@ -73,7 +74,8 @@ export class RegisterComponent implements OnInit {
     private authService: AuthService,
     private loadingCtrl: LoadingController,
     private locationService: LocationService,
-    private router: Router
+    private router: Router,
+    private privacyDialogService: PrivacyDialogService,
   ) {
     this.registerForm = this.fb.group(
       {
@@ -382,5 +384,10 @@ export class RegisterComponent implements OnInit {
       });
     };
     reader.readAsDataURL(file);
+  }
+
+  async showPrivacyPolicy(event: Event) {
+    event.preventDefault(); // Evitar que el enlace navegue
+    await this.privacyDialogService.openPrivacyPolicy();
   }
 }

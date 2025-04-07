@@ -22,6 +22,7 @@ import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { CustomButtonComponent } from 'src/app/shared/components/custom-button/custom-button.component';
 import { LocationService } from '../../services/location.service';
+import { PrivacyDialogService } from 'src/app/modules/legal/services/privacy-dialog.service';
 
 @Component({
   selector: 'app-register',
@@ -66,7 +67,8 @@ export class RegisterComponent implements OnInit {
     private authService: AuthService,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private privacyDialogService: PrivacyDialogService,
   ) {
     this.registerForm = this.fb.group(
       {
@@ -299,5 +301,10 @@ this.registerForm.get('confirmPassword')?.valueChanges
       });
     };
     reader.readAsDataURL(file);
+  }
+
+  async showPrivacyPolicy(event: Event) {
+    event.preventDefault(); // Evitar que el enlace navegue
+    await this.privacyDialogService.openPrivacyPolicy();
   }
 }

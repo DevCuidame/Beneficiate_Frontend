@@ -88,3 +88,39 @@ p {
 .verification-modal .verification-icon {
   animation: pulse 2s infinite ease-in-out;
 }
+
+/* Agregar en src/global.scss */
+
+.privacy-policy-modal {
+  --height: 90%;
+  --width: 90%;
+  --max-width: 600px;
+  --border-radius: 16px;
+  --box-shadow: 0 28px 48px rgba(0, 0, 0, 0.4);
+}
+
+.privacy-policy-modal .modal-wrapper {
+  border-radius: var(--border-radius);
+}
+
+.privacy-policy-modal ion-content {
+  --background: var(--ion-background-color);
+}
+
+.privacy-policy-modal ion-toolbar {
+  --background: var(--ion-color-primary);
+  --color: var(--ion-color-primary-contrast);
+}
+
+.privacy-policy-modal ion-title {
+  font-weight: 600;
+}
+
+/* Animación para el modal */
+.privacy-policy-modal .modal-shadow {
+  box-shadow: var(--box-shadow);
+}
+
+.privacy-policy-modal ion-backdrop {
+  opacity: 0.4 !important;
+}

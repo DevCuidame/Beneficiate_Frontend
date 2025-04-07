@@ -6,70 +6,89 @@ import { BrowserRedirectGuard } from './core/guards/redirect.guard';
 import { VerifyEmailComponent } from './modules/auth/pages/verify-email/verify-email.component';
 import { UserChatWidgetComponent } from './shared/components/user-chat-widget/user-chat-widget.component';
 import { AgentGuard } from './core/guards/agent.guard';
+import { legalRoutes } from './modules/legal/legal.routes';
 
 const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
     canActivate: [BrowserRedirectGuard],
-    children: []
+    children: [],
   },
 
   {
     path: 'desktop',
-    loadChildren: () => import('./pages/welcome/welcome.module').then(m => m.WelcomeModule)
+    loadChildren: () =>
+      import('./pages/welcome/welcome.module').then((m) => m.WelcomeModule),
   },
   {
     path: 'home-desktop',
-    loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule),
+    loadChildren: () =>
+      import('./pages/home/home.module').then((m) => m.HomeModule),
   },
   {
     path: 'reset-password',
-    loadChildren: () => import('./modules/auth/pages/new-password/new-password.module').then(m => m.NewPasswordModule)
+    loadChildren: () =>
+      import('./modules/auth/pages/new-password/new-password.module').then(
+        (m) => m.NewPasswordModule
+      ),
   },
   {
     path: 'verify-email',
-    component: VerifyEmailComponent
+    component: VerifyEmailComponent,
   },
   {
     path: 'chat-agent',
     component: AgentChatPanelComponent,
-    // canActivate: [AgentGuard] 
+    // canActivate: [AgentGuard]
   },
   {
     path: 'chat-user',
-    component: UserChatWidgetComponent
+    component: UserChatWidgetComponent,
   },
   {
+    path: '',
+    children: legalRoutes,
+  },
+
+  {
     path: 'auth',
-    loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule),
+    loadChildren: () =>
+      import('./modules/auth/auth.module').then((m) => m.AuthModule),
   },
   {
     path: 'call-center',
-    loadChildren: () => import('./modules/callCenter/call-center.module').then(m => m.CallCenterModule),
+    loadChildren: () =>
+      import('./modules/callCenter/call-center.module').then(
+        (m) => m.CallCenterModule
+      ),
   },
-  { 
-    path: 'home', 
-    loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule) 
+  {
+    path: 'home',
+    loadChildren: () =>
+      import('./modules/home/home.module').then((m) => m.HomeModule),
   },
-  { 
-    path: 'beneficiary', 
-    loadChildren: () => import('./modules/beneficiary/beneficiary.module').then(m => m.BeneficiaryModule) 
+  {
+    path: 'beneficiary',
+    loadChildren: () =>
+      import('./modules/beneficiary/beneficiary.module').then(
+        (m) => m.BeneficiaryModule
+      ),
   },
 
-  { 
-    path: 'user', 
-    loadChildren: () => import('./modules/user/user.module').then(m => m.UserModule) 
+  {
+    path: 'user',
+    loadChildren: () =>
+      import('./modules/user/user.module').then((m) => m.UserModule),
   },
-
-
 
   { path: '**', redirectTo: '' },
-
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })],
-  exports: [RouterModule]
+  imports: [
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
+  ],
+  exports: [RouterModule],
 })
 export class AppRoutingModule {}
