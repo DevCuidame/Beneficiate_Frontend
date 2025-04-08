@@ -231,7 +231,7 @@ this.registerForm.get('confirmPassword')?.valueChanges
           const alert = await this.alertCtrl.create({
             header: 'Registro exitoso',
             message:
-              'Tu cuenta ha sido creada con éxito. Por favor, revisa tu correo.',
+              'Tu cuenta ha sido creada con éxito. Por favor, inicia sesión.',
             buttons: ['OK'],
           });
           await alert.present();

@@ -18,6 +18,7 @@ import { LocationService } from '../../../../modules/auth/services/location.serv
 import { AuthService } from '../../../../modules/auth/services/auth.service';
 import { RegisterData } from 'src/app/core/interfaces/auth.interface';
 import { PrivacyDialogService } from 'src/app/modules/legal/services/privacy-dialog.service';
+import { compressImage } from 'src/app/core/utils/compress-image.util';
 
 @Component({
   selector: 'app-register',
@@ -118,7 +119,7 @@ export class RegisterComponent implements OnInit {
         ],
         confirmPassword: ['', [Validators.required]],
         public_name: [''],
-        base_64: ['', Validators.required],
+        base_64: [''],
         privacy_policy: [false, Validators.requiredTrue],
       },
       { validator: this.passwordMatchValidator }
@@ -255,7 +256,7 @@ export class RegisterComponent implements OnInit {
           const alert = await this.alertCtrl.create({
             header: 'Registro exitoso',
             message:
-              'Tu cuenta ha sido creada con éxito. Por favor, revisa tu correo.',
+              'Tu cuenta ha sido creada con éxito. Por favor, inicia sesión.',
             buttons: ['OK'],
           });
           await alert.present();
@@ -374,6 +375,9 @@ export class RegisterComponent implements OnInit {
       await alert.present();
       return;
     }
+
+    const compressedFile = await compressImage(file, 0.7);
+
     // Convertir imagen a base64
     const reader = new FileReader();
     reader.onload = (e: any) => {
@@ -383,7 +387,7 @@ export class RegisterComponent implements OnInit {
         public_name: file.name,
       });
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(compressedFile);
   }
 
   async showPrivacyPolicy(event: Event) {
