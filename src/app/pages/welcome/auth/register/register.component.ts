@@ -225,15 +225,15 @@ export class RegisterComponent implements OnInit {
   // -------------------------------------- Send Form Controller -------------------------------------- //
 
   async register() {
-    if (!this.selectedImage) {
-      const alert = await this.alertCtrl.create({
-        header: 'Falta imagen',
-        message: 'Por favor, carga una imagen antes de continuar.',
-        buttons: ['OK'],
-      });
-      await alert.present();
-      return;
-    }
+    // if (!this.selectedImage) {
+    //   const alert = await this.alertCtrl.create({
+    //     header: 'Falta imagen',
+    //     message: 'Por favor, carga una imagen antes de continuar.',
+    //     buttons: ['OK'],
+    //   });
+    //   await alert.present();
+    //   return;
+    // }
 
     if (this.registerForm.valid) {
       const loading = await this.loadingCtrl.create({
