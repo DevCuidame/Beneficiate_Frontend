@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
@@ -45,7 +45,7 @@ interface ApiResponse<T> {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PaymentService {
   private baseUrl = environment.url || 'http://localhost:3000/api/v1';
@@ -59,9 +59,10 @@ export class PaymentService {
    * Obtiene todos los planes disponibles
    */
   getPlans(): Observable<Plan[]> {
-    return this.http.get<ApiResponse<Plan[]> | Plan[]>(`${this.baseUrl}api/v1/plans/all`)
+    return this.http
+      .get<ApiResponse<Plan[]> | Plan[]>(`${this.baseUrl}api/v1/plans/all`)
       .pipe(
-        map(response => {
+        map((response) => {
           // Verificar si la respuesta tiene la estructura esperada
           if (response && typeof response === 'object' && 'data' in response) {
             // Es un ApiResponse
@@ -71,28 +72,33 @@ export class PaymentService {
             return response as Plan[];
           }
         }),
-        catchError(error => {
+        catchError((error) => {
           console.error('Error obteniendo planes:', error);
-          return throwError(() => new Error('No se pudieron cargar los planes'));
+          return throwError(
+            () => new Error('No se pudieron cargar los planes')
+          );
         })
       );
   }
 
-
-   /**
+  /**
    * Abre la página de pago de Wompi dentro de un modal en vez de una ventana emergente
    */
-   async openInlinePayment(paymentTransaction: PaymentTransaction): Promise<boolean> {
+  async openInlinePayment(
+    paymentTransaction: PaymentTransaction
+  ): Promise<boolean> {
     // Importar el componente dinámicamente para evitar dependencias circulares
-    const { InlinePaymentComponent } = await import('../../shared/components/inline-payment/inline-payment.component');
+    const { InlinePaymentComponent } = await import(
+      '../../shared/components/inline-payment/inline-payment.component'
+    );
 
     const modal = await this.modalController.create({
       component: InlinePaymentComponent,
       componentProps: {
-        paymentUrl: paymentTransaction.redirectUrl
+        paymentUrl: paymentTransaction.redirectUrl,
       },
       cssClass: 'payment-modal',
-      backdropDismiss: false
+      backdropDismiss: false,
     });
 
     await modal.present();
@@ -100,70 +106,110 @@ export class PaymentService {
     const { data } = await modal.onDidDismiss();
     return data?.success || false;
   }
-  
+
+  /**
+   * Verifica el estado detallado de una transacción
+   */
+  verifyTransactionDetails(transactionId: string): Observable<{
+    success: boolean;
+    planId?: number;
+    planName?: string;
+    planDescription?: string;
+    statusMessage?: string;
+  }> {
+    return this.http
+      .get<any>(
+        `${this.baseUrl}api/v1/payments/verify-details/${transactionId}`
+      )
+      .pipe(
+        map((response) => {
+          if (response && typeof response === 'object' && 'data' in response) {
+            return (response as ApiResponse<any>).data;
+          } else {
+            return response;
+          }
+        }),
+        catchError((error) => {
+          console.error('Error verificando detalles de transacción:', error);
+          // Retornar un objeto con información del error
+          return of({
+            success: false,
+            statusMessage: 'Error de conexión al verificar el pago',
+          });
+        })
+      );
+  }
 
   /**
    * Inicia una transacción de pago con Wompi
    */
   initiatePayment(planId: number): Observable<PaymentTransaction> {
-    return this.http.post<ApiResponse<PaymentTransaction> | PaymentTransaction>(
-      `${this.baseUrl}api/v1/payments/create`, 
-      { planId }
-    ).pipe(
-      map(response => {
-        if (response && typeof response === 'object' && 'data' in response) {
-          return (response as ApiResponse<PaymentTransaction>).data;
-        } else {
-          return response as PaymentTransaction;
-        }
-      }),
-      catchError(error => {
-        console.error('Error iniciando pago:', error);
-        return throwError(() => new Error('No se pudo iniciar el pago'));
-      })
-    );
+    return this.http
+      .post<ApiResponse<PaymentTransaction> | PaymentTransaction>(
+        `${this.baseUrl}api/v1/payments/create`,
+        { planId }
+      )
+      .pipe(
+        map((response) => {
+          if (response && typeof response === 'object' && 'data' in response) {
+            return (response as ApiResponse<PaymentTransaction>).data;
+          } else {
+            return response as PaymentTransaction;
+          }
+        }),
+        catchError((error) => {
+          console.error('Error iniciando pago:', error);
+          return throwError(() => new Error('No se pudo iniciar el pago'));
+        })
+      );
   }
 
-  /**
-   * Verifica el estado de una transacción
-   */
   verifyTransaction(transactionId: string): Observable<boolean> {
-    return this.http.get<ApiResponse<{success: boolean}> | {success: boolean}>(
-      `${this.baseUrl}api/v1/payments/verify/${transactionId}`
-    ).pipe(
-      map(response => {
-        if (response && typeof response === 'object' && 'data' in response) {
-          return (response as ApiResponse<{success: boolean}>).data.success;
-        } else {
-          return (response as {success: boolean}).success;
-        }
-      }),
-      catchError(error => {
-        console.error('Error verificando transacción:', error);
-        return throwError(() => new Error('No se pudo verificar la transacción'));
-      })
-    );
+    return this.http
+      .get<ApiResponse<{ success: boolean }> | { success: boolean }>(
+        `${this.baseUrl}api/v1/payments/verify/${transactionId}`
+      )
+      .pipe(
+        map((response) => {
+          if (response && typeof response === 'object' && 'data' in response) {
+            return (response as ApiResponse<{ success: boolean }>).data.success;
+          } else {
+            return (response as { success: boolean }).success;
+          }
+        }),
+        catchError((error) => {
+          console.error('Error verificando transacción:', error);
+          // En caso de error de conexión, intentar usar el nuevo endpoint
+          return this.verifyTransactionDetails(transactionId).pipe(
+            map((details) => details.success)
+          );
+        })
+      );
   }
 
   /**
    * Obtiene el historial de pagos del usuario
    */
   getPaymentHistory(): Observable<PaymentHistory[]> {
-    return this.http.get<ApiResponse<PaymentHistory[]> | PaymentHistory[]>(
-      `${this.baseUrl}api/v1/payments/history`
-    ).pipe(
-      map(response => {
-        if (response && typeof response === 'object' && 'data' in response) {
-          return (response as ApiResponse<PaymentHistory[]>).data;
-        } else {
-          return response as PaymentHistory[];
-        }
-      }),
-      catchError(error => {
-        console.error('Error obteniendo historial de pagos:', error);
-        return throwError(() => new Error('No se pudo obtener el historial de pagos'));
-      })
-    );
+    return this.http
+      .get<ApiResponse<PaymentHistory[]> | PaymentHistory[]>(
+        `${this.baseUrl}api/v1/payments/history`
+      )
+      .pipe(
+        map((response) => {
+          if (response && typeof response === 'object' && 'data' in response) {
+            return (response as ApiResponse<PaymentHistory[]>).data;
+          } else {
+            return response as PaymentHistory[];
+          }
+        }),
+        catchError((error) => {
+          console.error('Error obteniendo historial de pagos:', error);
+          return throwError(
+            () => new Error('No se pudo obtener el historial de pagos')
+          );
+        })
+      );
   }
 
   /**

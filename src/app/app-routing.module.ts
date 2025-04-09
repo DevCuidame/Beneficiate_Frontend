@@ -7,6 +7,7 @@ import { VerifyEmailComponent } from './modules/auth/pages/verify-email/verify-e
 import { UserChatWidgetComponent } from './shared/components/user-chat-widget/user-chat-widget.component';
 import { AgentGuard } from './core/guards/agent.guard';
 import { legalRoutes } from './modules/legal/legal.routes';
+import { PaymentConfirmationComponent } from './shared/components/payment-confirmation/payment-confirmation.component';
 
 const routes: Routes = [
   {
@@ -49,6 +50,10 @@ const routes: Routes = [
   {
     path: '',
     children: legalRoutes,
+  },
+  {
+    path: 'payment/result',
+    component: PaymentConfirmationComponent,
   },
 
   {

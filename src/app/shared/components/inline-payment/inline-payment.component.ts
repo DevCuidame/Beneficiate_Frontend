@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { PaymentService } from '../../../core/services/payment.service';
@@ -21,10 +28,10 @@ import { PaymentService } from '../../../core/services/payment.service';
     </ion-header>
     <ion-content>
       <div class="iframe-container">
-        <iframe 
-          *ngIf="safeUrl" 
-          [src]="safeUrl" 
-          frameborder="0" 
+        <iframe
+          *ngIf="safeUrl"
+          [src]="safeUrl"
+          frameborder="0"
           allow="accelerometer; autoplay; camera; gyroscope; payment"
           class="payment-frame"
           (load)="onIframeLoad()"
@@ -36,38 +43,44 @@ import { PaymentService } from '../../../core/services/payment.service';
       </div>
     </ion-content>
   `,
-  styles: [`
-    .iframe-container {
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
-      position: relative;
-    }
-    .payment-frame {
-      height: 100%;
-      width: 100%;
-      border: none;
-      overflow: hidden;
-      background-color: #f5f5f5;
-    }
-    .loading-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-    }
-    .loading-container p {
-      margin-top: 1rem;
-      color: var(--ion-color-medium);
-    }
-  `]
+  styles: [
+    `
+      .iframe-container {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+      }
+      .payment-frame {
+        height: 100%;
+        width: 100%;
+        border: none;
+        overflow: hidden;
+        background-color: #f5f5f5;
+      }
+      .loading-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+      }
+      .loading-container p {
+        margin-top: 1rem;
+        color: var(--ion-color-medium);
+      }
+    `,
+  ],
 })
 export class InlinePaymentComponent implements OnInit, OnDestroy {
   @Input() paymentUrl!: string;
   @Input() transactionId!: string;
-  @Output() paymentComplete = new EventEmitter<boolean>();
-  
+  @Output() paymentComplete = new EventEmitter<{
+    success: boolean;
+    planId?: number;
+    planName?: string;
+  }>();
+
   safeUrl: SafeResourceUrl | null = null;
   checkInterval: any;
 
@@ -81,7 +94,8 @@ export class InlinePaymentComponent implements OnInit, OnDestroy {
     if (this.paymentUrl) {
       // Añadir parámetros para evitar caché y problemas de CSP
       const urlWithParams = `${this.paymentUrl}?_=${Date.now()}`;
-      this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(urlWithParams);
+      this.safeUrl =
+        this.sanitizer.bypassSecurityTrustResourceUrl(urlWithParams);
       this.startPaymentMonitoring();
     }
   }
@@ -90,56 +104,69 @@ export class InlinePaymentComponent implements OnInit, OnDestroy {
     this.clearCheckInterval();
   }
 
-  onIframeLoad() {
-    console.log('Payment iframe loaded');
-  }
-
-  dismiss(success: boolean = false) {
-    this.clearCheckInterval();
-    this.modalController.dismiss({ success });
-  }
+  onIframeLoad() {}
 
   private startPaymentMonitoring() {
     if (this.transactionId) {
       console.log(`Iniciando monitoreo de transacción: ${this.transactionId}`);
       
       // Crear un intervalo para verificar periódicamente el estado de la transacción
-      this.checkInterval = setInterval(async () => {
-        try {
-          const success = await this.paymentService.verifyTransaction(this.transactionId).toPromise();
-          
-          if (success) {
-            console.log('Transacción aprobada!');
-            this.paymentComplete.emit(true);
-            this.dismiss(true);
-            clearInterval(this.checkInterval);
+      this.checkInterval = setInterval(() => {
+        this.paymentService.verifyTransactionDetails(this.transactionId).subscribe({
+          next: (result) => {
+            console.log('Resultado de verificación:', result);
+            
+            if (result.success) {
+              console.log('Transacción aprobada:', result);
+              // Modificar el tipo de EventEmitter para aceptar un objeto
+              this.paymentComplete.emit({
+                success: true,
+                planId: result.planId,
+                planName: result.planName
+              });
+              this.dismiss(true, result);
+              clearInterval(this.checkInterval);
+            }
+          },
+          error: (error) => {
+            console.error('Error verificando transacción:', error);
           }
-        } catch (error) {
-          console.error('Error verificando estado de transacción:', error);
-        }
+        });
       }, 5000); // Verificar cada 5 segundos
     }
   }
-
-  private async checkTransactionStatus(transactionId: string) {
-    try {
-      // Importar dinámicamente para evitar dependencias circulares
-      const { PaymentService } = await import('../../../core/services/payment.service');
-      const paymentService = new PaymentService(null as any, null as any); // No es ideal, pero funciona para este caso
-      
-      paymentService.verifyTransaction(transactionId).subscribe({
-        next: (success) => {
-          if (success) {
-            this.paymentComplete.emit(true);
-            this.dismiss(true);
-          }
-        },
-        error: (err) => console.error('Error verificando transacción:', err)
-      });
-    } catch (error) {
-      console.error('Error checking transaction status', error);
-    }
+  
+  // Actualizar el método dismiss para incluir detalles
+  dismiss(success: boolean = false, details?: any) {
+    this.clearCheckInterval();
+    this.modalController.dismiss({ success, details });
   }
+
+  // private async checkTransactionStatus(transactionId: string) {
+  //   try {
+  //     // Importar dinámicamente para evitar dependencias circulares
+  //     const { PaymentService } = await import(
+  //       '../../../core/services/payment.service'
+  //     );
+  //     const paymentService = new PaymentService(null as any, null as any); // No es ideal, pero funciona para este caso
+
+  //     paymentService.verifyTransaction(transactionId).subscribe({
+  //       next: (success) => {
+  //         if (reuslsuccess) {
+  //           this.paymentComplete.emit({
+  //             success: true,
+  //             planId: result.planId,
+  //             planName: result.planName
+  //           });
+  //           this.dismiss(true);
+  //         }
+  //       },
+  //       error: (err) => console.error('Error verificando transacción:', err),
+  //     });
+  //   } catch (error) {
+  //     console.error('Error checking transaction status', error);
+  //   }
+  // }
 
   private clearCheckInterval() {
     if (this.checkInterval) {
