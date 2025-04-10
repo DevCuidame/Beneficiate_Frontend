@@ -35,6 +35,7 @@ import { PaymentService } from '../../../core/services/payment.service';
           allow="accelerometer; autoplay; camera; gyroscope; payment"
           class="payment-frame"
           (load)="onIframeLoad()"
+          (error)="onIframeError()"
         ></iframe>
         <div *ngIf="!safeUrl" class="loading-container">
           <ion-spinner name="circular"></ion-spinner>
@@ -104,38 +105,71 @@ export class InlinePaymentComponent implements OnInit, OnDestroy {
     this.clearCheckInterval();
   }
 
-  onIframeLoad() {}
+  onIframeLoad() {
+    console.log('Iframe cargado');
+    setTimeout(() => {
+      this.checkTransactionOnce();
+    }, 3000);
+  }
+
+  onIframeError() {
+    console.error('Error cargando el iframe');
+    // Verificar el estado inmediatamente si el iframe falla
+    this.checkTransactionOnce();
+  }
+
+  private checkTransactionOnce() {
+    if (this.transactionId) {
+      this.paymentService
+        .verifyTransactionDetails(this.transactionId)
+        .subscribe({
+          next: (result) => {
+            console.log('Verificación inmediata:', result);
+            if (result.success) {
+              this.paymentComplete.emit({
+                success: true,
+                planId: result.planId,
+                planName: result.planName,
+              });
+              this.dismiss(true, result);
+            }
+          },
+        });
+    }
+  }
 
   private startPaymentMonitoring() {
     if (this.transactionId) {
       console.log(`Iniciando monitoreo de transacción: ${this.transactionId}`);
-      
+
       // Crear un intervalo para verificar periódicamente el estado de la transacción
       this.checkInterval = setInterval(() => {
-        this.paymentService.verifyTransactionDetails(this.transactionId).subscribe({
-          next: (result) => {
-            console.log('Resultado de verificación:', result);
-            
-            if (result.success) {
-              console.log('Transacción aprobada:', result);
-              // Modificar el tipo de EventEmitter para aceptar un objeto
-              this.paymentComplete.emit({
-                success: true,
-                planId: result.planId,
-                planName: result.planName
-              });
-              this.dismiss(true, result);
-              clearInterval(this.checkInterval);
-            }
-          },
-          error: (error) => {
-            console.error('Error verificando transacción:', error);
-          }
-        });
+        this.paymentService
+          .verifyTransactionDetails(this.transactionId)
+          .subscribe({
+            next: (result) => {
+              console.log('Resultado de verificación:', result);
+
+              if (result.success) {
+                console.log('Transacción aprobada:', result);
+                // Modificar el tipo de EventEmitter para aceptar un objeto
+                this.paymentComplete.emit({
+                  success: true,
+                  planId: result.planId,
+                  planName: result.planName,
+                });
+                this.dismiss(true, result);
+                clearInterval(this.checkInterval);
+              }
+            },
+            error: (error) => {
+              console.error('Error verificando transacción:', error);
+            },
+          });
       }, 5000); // Verificar cada 5 segundos
     }
   }
-  
+
   // Actualizar el método dismiss para incluir detalles
   dismiss(success: boolean = false, details?: any) {
     this.clearCheckInterval();

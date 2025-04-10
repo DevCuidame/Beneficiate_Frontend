@@ -15,6 +15,7 @@ import {
   faCheckCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { InlinePaymentComponent } from '../../inline-payment/inline-payment.component';
+import { PaymentConfirmationModalComponent } from '../../payment-confirmation-modal/payment-confirmation-modal';
 
 @Component({
   selector: 'app-plan-selection',
@@ -107,25 +108,25 @@ export class PlanSelectionComponent implements OnInit {
       toast.present();
       return;
     }
-
+  
     this.isProcessing = true;
     const loading = await this.loadingController.create({
       message: 'Iniciando proceso de pago...',
       spinner: 'circular',
     });
     await loading.present();
-
+  
     this.paymentService.initiatePayment(this.selectedPlanId).subscribe({
       next: async (paymentTransaction) => {
         loading.dismiss();
         this.isProcessing = false;
-
+  
         // Verificar si tenemos una URL de redirección
         if (!paymentTransaction.redirectUrl) {
           this.showErrorMessage('No se pudo obtener el enlace de pago');
           return;
         }
-
+  
         try {
           // Abrir modal de pago
           const modal = await this.modalController.create({
@@ -152,6 +153,30 @@ export class PlanSelectionComponent implements OnInit {
           console.error('Error mostrando el modal de pago:', error);
           this.showErrorMessage('Hubo un problema con la pasarela de pago');
         }
+  
+        // Configurar verificación automática como respaldo
+        setTimeout(() => {
+          // Verificar estado después de 20 segundos en caso de problemas
+          this.paymentService.verifyTransactionDetails(paymentTransaction.transactionId)
+            .subscribe({
+              next: (result) => {
+                if (result.success) {
+                  this.showSuccessMessage(result.planName || 'Plan');
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 1000);
+                } else {
+                  // Mostrar modal de confirmación si aún está pendiente
+                  this.showPaymentConfirmationModal(paymentTransaction.transactionId);
+                }
+              },
+              error: (error) => {
+                console.error('Error en verificación automática:', error);
+                // Intentar mostrar el modal de confirmación incluso si hay error
+                this.showPaymentConfirmationModal(paymentTransaction.transactionId);
+              }
+            });
+        }, 20000); // Verificar después de 20 segundos
       },
       error: async (error) => {
         console.error('Error iniciando pago:', error);
@@ -160,6 +185,25 @@ export class PlanSelectionComponent implements OnInit {
         this.showErrorMessage('Error al iniciar el pago. Intenta de nuevo.');
       },
     });
+  }
+  
+  // Método auxiliar para mostrar el modal de confirmación
+  async showPaymentConfirmationModal(transactionId: string) {
+    try {
+      const confirmModal = await this.modalController.create({
+        component: PaymentConfirmationModalComponent,
+        componentProps: {
+          transactionId: transactionId
+        },
+        cssClass: 'payment-confirmation-modal'
+      });
+      
+      await confirmModal.present();
+    } catch (error) {
+      console.error('Error mostrando modal de confirmación:', error);
+      // Como último recurso, recargar la página
+      window.location.reload();
+    }
   }
 
   async showErrorMessage(message: string) {
