@@ -96,10 +96,23 @@ export class WebsocketService {
       }
     });
   }
+
+public resetConnection(professionalId?: number): Observable<any> {
+  this.disconnect();
+  
+  return new Observable((observer) => {
+    setTimeout(() => {
+      this.connect(professionalId).subscribe({
+        next: (data) => observer.next(data),
+        error: (err) => observer.error(err),
+        complete: () => observer.complete()
+      });
+    }, 500);
+  });
+}
   
   private attachObserverToWebSocket(observer: Observer<any>, professionalId?: number): void {
     this.ws.onopen = () => {
-      console.log('Conexión WebSocket establecida exitosamente');
       this.connecting = false;
       this.reconnectAttempts = 0;
       
@@ -168,15 +181,14 @@ export class WebsocketService {
     };
 
     this.ws.onclose = (event) => {
-      console.log('Conexión WebSocket cerrada', event);
       
       // Solo reconectar si no es un cierre limpio (código 1000)
       if (event.code !== 1000 && this.reconnectAttempts < this.maxReconnectAttempts) {
         this.reconnectAttempts++;
-        this.toastService.presentToast(
-          `Reconectando (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`,
-          'warning'
-        );
+        // this.toastService.presentToast(
+        //   `Reconectando (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`,
+        //   'warning'
+        // );
         
         setTimeout(() => {
           // Crear una nueva conexión y vincularla con el observador original
@@ -214,7 +226,6 @@ export class WebsocketService {
         }
       }
     } else {
-      console.log('WebSocket no está listo. Estado:', this.ws?.readyState);
       
       // Agregar mensaje a la cola para enviarlo cuando se conecte
       this.messageQueue.push(data);

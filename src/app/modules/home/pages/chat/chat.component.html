@@ -16,7 +16,7 @@
   <div class="card" [ngStyle]="{'max-height': cardHeight}">
     <div class="profile-container">
       <div class="circle left">
-        <img [src]="api + user?.image?.image_path" [alt]="user?.first_name" />
+        <img [src]="userImage" [alt]="user?.first_name" />
       </div>
     </div>
     <div class="message-input">

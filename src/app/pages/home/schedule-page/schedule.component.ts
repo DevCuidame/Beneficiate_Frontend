@@ -1,6 +1,10 @@
 import { Component, computed, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule, AlertController, LoadingController } from '@ionic/angular';
+import {
+  IonicModule,
+  AlertController,
+  LoadingController,
+} from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
@@ -25,12 +29,12 @@ import { ChatComponent } from 'src/app/modules/home/pages/chat/chat.component';
     DoDateComponent,
     IonicModule,
     CommonModule,
-    ChatComponent
+    ChatComponent,
   ],
   templateUrl: './schedule.component.html',
   styleUrls: ['./schedule.component.scss'],
 })
-export class ScheduleComponent  implements OnInit {
+export class ScheduleComponent implements OnInit {
   isDisabled: boolean = true;
   isEditing: boolean = false;
   isChating: boolean = false;
@@ -50,14 +54,14 @@ export class ScheduleComponent  implements OnInit {
   public user: User | any = null;
 
   constructor(
-      private medicalProfessionalService: MedicalProfessionalService,
-      private medicalSpecialtyService: MedicalSpecialtyService,
-      private appointmentService: AppointmentService,
-      private websocketService: WebsocketService,
-      private alertController: AlertController,
-      private loadingCtrl: LoadingController,
-      private userService: UserService,
-  ) { }
+    private medicalProfessionalService: MedicalProfessionalService,
+    private medicalSpecialtyService: MedicalSpecialtyService,
+    private appointmentService: AppointmentService,
+    private websocketService: WebsocketService,
+    private alertController: AlertController,
+    private loadingCtrl: LoadingController,
+    private userService: UserService
+  ) {}
 
   ngOnInit() {
     this.medicalSpecialtyService.fetchMedicalSpecialties().subscribe();
@@ -84,20 +88,14 @@ export class ScheduleComponent  implements OnInit {
 
     this.wsSubscription = this.websocketService.connect().subscribe(
       (data) => {
-        console.log(data);
         if (data.event === 'user_appointments') {
           this.appointments = data.appointments;
-          console.log(
-            '🚀 ~ AppointmentBookingComponent ~ ngOnInit ~ this.appointments:',
-            this.appointments
-          );
         }
       },
       (error) => {
         console.error('❌ Error en WebSocket:', error);
       }
     );
-
   }
 
   // ----------------------------- Logica para la card de citas agendadas ----------------------------- //
@@ -129,7 +127,6 @@ export class ScheduleComponent  implements OnInit {
 
     this.appointmentService.cancelAppointment(appointmentId).subscribe(
       () => {
-        console.log(`Cita ${appointmentId} cancelada exitosamente.`);
         this.isEditing = false;
         this.appointments = this.appointments.filter(
           (appointment) => appointment.id !== appointmentId
@@ -177,15 +174,15 @@ export class ScheduleComponent  implements OnInit {
   // --------------- Acciones de botonoes --------------- //
 
   toggleDropdown(specialty?: any): void {
-
     if (specialty) {
       this.selectedSpecialtyName = specialty.name;
       this.selectedSpecialtyId = specialty.id;
 
-      this.medicalProfessionalService.fetchMedicalProfessionals(specialty.id).subscribe((professionals) => {
-        console.log(professionals);
-        this.professionals = professionals;
-      },);
+      this.medicalProfessionalService
+        .fetchMedicalProfessionals(specialty.id)
+        .subscribe((professionals) => {
+          this.professionals = professionals;
+        });
 
       this.isDropdownOpen = false;
     } else {
@@ -194,10 +191,18 @@ export class ScheduleComponent  implements OnInit {
   }
 
   toggleChat(): boolean {
+    if (!this.isChating) {
+      this.websocketService.resetConnection().subscribe({
+        next: () => console.log('Conexión reiniciada correctamente'),
+        error: (err) => console.error('Error al reiniciar conexión:', err),
+      });
+    } else {
+      this.websocketService.disconnect();
+    }
+
     this.isChating = !this.isChating;
     return this.isChating;
   }
-
   toggleEdit() {
     this.isEditing = !this.isEditing;
   }
@@ -211,5 +216,4 @@ export class ScheduleComponent  implements OnInit {
     this.isDisabled = true;
     return this.isDisabled;
   }
-
 }

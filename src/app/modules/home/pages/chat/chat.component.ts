@@ -1,5 +1,18 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild } from '@angular/core';
-import { IonicModule, NavController, IonContent, Platform } from '@ionic/angular';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  OnDestroy,
+  ViewChild,
+} from '@angular/core';
+import {
+  IonicModule,
+  NavController,
+  IonContent,
+  Platform,
+} from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { UserService } from 'src/app/modules/auth/services/user.service';
 import { WebsocketService } from 'src/app/core/services/websocket.service';
@@ -28,7 +41,8 @@ import { MessageComponent } from 'src/app/shared/components/message/message.comp
 })
 export class ChatComponent implements OnInit, OnDestroy {
   @ViewChild(IonContent, { static: false }) content!: IonContent;
-  public backgroundStyle = 'url("../../../../../assets/background/background.svg") no-repeat bottom center / cover';
+  public backgroundStyle =
+    'url("../../../../../assets/background/background.svg") no-repeat bottom center / cover';
   @Output() toggle: EventEmitter<void> = new EventEmitter();
   @Input() inputProfessionalId!: number | null;
   @Input() isHeaderEnable: boolean = false;
@@ -40,24 +54,31 @@ export class ChatComponent implements OnInit, OnDestroy {
   public professionalId!: number | null;
   public isConnecting: boolean = false;
   public connectionError: boolean = false;
-  
+
   // Estados para los diferentes pasos del flujo
   public documentEntered: boolean = false;
   public citySelected: boolean = false;
   public specialtySelected: boolean = false;
-  public visitTypeSelected: boolean = false; // Nuevo estado para tipo de visita
+  public visitTypeSelected: boolean = false; 
   public descriptionEntered: boolean = false;
   public confirmationSelected: boolean = false;
-  
+
   // Estado actual del chatbot
-  public currentStep: 'document' | 'city' | 'specialty' | 'visitType' | 'description' | 'confirmation' = 'document';
-  
+  public currentStep:
+    | 'document'
+    | 'city'
+    | 'specialty'
+    | 'visitType'
+    | 'description'
+    | 'confirmation' = 'document';
+
   public api = environment.url;
 
   cardDefaultHeight: string = '50%';
   cardHeight: string = this.cardDefaultHeight;
   private keyboardWillShowListener: any;
   private keyboardWillHideListener: any;
+  public userImage: string = '';
 
   constructor(
     private websocketService: WebsocketService,
@@ -70,7 +91,13 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.user = this.userService.getUser();
-    
+
+    if (this.user?.image?.image_path) {
+      this.userImage = this.api + this.user?.image?.image_path;
+    } else {
+      this.userImage = 'assets/images/default_user.png';
+    }
+
     if (this.platform.is('capacitor') || this.platform.is('cordova')) {
       this.setupKeyboardListeners();
     }
@@ -91,26 +118,25 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
   }
 
-
   connectWebSocket() {
     if (this.isConnecting) {
       return;
     }
-    
+
     this.isConnecting = true;
     this.connectionError = false;
-    
+
     if (this.wsSubscription) {
       this.wsSubscription.unsubscribe();
     }
-    
+
     this.wsSubscription = this.websocketService
-      .connect(this.professionalId!)
+      .resetConnection(this.professionalId!)
       .subscribe({
         next: (data) => {
           this.isConnecting = false;
           this.connectionError = false;
-          
+
           // Validamos que el mensaje tenga contenido antes de añadirlo
           if (data && data.message && data.message.trim() !== '') {
             // Procesar el evento de chatbot
@@ -130,9 +156,9 @@ export class ChatComponent implements OnInit, OnDestroy {
                 status: 'sent',
                 // Agregar propiedades para las opciones seleccionables
                 list: data.list,
-                options: data.options || []
+                options: data.options || [],
               };
-              
+
               // Determinar el paso actual basado en el contenido del mensaje
               if (data.message.toLowerCase().includes('documento')) {
                 this.currentStep = 'document';
@@ -143,30 +169,36 @@ export class ChatComponent implements OnInit, OnDestroy {
               } else if (data.message.toLowerCase().includes('especialidad')) {
                 this.currentStep = 'specialty';
                 this.specialtySelected = false;
-              } else if (data.message.toLowerCase().includes('primera vez') || data.message.toLowerCase().includes('control')) {
+              } else if (
+                data.message.toLowerCase().includes('primera vez') ||
+                data.message.toLowerCase().includes('control')
+              ) {
                 this.currentStep = 'visitType';
                 this.visitTypeSelected = false;
-              } else if (data.message.toLowerCase().includes('motivo') || data.message.toLowerCase().includes('descripción')) {
+              } else if (
+                data.message.toLowerCase().includes('motivo') ||
+                data.message.toLowerCase().includes('descripción')
+              ) {
                 this.currentStep = 'description';
                 this.descriptionEntered = false;
               } else if (data.message.toLowerCase().includes('confirmar')) {
                 this.currentStep = 'confirmation';
                 this.confirmationSelected = false;
               }
-              
+
               // Manejar redirección si existe
               if (data.redirectUrl) {
                 setTimeout(() => {
                   this.navCtrl.navigateRoot(data.redirectUrl);
                 }, 5000);
               }
-              
+
               this.messages.push(newMessage);
             } else {
               // Otros tipos de mensajes
               this.messages.push(data);
             }
-            
+
             this.scrollToBottom();
           }
         },
@@ -174,7 +206,7 @@ export class ChatComponent implements OnInit, OnDestroy {
           this.isConnecting = false;
           this.connectionError = true;
           console.error('Error en la conexión WebSocket:', error);
-          
+
           // Solo mostrar una notificación si hay un error genuino (no durante reconexiones)
           if (!error.message || !error.message.includes('Reconectando')) {
             this.toastService.presentToast(
@@ -182,25 +214,26 @@ export class ChatComponent implements OnInit, OnDestroy {
               'danger'
             );
           }
-          
+
           // Agregar mensaje de error al chat para el usuario
           const errorMessage: Message = {
             id: this.messages.length + 1,
             chat_id: 4,
             sender_id: 0,
-            message: 'Tenemos problemas con la conexión. Por favor, espere mientras nos reconectamos...',
+            message:
+              'Tenemos problemas con la conexión. Por favor, espere mientras nos reconectamos...',
             sender_type: 'BOT',
             sent_at: new Date().toLocaleTimeString([], {
               hour: '2-digit',
               minute: '2-digit',
               hour12: true,
             }),
-            status: 'sent'
+            status: 'sent',
           };
-          
+
           this.messages.push(errorMessage);
           this.scrollToBottom();
-          
+
           // Intentar reconectar manualmente después de un tiempo
           setTimeout(() => {
             if (this.connectionError) {
@@ -210,13 +243,13 @@ export class ChatComponent implements OnInit, OnDestroy {
         },
         complete: () => {
           this.isConnecting = false;
-          
+
           // Solo mostrar el mensaje si no hay error de conexión
           if (!this.connectionError) {
             console.log('Conexión WebSocket cerrada normalmente');
             this.toastService.presentToast('Conexión cerrada', 'warning');
           }
-        }
+        },
       });
   }
 
@@ -239,7 +272,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.messages.push(newMessage);
       this.websocketService.send(newMessage);
       this.messageText = '';
-      
+
       // Actualizar el estado del paso actual
       switch (this.currentStep) {
         case 'document':
@@ -261,7 +294,7 @@ export class ChatComponent implements OnInit, OnDestroy {
           this.confirmationSelected = true;
           break;
       }
-      
+
       this.scrollToBottom();
     }
   }
@@ -293,7 +326,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   handleOptionSelected(option: string) {
-
     // Evitar selecciones duplicadas en el mismo paso
     switch (this.currentStep) {
       case 'document':
@@ -322,14 +354,20 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   private setupKeyboardListeners() {
     if (this.platform.is('capacitor') || this.platform.is('cordova')) {
-      this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', (info) => {
-        const keyboardHeight = info.keyboardHeight;
-        this.cardHeight = `calc(100% - ${keyboardHeight}px)`;
-      });
+      this.keyboardWillShowListener = Keyboard.addListener(
+        'keyboardWillShow',
+        (info) => {
+          const keyboardHeight = info.keyboardHeight;
+          this.cardHeight = `calc(100% - ${keyboardHeight}px)`;
+        }
+      );
 
-      this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', () => {
-        this.cardHeight = this.cardDefaultHeight;
-      });
+      this.keyboardWillHideListener = Keyboard.addListener(
+        'keyboardWillHide',
+        () => {
+          this.cardHeight = this.cardDefaultHeight;
+        }
+      );
     } else {
       window.addEventListener('resize', () => {
         const viewportHeight = window.innerHeight;

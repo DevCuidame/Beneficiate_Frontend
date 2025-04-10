@@ -80,7 +80,7 @@ export class AppointmentBookingComponent implements OnInit, OnDestroy {
           environment.url
         }${this.user.image.image_path.replace(/\\/g, '/')}`;
       } else {
-        this.profileImage = 'assets/images/default-profile.png';
+        this.profileImage = 'assets/images/default_user.png';
       }
     });
 

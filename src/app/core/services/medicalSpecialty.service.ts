@@ -26,13 +26,13 @@ export class MedicalSpecialtyService {
    * Obtiene las especialidades médicas desde la API o caché
    */
   fetchMedicalSpecialties(): Observable<MedicalSpecialty[]> {
-    if (this.specialties().length > 0) {
-      return of(this.specialties());
-    }
+    // if (this.specialties().length > 0) {
+    //   return of(this.specialties());
+    // }
 
     return this.http.get<MedicalSpecialtyResponse>(`${this.api}${this.version}medical-specialties/all`).pipe(
       map((response) => response.data),
-      tap((data) => this.saveToCache(data)), // Guardar en cache si se obtiene desde API
+      tap((data) => this.saveToCache(data)), 
       catchError((error) => {
         console.error('Error al obtener especialidades médicas:', error);
         return of([]);
