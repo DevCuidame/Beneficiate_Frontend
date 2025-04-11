@@ -15,12 +15,10 @@ const routes: Routes = [
   {
     path: '',
     component: HomePageComponent,
-    canActivate: [AuthGuard],
   },
   {
     path: 'beneficiary-info',
     component: BeneficiaryInfoComponent,
-    canActivate: [AuthGuard],
   },
   {
     path: 'schedule',
@@ -29,7 +27,6 @@ const routes: Routes = [
   {
     path: 'add',
     loadComponent: () => import('./new-beneficiary-form/new-beneficiary-form.component').then(m => m.NewBeneficiaryFormComponent),
-    canActivate: [AuthGuard],
   },
   {
     path: 'user/edit',

@@ -53,13 +53,15 @@
         list-style: none;
 
         a {
+          color: var(--ion-color-secondary);
           cursor: pointer;
           text-decoration: none;
         }
-      }
 
-      li:nth-child(-n+2) a{
-        color: var(--ion-color-secondary);
+        a.active {
+          color: var(--ion-color-primary);;
+          font-weight: bold;
+        }
       }
     }
   }

@@ -3,9 +3,24 @@
 
   <nav class="menu">
     <ul>
-      <li class="nav-option"><a (click)="navigateToHome()">Inicio</a></li>
-      <li class="nav-option"><a (click)="navigateToAboutUs()">Nosotros</a></li>
-      <li class="nav-option"><a (click)="navigateToWorkWithUs()">Trabaja con Nosotros</a></li>
+      <li class="nav-option">
+        <a 
+          (click)="navigateToHome()"
+          [ngClass]="{ 'active': isActive('/desktop') }"
+        >Inicio</a>
+      </li>
+      <li class="nav-option">
+        <a 
+          (click)="navigateToAboutUs()"
+          [ngClass]="{ 'active': isActive('/desktop/about-us') }"
+        >Nosotros</a>
+      </li>
+      <li class="nav-option">
+        <a 
+          (click)="navigateToWorkWithUs()"
+          [ngClass]="{ 'active': isActive('/desktop/work-with-us') }"
+        >Trabaja con Nosotros</a>
+      </li>
     </ul>
   </nav>
 </header>

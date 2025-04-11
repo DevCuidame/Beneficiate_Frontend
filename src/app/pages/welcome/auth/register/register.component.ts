@@ -58,7 +58,7 @@ export class RegisterComponent implements OnInit {
     first_name: 'El nombre solo puede contener letras.',
     last_name: 'El apellido solo puede contener letras.',
     identification_number: 'Debe ser un número válido.',
-    phone: 'Debe ser un número de teléfono válido con al menos 10 dígitos.',
+    phone: 'Debe ser un número de teléfono válido de 10 dígitos, sin espacios.',
     address: 'La dirección no es valida.',
     email: 'Ingrese un correo electrónico válido.',
     gender: 'El género es obligatorio.',
@@ -104,8 +104,7 @@ export class RegisterComponent implements OnInit {
           '',
           [
             Validators.required,
-            Validators.pattern('^[0-9-]+$'),
-            Validators.minLength(10),
+            Validators.pattern(/^\d{10}$/),
           ],
         ],
         email: ['', [Validators.required, Validators.email]],
@@ -132,7 +131,6 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit() {
     this.loadDepartments();
-    console.log(this.departmentsOptions);
 
     this.registerForm
       .get('password')
@@ -228,15 +226,6 @@ export class RegisterComponent implements OnInit {
   // -------------------------------------- Send Form Controller -------------------------------------- //
 
   async register() {
-    // if (!this.selectedImage) {
-    //   const alert = await this.alertCtrl.create({
-    //     header: 'Falta imagen',
-    //     message: 'Por favor, carga una imagen antes de continuar.',
-    //     buttons: ['OK'],
-    //   });
-    //   await alert.present();
-    //   return;
-    // }
 
     if (this.registerForm.valid) {
       const loading = await this.loadingCtrl.create({
@@ -255,21 +244,14 @@ export class RegisterComponent implements OnInit {
       this.authService.register(registerPayload as RegisterData).subscribe(
         async () => {
           await loading.dismiss();
-          const alert = await this.alertCtrl.create({
-            header: 'Registro exitoso',
-            message:
-              'Tu cuenta ha sido creada. Por favor, verifica tu correo electronico para autenticarlo.',
-            buttons: ['OK'],
-          });
-          await alert.present();
           this.registerSuccess.emit();
-          this.router.navigateByUrl('/desktop/login');
+          this.router.navigateByUrl('/home-desktop');
         },
         async (error) => {
           await loading.dismiss();
           const alert = await this.alertCtrl.create({
             header: 'Error en el registro',
-            message: 'Hubo un problema al crear la cuenta. Inténtalo de nuevo.',
+            message: error.error?.error || 'Error al registrar el usuario.',
             buttons: ['OK'],
           });
           await alert.present();

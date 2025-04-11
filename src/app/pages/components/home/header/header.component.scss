@@ -60,15 +60,16 @@
           text-decoration: none;
           cursor: pointer;
           transition: color 0.2s ease;
+
+          a.active {
+            color: var(--ion-color-primary);;
+            font-weight: bold;
+          }
           
           &:hover {
             color: var(--ion-color-primary);
           }
         }
-      }
-
-      li:nth-child(3) a{
-        color: var(--ion-color-primary);
       }
     }
   }

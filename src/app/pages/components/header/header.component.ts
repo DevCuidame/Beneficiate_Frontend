@@ -16,6 +16,10 @@ export class HeaderComponent {
 
   constructor(private router: Router) {}
 
+  isActive(path: string): boolean {
+    return this.router.url === path;
+  }
+
   navigateToHome() {
     this.router.navigate(['/desktop/']);
   }
