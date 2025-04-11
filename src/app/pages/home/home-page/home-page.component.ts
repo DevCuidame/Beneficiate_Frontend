@@ -10,7 +10,7 @@ import { Plan, PaymentService } from 'src/app/core/services/payment.service';
 
 import { InfoUserComponent } from '../../components/home/info-user/info-user.component';
 import { HeaderComponent } from '../../components/home/header/header.component';
-import { FooterComponent } from '../../components/footer-component/footer-component.component';
+import { FollowUsComponent } from '../../components/follow-us/follow-us.component';
 import { BeneficiaryCardComponent } from '../../components/home/beneficiary-card/beneficiary-card.component';
 import { PlanCardComponent } from '../../components/plans-card/plan-card.component';
 
@@ -20,7 +20,7 @@ import { PlanCardComponent } from '../../components/plans-card/plan-card.compone
     CommonModule,
     InfoUserComponent,
     HeaderComponent,
-    FooterComponent,
+    FollowUsComponent,
     BeneficiaryCardComponent,
     PlanCardComponent,
   ],

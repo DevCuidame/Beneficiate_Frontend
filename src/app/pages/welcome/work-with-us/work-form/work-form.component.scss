@@ -2,7 +2,6 @@
   background: #fff;
   height: 100vh;
   width: 100vw;
-  padding: 8% 20% 5%;
   overflow-y: scroll;
 
   h1 {
@@ -14,8 +13,16 @@
   }
 
   form {
+    height: 100%;
+    padding: 8% 20% 5%;
     display: flex;
-    gap: 50px;
+    flex-direction: column;
+
+    .row{
+      margin-top: 25px;
+      display: flex;
+      gap: 50px;
+    }
 
     .form-part {
       height: 100%;

@@ -16,6 +16,7 @@ import { HeaderComponent } from '../../../components/header/header.component';
 import { CustomInputComponent } from '../../../components/inputs/custom-input/custom-input.component';
 import { LocationService } from '../../../../modules/auth/services/location.service';
 import { WorkWithUsService } from '../../../../core/services/workWithUs.service';
+import { FooterComponent } from 'src/app/pages/components/footer/footer.component';
 
 
 @Component({
@@ -27,6 +28,7 @@ import { WorkWithUsService } from '../../../../core/services/workWithUs.service'
     HeaderComponent,
     CustomInputComponent,
     IonicModule,
+    FooterComponent,
   ],
   templateUrl: './work-form.component.html',
   styleUrls: ['./work-form.component.scss'],

@@ -14,12 +14,12 @@ import { BeneficiaryCardComponent } from './components/beneficiary-card/benefici
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    CustomButtonComponent,// ✅ Importamos los componentes standalone
+    CustomButtonComponent,
     TabBarComponent,
     BasicDataComponent,
     BeneficiaryCardComponent,
     FontAwesomeModule
   ],
-  exports: [CustomButtonComponent,BasicDataComponent, TabBarComponent, BasicDataComponent, BeneficiaryCardComponent ] // ✅ Los exportamos para otros módulos
+  exports: [CustomButtonComponent,BasicDataComponent, TabBarComponent, BasicDataComponent, BeneficiaryCardComponent ]
 })
 export class SharedModule {}

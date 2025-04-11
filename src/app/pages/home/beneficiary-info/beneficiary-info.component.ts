@@ -9,7 +9,7 @@ import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
 import { getLabel, historyTypeOptions, relativeOptions } from 'src/app/core/constants/options';
 
 import { HeaderComponent } from '../../components/home/header/header.component';
-import { FooterComponent } from '../../components/footer-component/footer-component.component';
+import { FollowUsComponent } from '../../components/follow-us/follow-us.component';
 import { InfoBeneficiaryComponent } from '../../components/home/info-beneficiary/info-beneficiary.component';
 import { CardInfoInputComponent } from '../../components/inputs/card-info-input/card-info-input.component';
 import { VacinationsFormComponent } from 'src/app/modules/beneficiary/components/health/vacinations/vacinations-form/vacinations-form.component';
@@ -25,7 +25,7 @@ import { MedicamentsAllergiesFormComponent } from 'src/app/modules/beneficiary/c
     FontAwesomeModule,
     IonicModule,
     HeaderComponent,
-    FooterComponent,
+    FollowUsComponent,
     InfoBeneficiaryComponent,
     CardInfoInputComponent,
     VacinationsFormComponent,

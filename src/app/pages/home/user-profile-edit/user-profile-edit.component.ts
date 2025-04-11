@@ -10,7 +10,7 @@ import { identificationOptions } from 'src/app/core/constants/indentifications';
 import { environment } from 'src/environments/environment';
 import { CustomInputComponent } from 'src/app/pages/components/inputs/custom-input/custom-input.component';
 import { HeaderComponent } from 'src/app/pages/components/header/header.component';
-import { FooterComponent } from 'src/app/pages/components/footer-component/footer-component.component';
+import { FollowUsComponent } from 'src/app/pages/components/follow-us/follow-us.component';
 
 @Component({
   selector: 'app-user-profile-edit',
@@ -21,7 +21,7 @@ import { FooterComponent } from 'src/app/pages/components/footer-component/foote
     IonicModule,
     CustomInputComponent,
     HeaderComponent,
-    FooterComponent
+    FollowUsComponent
   ],
   templateUrl: './user-profile-edit.component.html',
   styleUrls: ['./user-profile-edit.component.scss']

@@ -19,6 +19,7 @@ import { AuthService } from '../../../../modules/auth/services/auth.service';
 import { RegisterData } from 'src/app/core/interfaces/auth.interface';
 import { PrivacyDialogService } from 'src/app/modules/legal/services/privacy-dialog.service';
 import { compressImage } from 'src/app/core/utils/compress-image.util';
+import { FooterComponent } from 'src/app/pages/components/footer/footer.component';
 
 @Component({
   selector: 'app-register',
@@ -29,6 +30,7 @@ import { compressImage } from 'src/app/core/utils/compress-image.util';
     HeaderComponent,
     CustomInputComponent,
     IonicModule,
+    FooterComponent,
   ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
@@ -256,12 +258,12 @@ export class RegisterComponent implements OnInit {
           const alert = await this.alertCtrl.create({
             header: 'Registro exitoso',
             message:
-              'Tu cuenta ha sido creada con éxito. Por favor, inicia sesión.',
+              'Tu cuenta ha sido creada. Por favor, verifica tu correo electronico para autenticarlo.',
             buttons: ['OK'],
           });
           await alert.present();
           this.registerSuccess.emit();
-          this.router.navigateByUrl('/desktop');
+          this.router.navigateByUrl('/desktop/login');
         },
         async (error) => {
           await loading.dismiss();
