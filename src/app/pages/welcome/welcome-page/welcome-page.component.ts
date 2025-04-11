@@ -4,7 +4,8 @@ import { Router } from '@angular/router';
 
 import { HeaderComponent } from '../../components/header/header.component';
 import { PlanCardComponent } from '../../components/plans-card/plan-card.component';
-import { FooterComponent} from '../../components/footer-component/footer-component.component';
+import { FooterComponent } from '../../components/footer/footer.component';
+import { whatsappBtnComponent } from '../../components/whtsp-btn/whtsp-btn.component';
 
 @Component({
   selector: 'app-welcome-page',
@@ -12,8 +13,9 @@ import { FooterComponent} from '../../components/footer-component/footer-compone
   imports: [
     CommonModule,
     PlanCardComponent,
+    HeaderComponent,
     FooterComponent,
-    HeaderComponent
+    whatsappBtnComponent
   ],
   templateUrl: './welcome-page.component.html',
   styleUrls: ['./welcome-page.component.scss'],

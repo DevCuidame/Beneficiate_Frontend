@@ -27,7 +27,10 @@
     <div class="card-container">
 
       <div class="card" *ngFor="let texto of textoCard; let i = index">
-        <img [src]="'../../../assets/images/Desktop/nosotros/cards/bg-' + (i + 1) + '.jpg'" alt="background" class="bg">
+        <div class="img-bg-container">
+          <div class="filter-bg"></div>
+          <img [src]="'../../../assets/images/Desktop/nosotros/cards/bg-' + (i + 1) + '.jpg'" alt="background" class="bg">
+        </div>
         <img src="../../../assets/icon/crown.svg" alt="icono" class="icono">
         <h3 class="text" [innerHTML]="texto"></h3>
       </div>
@@ -35,4 +38,6 @@
     </div>
 
   </section>
+
+  <app-footer></app-footer>
 </div>

@@ -1,0 +1,26 @@
+<footer class="footer">
+  <section class="colum logo-cl">
+    <img src="../../../../assets/logo/beneficiate_foot.svg" alt="logo" class="logo" />
+    <div class="nit">
+      <h5>PRIVILEGIOS PLUS SAS</h5>
+      <h5>NIT: 901327625</h5>
+    </div>
+  </section>
+  <section class="colum">
+    <app-follow-us [isFooter]="true"></app-follow-us>
+  </section>
+  <section class="colum">
+    <h5><strong>Contacto</strong></h5>
+    <br>
+    <h5>info&#64;beneficiate.co</h5>
+  </section>
+  <section class="colum">
+    <h5><strong>Accesos Rapidos</strong></h5>
+    <br>
+    <h6 (click)="navigateToHome()">Inicio</h6>
+    <h6 (click)="navigateToAboutUs()">Nosotros</h6>
+    <h6 (click)="navigateToLogin()">Iniciar sesión</h6>
+  </section>
+
+  <h6 class="bottom">Todos los derechos reservados 2025 ©</h6>
+</footer>

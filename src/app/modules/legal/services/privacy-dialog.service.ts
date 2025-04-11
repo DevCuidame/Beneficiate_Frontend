@@ -25,4 +25,11 @@ export class PrivacyDialogService {
     
     return modal.onDidDismiss();
   }
+
+  async closePrivacyPolicy() {
+    const topModal = await this.modalController.getTop();
+    if (topModal) {
+      await topModal.dismiss();
+    }
+  }
 }

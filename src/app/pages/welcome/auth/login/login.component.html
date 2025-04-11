@@ -1,35 +1,39 @@
-<div class="login-container">
-  <br>
-  <app-header [addBackground]="false"></app-header>
+<div class="login-main">
+  <div class="login-container">
+    <br>
+    <app-header [addBackground]="false"></app-header>
 
-  <section class="banner-section">
-    <img class="banner" src="../../../../../assets/images/Desktop/login/banner.jpg" alt="Login" />
-  </section>
+    <section class="banner-section">
+      <img class="banner" src="../../../../../assets/images/Desktop/login/banner.jpg" alt="Login" />
+    </section>
 
-  <section class="form-section">
-    <form [formGroup]="loginForm" (ngSubmit)="login()">
-      <div class="input-contain">
-        <app-custom-input
-          label="Email"
-          type="email"
-          [control]="email"
-          errorMessage="Por favor, ingrese un correo válido."
-        ></app-custom-input>
+    <section class="form-section">
+      <form [formGroup]="loginForm" (ngSubmit)="login()">
+        <div class="input-contain">
+          <app-custom-input
+            label="Email"
+            type="email"
+            [control]="email"
+            errorMessage="Por favor, ingrese un correo válido."
+          ></app-custom-input>
 
-        <br/>
+          <br/>
 
-        <app-custom-input
-          label="Contraseña"
-          type="password"
-          [control]="password"
-          errorMessage="Por favor, ingrese su contraseña."
-        ></app-custom-input>
-      </div>
+          <app-custom-input
+            label="Contraseña"
+            type="password"
+            [control]="password"
+            errorMessage="Por favor, ingrese su contraseña."
+          ></app-custom-input>
+        </div>
 
-      <div class="btn-form">
-        <a (click)="navigateToChangePassword()" class="forgot-password">¿Olvidaste tu contraseña?</a>
-        <button class="login-button" type="submit">Iniciar sesión</button>
-      </div>
-    </form>
-  </section>
+        <div class="btn-form">
+          <a (click)="navigateToChangePassword()" class="forgot-password">¿Olvidaste tu contraseña?</a>
+          <button class="login-button" type="submit">Iniciar sesión</button>
+        </div>
+      </form>
+    </section>
+  </div>
+  
+  <app-footer></app-footer>
 </div>

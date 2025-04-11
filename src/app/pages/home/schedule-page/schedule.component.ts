@@ -17,7 +17,7 @@ import { User } from 'src/app/core/interfaces/auth.interface';
 import { WebsocketService } from 'src/app/core/services/websocket.service';
 
 import { HeaderComponent } from '../../components/home/header/header.component';
-import { FooterComponent } from '../../components/footer-component/footer-component.component';
+import { FollowUsComponent } from '../../components/follow-us/follow-us.component';
 import { DoDateComponent } from '../../components/home/do-date/do-date.component';
 import { ChatComponent } from 'src/app/modules/home/pages/chat/chat.component';
 
@@ -25,7 +25,7 @@ import { ChatComponent } from 'src/app/modules/home/pages/chat/chat.component';
   selector: 'app-schedule',
   imports: [
     HeaderComponent,
-    FooterComponent,
+    FollowUsComponent,
     DoDateComponent,
     IonicModule,
     CommonModule,

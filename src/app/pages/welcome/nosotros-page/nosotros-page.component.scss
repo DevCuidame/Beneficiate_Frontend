@@ -67,7 +67,7 @@
       gap: 25px;
 
       .card {
-        max-width: calc(25% - 15px);
+        max-width: calc(23% - 15px);
         display: flex;
         align-items: center;
         flex-direction: column;
@@ -75,21 +75,33 @@
         flex: 1 1 calc(25% - 25px);
         box-sizing: border-box;
 
-        /* Fondo de la tarjeta (imagen de fondo) */
-        .bg {
-          height: 100%;
-          width: 100%;
-          border-radius: 50px;
+        .img-bg-container {
+          position: relative;
           z-index: 1;
-          object-fit: cover;
+
+          .filter-bg {
+            background-color: #429200b1;
+            height: 100%;
+            width: 100%;
+            border-radius: 35px;
+            position: absolute;
+            top: 0;
+          }
+
+          .bg {
+            height: 100%;
+            width: 100%;
+            border-radius: 35px;
+            object-fit: cover;
+          }
         }
 
         /* Icono dentro de la tarjeta */
         .icono {
           position: absolute;
           top: 25px;
-          right: 25px;
-          transform: scale(1.25);
+          right: 15%;
+          transform: scale(1.1);
           z-index: 2;
         }
 

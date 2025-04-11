@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { PrivacyDialogService } from '../services/privacy-dialog.service';
 
 @Component({
   selector: 'app-privacy-policy',
@@ -12,9 +13,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./privacy-policy.component.scss']
 })
 export class PrivacyPolicyComponent {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private privacyDialogService: PrivacyDialogService,) {}
 
-  goBack() {
-    this.router.navigate(['/register']);
+  goBack(event: Event) {
+    event.preventDefault();
+    this.privacyDialogService.closePrivacyPolicy();
   }
 }

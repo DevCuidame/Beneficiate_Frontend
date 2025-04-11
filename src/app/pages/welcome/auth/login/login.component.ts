@@ -18,7 +18,7 @@ import { AuthService } from '../../../../modules/auth/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { CustomInputComponent } from 'src/app/pages/components/inputs/custom-input/custom-input.component';
 import { HeaderComponent } from 'src/app/pages/components/header/header.component';
-import { CustomButtonComponent } from 'src/app/shared/components/custom-button/custom-button.component';
+import { FooterComponent } from 'src/app/pages/components/footer/footer.component';
 
 @Component({
   selector: 'app-login',
@@ -30,6 +30,7 @@ import { CustomButtonComponent } from 'src/app/shared/components/custom-button/c
     IonicModule,
     HeaderComponent,
     CustomInputComponent,
+    FooterComponent,
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
