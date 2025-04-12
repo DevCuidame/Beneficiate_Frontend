@@ -69,7 +69,7 @@
     <section class="doc-schedule">
       <div class="header-doc-schedule">
         <h4 class="msg-start">Profesionales con agenda disponible</h4>
-
+        <!--
         <div class="select-filter">
           <div class="custom-dropdown">
             <button class="dropdown-btn" (click)="toggleDropdown()">
@@ -85,9 +85,25 @@
             </ul>
           </div>
         </div>
+        -->
       </div>
 
       <div class="main-doc-schedule">
+        <div class="doc-card">
+          <img
+            src="../../../../assets/images/Desktop/home/doc-card-bg.jpg"
+            alt="doc-bg"
+          />
+
+          <div class="doc-info">
+
+            <button class="get-date" (click)="toggleCard()">
+              <h3 class="f-big">Solicitar cita</h3>
+            </button>
+          </div>
+        </div>
+
+        <!--
         <div class="doc-card" *ngFor="let prof of professionals; let i = index">
           <img
             src="../../../../assets/images/Desktop/home/doc-card-bg.jpg"
@@ -104,6 +120,7 @@
             </button>
           </div>
         </div>
+        -->
       </div>
     </section>
   </div>

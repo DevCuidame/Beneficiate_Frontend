@@ -15,9 +15,6 @@
         [control]="first_name"
         [errorMessage]="errorMessages.first_name">
       </app-custom-input>
-      <p class="error-text" *ngIf="getErrorMessage('first_name')">
-        {{ getErrorMessage('first_name') }}
-      </p>
 
       <app-custom-input
         label="Apellidos"

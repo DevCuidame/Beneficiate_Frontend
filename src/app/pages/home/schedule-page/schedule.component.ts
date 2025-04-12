@@ -207,8 +207,7 @@ export class ScheduleComponent implements OnInit {
     this.isEditing = !this.isEditing;
   }
 
-  toggleCard(id: number) {
-    this.idProfessional = id;
+  toggleCard() {
     this.isDisabled = !this.isDisabled;
   }
 
