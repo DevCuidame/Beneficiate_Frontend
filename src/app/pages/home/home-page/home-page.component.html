@@ -75,7 +75,7 @@
         <app-plan-card
           *ngFor="let plan of plans"
           [selectedPlanId]="plan.id"
-          [imagen]="imgPlanFamiliar"
+          [imagen]="plan.name === 'Individual' ? imgPlanIndividual : imgPlanFamiliar"
           [titulo]="'Plan ' + plan.name"
           [precio]="plan.price + ' COP/año'"
           [descripcion]="plan.duration_days.toString() + ' Dias'"

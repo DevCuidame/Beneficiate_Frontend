@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { LoadingController, ToastController } from '@ionic/angular';
+
+import { Plan, PaymentService } from 'src/app/core/services/payment.service';
 
 import { HeaderComponent } from '../../components/header/header.component';
 import { PlanCardComponent } from '../../components/plans-card/plan-card.component';
@@ -24,6 +27,8 @@ export class WelcomePageComponent  implements OnInit {
   activeIndex: number = 0;
   intervalId: any;
   showText = true;
+  isLoading = false;
+  public plans: Plan[] = [];
 
   public imgPlanFamiliar: string = '../../../assets/images/Desktop/plan-card-familiar.png';
   public imgPlanIndividual: string = '../../../assets/images/Desktop/plan-card-individual.png';
@@ -39,10 +44,16 @@ export class WelcomePageComponent  implements OnInit {
     'Conectamos las <span class="change-c">necesidades</span> médicas de nuestros usuarios con los <span class="change-c">mejores</span> especialistas y servicios de salud del país.',
   ];
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router, 
+    private loadingController: LoadingController,
+    private toastController: ToastController,
+    private paymentService: PaymentService,
+  ) {}
 
   ngOnInit(): void {
     this.startImageRotation();
+    this.loadPlans();
   }
 
   changeImage(index: number): void {
@@ -57,6 +68,34 @@ export class WelcomePageComponent  implements OnInit {
   ngOnDestroy(): void {
     clearInterval(this.intervalId);
   }
+
+    async loadPlans() {
+      this.paymentService.getPlans().subscribe({
+        next: (plans) => {
+          // Verificar si planes es un array
+          if (Array.isArray(plans)) {
+            this.plans = plans.filter(plan => plan && plan.is_active);
+          } else if (plans && typeof plans === 'object') {
+            // Si es un objeto, convertirlo a array
+            this.plans = Object.values(plans as Record<string, Plan>).filter(plan => plan && plan.is_active);
+          } else {
+            console.error('Formato de planes inesperado:', plans);
+            this.plans = [];
+          }
+  
+        },
+        error: async (error) => {
+          console.error('Error al cargar planes:', error);
+          const toast = await this.toastController.create({
+            message: 'No se pudieron cargar los planes. Intenta de nuevo.',
+            duration: 3000,
+            position: 'bottom',
+            color: 'danger'
+          });
+          toast.present();
+        }
+      });
+    }
 
   startImageRotation(): void {
     this.intervalId = setInterval(() => {
