@@ -83,27 +83,20 @@
 
     <h2>Tu bienestar es nuestra prioridad. Descubre opciones que se adaptan a ti.</h2>
 
-    <div class="plan-container">
-      <app-plan-card
-        [imagen]="imgPlanFamiliar"
-        titulo="PLAN FAMILIAR"
-        precio="$480.000 COP/año"
-        descripcion="Cuota única anual Titular + 4 familiares"
-        botonTexto="Adquirir"
-        customStyle="margin: 0 8rem; transform: scale(1.75);"
-        optionClick="register"
-      />
+    <div class="planes-panel">
 
-      <app-plan-card
-        [imagen]="imgPlanIndividual"
-        titulo="PLAN INDIVIDUAL"
-        precio="$250.000 COP/año"
-        descripcion="Cuota única anual"
-        botonTexto="Adquirir"
-        customStyle="margin: 0 8rem; transform: scale(1.75);"
-        optionClick="register"
-      />
-
+      <div class="plan-container">
+        <app-plan-card
+          *ngFor="let plan of plans"
+          [selectedPlanId]="plan.id"
+          [imagen]="plan.name === 'Individual' ? imgPlanIndividual : imgPlanFamiliar"
+          [titulo]="'Plan ' + plan.name"
+          [precio]="plan.price + ' COP/año'"
+          [descripcion]="plan.duration_days.toString() + ' Dias'"
+          [positionSide]="plan.name === 'Individual' ? { left: '50%' } : { right: '50%' }"
+          optionClick="register"
+        />
+      </div>
     </div>
   </section>
   <app-footer></app-footer>
