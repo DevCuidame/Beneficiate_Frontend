@@ -189,7 +189,7 @@ export class ChatComponent implements OnInit, OnDestroy {
               // Manejar redirección si existe
               if (data.redirectUrl) {
                 setTimeout(() => {
-                  this.navCtrl.navigateRoot(data.redirectUrl);
+                  // this.navCtrl.navigateRoot(data.redirectUrl);
                 }, 5000);
               }
 
