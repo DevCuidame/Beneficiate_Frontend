@@ -91,7 +91,7 @@
           [selectedPlanId]="plan.id"
           [imagen]="plan.name === 'Individual' ? imgPlanIndividual : imgPlanFamiliar"
           [titulo]="'Plan ' + plan.name"
-          [precio]="plan.price + ' COP/año'"
+          [precio]="plan.price"
           [descripcion]="plan.duration_days.toString() + ' Dias'"
           [positionSide]="plan.name === 'Individual' ? { left: '50%' } : { right: '50%' }"
           optionClick="register"

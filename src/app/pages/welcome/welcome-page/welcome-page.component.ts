@@ -85,7 +85,6 @@ export class WelcomePageComponent  implements OnInit {
   
         },
         error: async (error) => {
-          console.error('Error al cargar planes:', error);
           const toast = await this.toastController.create({
             message: 'No se pudieron cargar los planes. Intenta de nuevo.',
             duration: 3000,

@@ -15,7 +15,7 @@ import { InlinePaymentComponent } from '../../../shared/components/inline-paymen
 export class PlanCardComponent implements OnInit {
   @Input() imagen: string = '';
   @Input() titulo: string = '';
-  @Input() precio: string = '';
+  @Input() precio: any = '';
   @Input() descripcion: string = '';
   @Input() botonTexto: string = 'Adquirir';
   @Input() customStyle: string = '';
@@ -49,7 +49,6 @@ export class PlanCardComponent implements OnInit {
   }
 
   navigateToRegister() {
-    console.log('asdasd');
     this.router.navigate(['/desktop/register']);
   }
 

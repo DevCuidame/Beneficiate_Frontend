@@ -6,10 +6,15 @@
 
     <div class="card-content">
       <h3 class="plan-title">{{ titulo }}</h3>
-      <p class="plan-price">{{ precio }}</p>
+      <div style="display: flex;">
+        <span class="currency">$</span>
+        <p class="plan-price">{{ precio | currency : "" : "" : "1.0-0" }}</p>
+      </div>
       <p class="plan-description">{{ descripcion }}</p>
 
-      <button class="plan-button" (click)="buttonOption()">{{ isDescriptionVisible ? 'Cancelar' : 'Adquirir' }}</button>
+      <button class="plan-button" (click)="buttonOption()">
+        {{ isDescriptionVisible ? "Cancelar" : "Adquirir" }}
+      </button>
     </div>
   </div>
 

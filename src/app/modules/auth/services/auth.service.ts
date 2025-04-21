@@ -96,6 +96,7 @@ export class AuthService {
     localStorage.removeItem('user');
     localStorage.removeItem('beneficiaries');
     localStorage.removeItem('activeBeneficiary');
+    localStorage.clear();
     this.authState.next(false);
     this.userService.clearUser();
     this.beneficiaryService.clearBeneficiaries();
