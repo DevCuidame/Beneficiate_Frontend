@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 
 import { Plan, PaymentService } from 'src/app/core/services/payment.service';
 import { InlinePaymentComponent } from '../../../shared/components/inline-payment/inline-payment.component';
+import { PlanSelectionService } from 'src/app/core/services/plan-selection.service';
 
 @Component({
   selector: 'app-plan-card',
@@ -22,6 +23,9 @@ export class PlanCardComponent implements OnInit {
   @Input() selectedPlanId: number | null = null;
   @Input() positionSide: any = { left: '0%' };
   @Input() optionClick: string = '';
+  
+  // Plan completo para guardarlo en el servicio
+  @Input() planData: Plan | null = null;
 
   isDescriptionVisible = false;
   isLoading = false;
@@ -32,7 +36,8 @@ export class PlanCardComponent implements OnInit {
     private loadingController: LoadingController,
     private toastController: ToastController,
     private modalController: ModalController,
-    private router: Router
+    private router: Router,
+    private planSelectionService: PlanSelectionService
   ) {}
 
   ngOnInit(): void {
@@ -42,14 +47,53 @@ export class PlanCardComponent implements OnInit {
     if (this.optionClick === 'payment') {
       this.initiatePayment();
     } else if (this.optionClick === 'register') {
-      this.navigateToRegister();
+      this.savePlanAndNavigate();
     } else {
-      console.log('No se ha especificado una opción válida');
+    }
+  }
+
+  savePlanAndNavigate() {
+    if (!this.planData && this.selectedPlanId) {
+      this.isLoading = true;
+      this.paymentService.getPlans().subscribe({
+        next: (plans) => {
+          this.isLoading = false;
+          let foundPlan: Plan | null = null;
+          
+          // Buscar el plan con el ID correspondiente
+          if (Array.isArray(plans)) {
+            foundPlan = plans.find(p => p && p.id === this.selectedPlanId) || null;
+          } else if (plans && typeof plans === 'object') {
+            const plansArray = Object.values(plans as Record<string, Plan>);
+            foundPlan = plansArray.find(p => p && p.id === this.selectedPlanId) || null;
+          }
+          
+          if (foundPlan) {
+            // Guardar y navegar
+            this.planSelectionService.setPlanSelection(foundPlan);
+            this.router.navigate(['/desktop/register']);
+          } else {
+            this.showErrorMessage('No se pudo identificar el plan seleccionado');
+          }
+        },
+        error: (error) => {
+          this.isLoading = false;
+          console.error('Error al obtener planes:', error);
+          this.showErrorMessage('Error al procesar el plan seleccionado');
+        }
+      });
+    } else if (this.planData) {
+      // Si ya tenemos el plan completo, lo guardamos directamente
+      this.planSelectionService.setPlanSelection(this.planData);
+      this.router.navigate(['/desktop/register']);
+    } else {
+      // No hay plan seleccionado
+      this.showErrorMessage('Por favor selecciona un plan');
     }
   }
 
   navigateToRegister() {
-    this.router.navigate(['/desktop/register']);
+    this.savePlanAndNavigate();
   }
 
   async initiatePayment() {
@@ -76,7 +120,6 @@ export class PlanCardComponent implements OnInit {
         loading.dismiss();
         this.isProcessing = false;
 
-        console.log('Transaction data:', paymentTransaction);
 
         // Verificar si tenemos una URL de redirección
         if (!paymentTransaction.redirectUrl) {

@@ -95,6 +95,7 @@
         <app-plan-card
           *ngFor="let plan of plans"
           [selectedPlanId]="plan.id"
+          [planData]="plan"
           [imagen]="plan.name === 'Individual' ? imgPlanIndividual : imgPlanFamiliar"
           [titulo]="'Plan ' + plan.name"
           [precio]="plan.price"
