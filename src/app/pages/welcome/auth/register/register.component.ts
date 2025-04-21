@@ -78,7 +78,7 @@ export class RegisterComponent implements OnInit {
     private loadingCtrl: LoadingController,
     private locationService: LocationService,
     private router: Router,
-    private privacyDialogService: PrivacyDialogService,
+    private privacyDialogService: PrivacyDialogService
   ) {
     this.registerForm = this.fb.group(
       {
@@ -100,13 +100,7 @@ export class RegisterComponent implements OnInit {
         department: [null, Validators.required],
         gender: ['', Validators.required],
         birth_date: ['', Validators.required],
-        phone: [
-          '',
-          [
-            Validators.required,
-            Validators.pattern(/^\d{10}$/),
-          ],
-        ],
+        phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
         email: ['', [Validators.required, Validators.email]],
         password: [
           '',
@@ -226,7 +220,6 @@ export class RegisterComponent implements OnInit {
   // -------------------------------------- Send Form Controller -------------------------------------- //
 
   async register() {
-
     if (this.registerForm.valid) {
       const loading = await this.loadingCtrl.create({
         message: 'Registrando...',
@@ -243,9 +236,9 @@ export class RegisterComponent implements OnInit {
 
       this.authService.register(registerPayload as RegisterData).subscribe(
         async () => {
+          await this.goToHome(registerData.email, registerData.password);
           await loading.dismiss();
           this.registerSuccess.emit();
-          this.router.navigateByUrl('/home-desktop');
         },
         async (error) => {
           await loading.dismiss();
@@ -260,6 +253,26 @@ export class RegisterComponent implements OnInit {
       );
     }
   }
+
+  async goToHome(email: string, password: string) {
+    const loading = await this.loadingCtrl.create({
+      message: 'Iniciando sesión...',
+    });
+    await loading.present();
+  
+    this.authService.login({ email, password }).subscribe(
+      async (response) => {
+        await loading.dismiss();
+        this.router.navigateByUrl( '/home-desktop');
+      },
+      async (error) => {
+        await loading.dismiss();
+        const errorMessage = 'Hubo un error al verificar sus credenciales. Por favor, intenta de nuevo.';
+        this.router.navigateByUrl('/desktop/login');
+      }
+    );
+  }
+  
 
   // -------------------------------------- Load Select input options -------------------------------------- //
 

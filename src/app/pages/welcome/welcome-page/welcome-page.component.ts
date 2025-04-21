@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { LoadingController, ToastController } from '@ionic/angular';
@@ -25,6 +25,7 @@ import { whatsappBtnComponent } from '../../components/whtsp-btn/whtsp-btn.compo
 })
 export class WelcomePageComponent  implements OnInit {
   activeIndex: number = 0;
+  width: number = 0;
   intervalId: any;
   showText = true;
   isLoading = false;
@@ -54,6 +55,16 @@ export class WelcomePageComponent  implements OnInit {
   ngOnInit(): void {
     this.startImageRotation();
     this.loadPlans();
+    this.getScreenSize();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.getScreenSize();
+  }
+
+  getScreenSize() {
+    this.width = window.innerWidth;
   }
 
   changeImage(index: number): void {
