@@ -104,9 +104,6 @@ export class HomePageComponent implements OnInit {
     }, 200);
 
   }
-
-  // Modificación en home-page.component.ts
-
 checkPlanSelection(): void {
   // Forzar actualización desde sessionStorage
   this.planSelectionService.forceRefreshFromStorage();
@@ -233,6 +230,8 @@ async startPaymentProcess(planId: number): Promise<void> {
         await modal.present();
 
         const { data } = await modal.onDidDismiss();
+
+        this.planSelectionService.clearPlanSelection();
 
         if (data?.success) {
           const toast = await this.toastController.create({
