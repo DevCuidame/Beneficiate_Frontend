@@ -120,7 +120,6 @@ export class PlanCardComponent implements OnInit {
         loading.dismiss();
         this.isProcessing = false;
 
-
         // Verificar si tenemos una URL de redirección
         if (!paymentTransaction.redirectUrl) {
           this.showErrorMessage('No se pudo obtener el enlace de pago');
@@ -128,29 +127,32 @@ export class PlanCardComponent implements OnInit {
         }
 
         try {
-          // Abrir modal de pago
-          const modal = await this.modalController.create({
-            component: InlinePaymentComponent,
-            componentProps: {
-              paymentUrl: paymentTransaction.redirectUrl,
-              transactionId: paymentTransaction.transactionId
-            },
-            cssClass: 'payment-modal',
-            backdropDismiss: false
+          // Informar al usuario que se abrirá una nueva pestaña
+          const infoToast = await this.toastController.create({
+            message: 'El pago se abrirá en una nueva pestaña. Una vez completado, regresa a esta ventana.',
+            duration: 5000,
+            position: 'middle',
+            color: 'info',
+            buttons: [
+              {
+                text: 'OK',
+                role: 'cancel'
+              }
+            ]
           });
-
-          await modal.present();
-
-          const { data } = await modal.onDidDismiss();
-
-          if (data?.success) {
+          infoToast.present();
+          
+          // Procesar el pago - ahora usará nueva pestaña o modal según la plataforma
+          const success = await this.paymentService.processPayment(paymentTransaction);
+          
+          if (success) {
             this.showSuccessMessage();
           } else {
-            // Verificar una vez más por si acaso se cerró el modal manualmente
+            // Verificar una vez más por si acaso
             this.verifyPaymentStatus(paymentTransaction.transactionId);
           }
         } catch (error) {
-          console.error('Error mostrando el modal de pago:', error);
+          console.error('Error procesando el pago:', error);
           this.showErrorMessage('Hubo un problema con la pasarela de pago');
         }
       },
@@ -185,7 +187,7 @@ export class PlanCardComponent implements OnInit {
 
   async showPendingMessage() {
     const toast = await this.toastController.create({
-      message: 'El pago no se completó o está pendiente de confirmación.',
+      message: 'El pago no se completó o está pendiente de confirmación. Puedes cerrar la pestaña de pago.',
       duration: 4000,
       position: 'bottom',
       color: 'warning'

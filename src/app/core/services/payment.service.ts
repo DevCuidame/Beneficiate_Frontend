@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, Platform } from '@ionic/angular';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -49,11 +49,21 @@ interface ApiResponse<T> {
 })
 export class PaymentService {
   private baseUrl = environment.url || 'http://localhost:3000/api/v1';
+  private isNativePlatform: boolean = false;
+  private paymentTab: Window | null = null;
+  private checkIntervalId: any = null;
 
   constructor(
     private http: HttpClient,
-    private modalController: ModalController
-  ) {}
+    private modalController: ModalController,
+    private platform: Platform
+  ) {
+    // Determinar si estamos en una plataforma nativa o en un navegador
+    this.isNativePlatform = this.platform.is('cordova') || 
+                            this.platform.is('capacitor') || 
+                            this.platform.is('ios') || 
+                            this.platform.is('android');
+  }
 
   /**
    * Obtiene todos los planes disponibles
@@ -82,7 +92,23 @@ export class PaymentService {
   }
 
   /**
+   * Procesa el pago según la plataforma: 
+   * - En navegador: abre nueva pestaña
+   * - En app nativa: usa modal
+   */
+  async processPayment(paymentTransaction: PaymentTransaction): Promise<boolean> {
+    if (this.isNativePlatform) {
+      // En plataforma nativa, usar modal
+      return await this.openInlinePayment(paymentTransaction);
+    } else {
+      // En navegador, abrir en nueva pestaña
+      return await this.openNewTabPayment(paymentTransaction);
+    }
+  }
+
+  /**
    * Abre la página de pago de Wompi dentro de un modal en vez de una ventana emergente
+   * (Usar preferentemente en aplicaciones nativas)
    */
   async openInlinePayment(
     paymentTransaction: PaymentTransaction
@@ -96,6 +122,7 @@ export class PaymentService {
       component: InlinePaymentComponent,
       componentProps: {
         paymentUrl: paymentTransaction.redirectUrl,
+        transactionId: paymentTransaction.transactionId
       },
       cssClass: 'payment-modal',
       backdropDismiss: false,
@@ -105,6 +132,71 @@ export class PaymentService {
 
     const { data } = await modal.onDidDismiss();
     return data?.success || false;
+  }
+
+  /**
+   * Abre el pago en una nueva pestaña (no popup) y monitorea cuando se completa
+   * (Mejor para navegadores web)
+   */
+  async openNewTabPayment(paymentTransaction: PaymentTransaction): Promise<boolean> {
+    return new Promise((resolve) => {
+      // Abrimos en nueva pestaña con target="_blank"
+      this.paymentTab = window.open(
+        paymentTransaction.redirectUrl,
+        '_blank'
+      );
+
+      // Verificar si se pudo abrir la pestaña
+      if (!this.paymentTab) {
+        console.error('No se pudo abrir la nueva pestaña. Verifica que no esté bloqueada.');
+        resolve(false);
+        return;
+      }
+
+      // Intervalo para verificar el estado del pago
+      this.checkIntervalId = setInterval(() => {
+        this.verifyTransactionDetails(paymentTransaction.transactionId).subscribe({
+          next: (result) => {
+            if (result.success) {
+              // Pago exitoso, limpiar intervalo
+              this.clearCheckInterval();
+              resolve(true);
+              
+              // Notificamos al usuario que puede cerrar la pestaña de pago
+              // (No podemos cerrarla automáticamente por seguridad del navegador)
+            }
+          },
+          error: () => {
+            // Continuar verificando
+          }
+        });
+      }, 3000);
+
+      // Por seguridad, establecer un tiempo máximo de espera (5 minutos)
+      setTimeout(() => {
+        this.clearCheckInterval();
+        
+        // Verificar una última vez antes de resolver
+        this.verifyTransactionDetails(paymentTransaction.transactionId).subscribe({
+          next: (result) => {
+            resolve(result.success);
+          },
+          error: () => {
+            resolve(false);
+          }
+        });
+      }, 300000); // 5 minutos
+    });
+  }
+
+  /**
+   * Limpia el intervalo de verificación
+   */
+  private clearCheckInterval(): void {
+    if (this.checkIntervalId) {
+      clearInterval(this.checkIntervalId);
+      this.checkIntervalId = null;
+    }
   }
 
   /**
@@ -210,16 +302,5 @@ export class PaymentService {
           );
         })
       );
-  }
-
-  /**
-   * Abre la ventana de pago de Wompi
-   */
-  openWompiCheckout(paymentTransaction: PaymentTransaction): Window | null {
-    return window.open(
-      paymentTransaction.redirectUrl,
-      '_blank',
-      'width=800,height=600'
-    );
   }
 }
