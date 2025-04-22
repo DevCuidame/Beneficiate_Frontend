@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ModalController, Platform } from '@ionic/angular';
 import { Observable, of, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 export interface Plan {
@@ -140,6 +140,19 @@ export class PaymentService {
    */
   async openNewTabPayment(paymentTransaction: PaymentTransaction): Promise<boolean> {
     return new Promise((resolve) => {
+      // Guardar la transacción en localStorage para verificación posterior
+      try {
+        // Importación dinámica para evitar dependencias circulares
+        import('../../core/services/payment-verification.service').then(module => {
+          const verificationService = new module.PaymentVerificationService(this.http, this);
+          verificationService.savePendingTransaction(paymentTransaction.transactionId);
+        }).catch(error => {
+          console.error('Error importando servicio de verificación:', error);
+        });
+      } catch (error) {
+        console.error('Error guardando transacción para verificación:', error);
+      }
+
       // Abrimos en nueva pestaña con target="_blank"
       this.paymentTab = window.open(
         paymentTransaction.redirectUrl,
