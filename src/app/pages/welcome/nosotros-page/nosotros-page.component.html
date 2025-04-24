@@ -3,10 +3,17 @@
   <section class="info-section">
       <app-header [addBackground]="true"></app-header>
 
-      <img src="../../../assets/logo/beneficiate_logo.svg" alt="logo" class="logo">
+      @if (width > 800){
+        <img src="../../../../assets/logo/beneficiate_logo.svg" alt="logo" class="logo">
+      } @else {
+        <img src="../../../../assets/logo/beneficiate_foot.svg" alt="logo" class="logo">
+      }
 
       <div class="info-contain">
-        <img src="../../../assets/images/Desktop/nosotros/banner.jpg" alt="" class="banner">
+        <div class="banner-container">
+          <div class="filter-bg"></div>
+          <img src="../../../../assets/images/Desktop/nosotros/banner.jpg" alt="" class="banner">
+        </div>
 
         <p class="text">
           Somos una plataforma tecnológica de conexión en salud y bienestar,
@@ -22,22 +29,57 @@
 
   </section>
 
-  <section class="card-section">
+      @if (width > 800){
+        <section class="card-section">
+          <div class="card-container">
+            <div class="card" *ngFor="let texto of textoCard; let i = index">
+              <div class="img-bg-container">
+                <div class="filter-bg"></div>
+                <img [src]="'../../../assets/images/Desktop/nosotros/cards/bg-' + (i + 1) + '.jpg'" alt="background" class="bg">
+              </div>
+              <img src="../../../assets/icon/crown.svg" alt="icono" class="icono">
+              <h3 class="text" [innerHTML]="texto"></h3>
+            </div>
+          </div>
+        </section>
+      } @else {
+        <section style="height: 100vh; display: flex; flex-direction: column;">
+          <div class="card-section">
+            <div class="card-container">
+              <div class="card" *ngFor="let texto of textoCard.slice(0, 4); let i = index">
+                <div class="img-bg-container">
+                  <div class="filter-bg"></div>
+                  <img
+                    [src]="'../../../assets/images/Desktop/nosotros/cards/bg-' + (i + 1) + '.jpg'"
+                    alt="background"
+                    class="bg"
+                  />
+                </div>
+                <img src="../../../assets/icon/crown.svg" alt="icono" class="icono" />
+                <h3 class="text" [innerHTML]="texto"></h3>
+              </div>
+            </div>
+          </div>
 
-    <div class="card-container">
 
-      <div class="card" *ngFor="let texto of textoCard; let i = index">
-        <div class="img-bg-container">
-          <div class="filter-bg"></div>
-          <img [src]="'../../../assets/images/Desktop/nosotros/cards/bg-' + (i + 1) + '.jpg'" alt="background" class="bg">
-        </div>
-        <img src="../../../assets/icon/crown.svg" alt="icono" class="icono">
-        <h3 class="text" [innerHTML]="texto"></h3>
-      </div>
-
-    </div>
-
-  </section>
+          <div class="card-section">
+            <div class="card-container">
+              <div class="card" *ngFor="let texto of textoCard.slice(4, 8); let i = index">
+                <div class="img-bg-container">
+                  <div class="filter-bg"></div>
+                  <img
+                    [src]="'../../../assets/images/Desktop/nosotros/cards/bg-' + (i + 5) + '.jpg'"
+                    alt="background"
+                    class="bg"
+                  />
+                </div>
+                <img src="../../../assets/icon/crown.svg" alt="icono" class="icono" />
+                <h3 class="text" [innerHTML]="texto"></h3>
+              </div>
+            </div>
+          </div>
+        </section>
+      }
 
   <app-footer></app-footer>
 </div>

@@ -206,42 +206,22 @@
   
 @media (max-width: 800px) {
   .banner-container {
+    flex-direction: column;
+
     .banner {
-      height: 70vh;
+      height: 100vh !important;
       width: 100% !important;
+      margin-top: 20px !important;
 
       .banner-svg {
+        margin-top: 5rem !important;
+        height: 80%;
         position: absolute;
         filter: saturate(1.25);
         z-index: 1;
 
         image {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          clip-path: url(#banner-clip);
-          opacity: 0;
-          transform: scale(1);
-          transition: opacity 1s ease-in-out;
-        }
-
-        .active {
-          opacity: 1;
-        }
-      }
-
-      .img-progress-bar{
-        position: absolute;
-        top: 25%;
-        left: 40px;
-        z-index: 10;
-        transform: scale(1.25);
-
-        .control-slider {
-          g {
-            cursor: pointer;
-            pointer-events: all;
-          }
+          object-fit: contain !important;
         }
       }
 
@@ -252,43 +232,30 @@
         z-index: 5;
 
         .left-banner {
-          display: flex;
-          flex-direction: column-reverse;
-          flex: 1.64;
-          font-size: 1.5rem;
 
           .texto-banner {
-            font-size: 3rem;
-            font-weight: bold;
-            max-width: 80%;
-            margin-bottom: 50px;
-            margin-left: 125px;
-            animation: fadeIn 0.5s ease-in-out;
-
-            ::ng-deep .change-c {
-              color: var(--ion-color-secondary);
-            }
-
-            @keyframes fadeIn {
-              from {
-                opacity: 0;
-                transform: translateY(20px);
-              }
-              to {
-                opacity: 1;
-                transform: translateY(0);
-              }
-            }
+            font-size: 1.5rem !important;
+            max-width: 100% !important;
+            margin: 0 25px 125px !important;
+            text-shadow: 1px 1px 4px black;
           }
         }
 
       }
     }
+
+    h2 {
+      margin: -50px 15px 40px;
+      text-align: center !important;
+      z-index: 10;
+    }
   }
 
   .plan-info-container {
+
     h2 {
-      font-size: 1.2rem;
+      padding: 0px 5% !important;
+      font-size: 1.25rem !important;
     }
 
     .planes-panel {
@@ -296,9 +263,37 @@
         flex-direction: column;
 
         app-plan-card {
-          transform: scale(1);
+          transform: scale(0.9) !important;
           margin-bottom: 20px;
         }
+      }
+    }
+
+    .auth-section {
+      background-color: white;
+      height: 20%;
+      margin: 15px 0 5rem 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .login-button {
+        background-image: url('../../../../assets/background/primary_button_bg.svg');
+        background-repeat: no-repeat;
+        background-size: cover;
+        color: var(--ion-color-dark);
+        border: none;
+        padding: 15px 25px;
+        border-radius: 30px;
+        font-size: 1.25rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      p {
+        font-size: 1.6dvw;
+        margin-right: 30px;
+        margin-top: 30px;
       }
     }
   }

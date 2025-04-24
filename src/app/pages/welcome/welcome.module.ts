@@ -10,6 +10,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { ChangePasswordComponent } from './auth/change-password/change-password.component';
 import { NosotrosPageComponent } from './nosotros-page/nosotros-page.component';
+import { InitialPageComponent } from './work-with-us/intial-page/initial-page.component';
 import { WorkFormComponent } from './work-with-us/work-form/work-form.component';
 
 
@@ -35,6 +36,10 @@ const routes: Routes = [
   },
   {
     path: 'work-with-us',
+    component: InitialPageComponent,
+  },
+  {
+    path: 'work-with-us/form',
     component: WorkFormComponent,
   },
   {

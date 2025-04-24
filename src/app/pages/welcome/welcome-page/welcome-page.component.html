@@ -82,12 +82,18 @@
       </div>
     </div>
 
+    @if (width < 800) {
+      <h2>Tu bienestar es nuestra prioridad. Descubre opciones que se adaptan a ti.</h2>
+    }
+
     <app-whatsapp-btn></app-whatsapp-btn>
   </section>
 
   <section class="plan-info-container">
 
-    <h2>Tu bienestar es nuestra prioridad. Descubre opciones que se adaptan a ti.</h2>
+    @if (width > 800) {
+      <h2>Tu bienestar es nuestra prioridad. Descubre opciones que se adaptan a ti.</h2>
+    }
 
     <div class="planes-panel">
 
@@ -105,6 +111,11 @@
         />
       </div>
     </div>
+
+    <div class="auth-section">
+      <button class="login-button">Iniciar sesión</button>
+    </div>   
+
   </section>
   <app-footer></app-footer>
 </div>

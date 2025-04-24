@@ -1,26 +1,66 @@
 <footer class="footer">
-  <section class="colum logo-cl">
-    <img src="../../../../assets/logo/beneficiate_foot.svg" alt="logo" class="logo" />
-    <div class="nit">
-      <h5>PRIVILEGIOS PLUS SAS</h5>
-      <h5>NIT: 901327625</h5>
-    </div>
-  </section>
-  <section class="colum">
-    <app-follow-us [isFooter]="true"></app-follow-us>
-  </section>
-  <section class="colum">
-    <h5><strong>Contacto</strong></h5>
-    <br>
-    <h5>info&#64;beneficiate.co</h5>
-  </section>
-  <section class="colum">
-    <h5><strong>Accesos Rapidos</strong></h5>
-    <br>
-    <h6 (click)="navigateToHome()">Inicio</h6>
-    <h6 (click)="navigateToAboutUs()">Nosotros</h6>
-    <h6 (click)="navigateToLogin()">Iniciar sesión</h6>
-  </section>
+  @if (width > 800) {
+
+    <section class="colum logo-cl">
+      <img src="../../../../assets/logo/beneficiate_foot.svg" alt="logo" class="logo" />
+      <div class="nit">
+        <h5>PRIVILEGIOS PLUS SAS</h5>
+        <h5>NIT: 901327625</h5>
+      </div>
+    </section>
+
+    <section class="colum">
+      <app-follow-us [isFooter]="true"></app-follow-us>
+    </section>
+
+    <section class="colum">
+      <h5><strong>Contacto</strong></h5>
+      <br>
+      <h5>info&#64;beneficiate.co</h5>
+    </section>
+
+    <section class="colum">
+      <h5><strong>Accesos Rapidos</strong></h5>
+      <br>
+      <h6 (click)="navigateToHome()">Inicio</h6>
+      <h6 (click)="navigateToAboutUs()">Nosotros</h6>
+      <h6 (click)="navigateToLogin()">Iniciar sesión</h6>
+    </section>
+
+  } @else {
+
+    <section class="colum logo-cl">
+      <img src="../../../../assets/logo/beneficiate_foot.svg" alt="logo" class="logo" />
+      <br/>
+      <div class="nit">
+        <h5>PRIVILEGIOS PLUS SAS</h5>
+        <h5>NIT: 901327625</h5>
+      </div>
+      <br/>
+      <h5><strong>Accesos Rapidos</strong></h5>
+      <br>
+      <h6 (click)="navigateToHome()">Inicio</h6>
+      <h6 (click)="navigateToAboutUs()">Nosotros</h6>
+      <h6 (click)="navigateToLogin()">Iniciar sesión</h6>
+    </section>
+
+    <section class="colum">
+      <div class="follow-us">
+        <h5>Siguenos</h5>
+        <div>
+          <a href="http://instagram.com/beneficiate.oficial" target="_blank"><ion-icon name="logo-instagram"></ion-icon></a>
+          <a href="http://tiktok.com/@beneficiate.oficial" target="_blank"><ion-icon name="logo-tiktok"></ion-icon></a>
+          <a href="http://facebook.com/beneficiateco" target="_blank"><ion-icon name="logo-facebook"></ion-icon></a>
+        </div>
+      </div>
+
+      <div class="nit">
+        <h5><strong>Contacto</strong></h5>
+        <h5>info&#64;beneficiate.co</h5>
+      </div>
+    </section>
+
+  }
 
   <h6 class="bottom">Todos los derechos reservados 2025 ©</h6>
 </footer>

@@ -1,0 +1,140 @@
+.initial-page {
+  background-color: #fff;
+  overflow-y: scroll;
+
+  .info-section{
+    width: 100%;
+    height: 100vh;
+    padding: 12vh 10%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+    .info-contain {
+      width: 100%;
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: center;
+      align-items: center;
+
+      .title {
+        color: var(--ion-color-dark);
+        width: 100%;
+        margin-right: 3vw;
+        font-size: 2rem;
+        font-weight: bold;
+        text-align: start;
+      }
+
+      .banner-container {
+        height: 120%;
+        width: 120%;
+        position: relative;
+        display: flex;
+        justify-content: center;
+
+        .filter-bg {
+          background-color: #5fa823b4;
+          height: 100%;
+          border-radius: 40px;
+          position: absolute;
+          top: 0;
+        }
+
+      }
+
+      .text {
+        color: var(--ion-color-dark);
+        width: 100%;
+        font-size: 1.35rem;
+        font-weight: 500;
+        line-height: 2rem;
+        text-align: start;
+      }
+
+      .auth-section {
+        background-color: white;
+        height: 20%;
+        margin-top: 25px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+  
+        .login-button {
+          background-image: url('../../../../../assets/background/primary_button_bg.svg');
+          background-repeat: no-repeat;
+          background-size: cover;
+          color: var(--ion-color-dark);
+          border: none;
+          padding: 25px 50px;
+          border-radius: 20px;
+          font-size: 1.25rem;
+          font-weight: 600;
+          cursor: pointer;
+        }
+  
+        p {
+          font-size: 1.6dvw;
+          margin-right: 30px;
+          margin-top: 30px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 800px) {
+  .initial-page {
+  
+    .info-section{
+      height: 100vh;
+      width: 100%;
+      padding: 10vh 5%;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      overflow-y: scroll;
+  
+      .info-contain {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .title {
+          margin-right: 0;
+        }
+
+        .banner-container {
+          width: 120%;
+          position: relative;
+  
+          .filter-bg {
+            background-color: #5fa823b4;
+            height: 100%;
+            width: 100%;
+            border-radius: 0;
+            position: absolute;
+            top: 0;
+          }
+  
+          .banner {
+            height: 60vh;
+            width: 100%;
+            margin-top: 100px;
+            object-fit: cover;
+          }
+        }
+  
+        .text {
+          margin: 1rem 0 !important;
+          font-size: 1rem;
+          line-height: 1.5rem;
+          text-align: start;
+        }
+      }
+    }
+  }
+  
+}

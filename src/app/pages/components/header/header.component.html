@@ -1,26 +1,71 @@
 <header class="header" [ngClass]="{ 'with-background': addBackground }">
-  <img src="../../../../assets/logo/beneficiate_logo.svg" alt="logo">
+  <img src="../../../../assets/logo/beneficiate_logo.svg" alt="logo" />
 
-  <nav class="menu">
-    <ul>
-      <li class="nav-option">
-        <a 
-          (click)="navigateToHome()"
-          [ngClass]="{ 'active': isActive('/desktop') }"
-        >Inicio</a>
-      </li>
-      <li class="nav-option">
-        <a 
-          (click)="navigateToAboutUs()"
-          [ngClass]="{ 'active': isActive('/desktop/about-us') }"
-        >Nosotros</a>
-      </li>
-      <li class="nav-option">
-        <a 
-          (click)="navigateToWorkWithUs()"
-          [ngClass]="{ 'active': isActive('/desktop/work-with-us') }"
-        >Trabaja con Nosotros</a>
-      </li>
-    </ul>
-  </nav>
+  @if (width > 800) {
+    <!-- Navegación en escritorio -->
+    <nav class="menu">
+      <ul>
+        <li class="nav-option">
+          <a 
+            (click)="navigateToHome()" 
+            [ngClass]="{ 'active': isActive('/desktop') }"
+          >Inicio</a>
+        </li>
+        <li class="nav-option">
+          <a 
+            (click)="navigateToAboutUs()" 
+            [ngClass]="{ 'active': isActive('/desktop/about-us') }"
+          >Nosotros</a>
+        </li>
+        <li class="nav-option">
+          <a 
+            (click)="navigateToWorkWithUs()" 
+            [ngClass]="{ 'active': isActive('/desktop/work-with-us') }"
+          >Trabaja con Nosotros</a>
+        </li>
+      </ul>
+    </nav>
+  } @else {
+    <!-- Botón para abrir el menú lateral -->
+    <ion-buttons slot="start">
+      <ion-menu-button autoHide="false"></ion-menu-button>
+    </ion-buttons>
+
+    <!-- Menú lateral para móviles -->
+    <ion-menu side="start" menuId="main-menu" contentId="main-content">
+      <ion-header>
+        <ion-toolbar>
+          <div class="toolbar-content">
+            <img src="../../../../assets/logo/beneficiate_logo.svg" alt="logo" class="menu-logo" />
+            <ion-icon 
+              name="close-circle"
+              color="primary" 
+              size="large" 
+              class="close-icon"
+              (click)="closeMenu()"
+            ></ion-icon>
+          </div>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content>
+        <div class="menu-list-content">
+          <ion-list>
+              <ion-item button (click)="navigateToHome()" [class.active]="isActive('/desktop')">Inicio</ion-item>
+              <ion-item button (click)="navigateToAboutUs()" [class.active]="isActive('/desktop/about-us')">Nosotros</ion-item>
+              <ion-item button (click)="navigateToWorkWithUs()" [class.active]="isActive('/desktop/work-with-us')">Trabaja con Nosotros</ion-item>
+          </ion-list>
+        </div>     
+
+        <div class="auth-section">
+          <button class="login-button">Iniciar sesión</button>
+        </div>   
+      </ion-content>
+
+          <!-- El contenido debe tener el ID que coincide con `contentId` -->
+      <div id="main-content">
+        <!-- Tu contenido va aquí -->
+      </div>
+    </ion-menu>
+  }
 </header>
