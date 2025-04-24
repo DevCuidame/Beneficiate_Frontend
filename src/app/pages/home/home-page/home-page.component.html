@@ -54,13 +54,14 @@
             <app-plan-card
               *ngFor="let plan of plans"
               [selectedPlanId]="plan.id"
-              [imagen]="imgPlanFamiliar"
+              [planData]="plan"
+              [imagen]="plan.name === 'Individual' ? imgPlanIndividual : imgPlanFamiliar"
               [titulo]="'Plan ' + plan.name"
-              [precio]="plan.price + ' COP/año'"
+              [precio]="plan.price"
               [descripcion]="plan.duration_days.toString() + ' Dias'"
               [positionSide]="plan.name === 'Individual' ? { left: '50%' } : { right: '50%' }"
               optionClick="payment"
-            />
+            ></app-plan-card>
           </div>
         </div>
       </div>
@@ -68,21 +69,38 @@
   </div>
 
   <ng-template #noPlan>
-    <div class="planes-panel">
-      <h2>Tu bienestar es nuestra prioridad. Descubre opciones que se adaptan a ti.</h2>
+    <!-- Solución: Aseguramos que los componentes solo se rendericen cuando planes y el plan seleccionado estén disponibles -->
+    <ng-container *ngIf="plans && plans.length > 0">
+      <div class="planes-panel">
+        <h2>Tu bienestar es nuestra prioridad. Descubre opciones que se adaptan a ti.</h2>
 
-      <div class="plan-container">
-        <app-plan-card
-          *ngFor="let plan of plans"
-          [selectedPlanId]="plan.id"
-          [imagen]="plan.name === 'Individual' ? imgPlanIndividual : imgPlanFamiliar"
-          [titulo]="'Plan ' + plan.name"
-          [precio]="plan.price + ' COP/año'"
-          [descripcion]="plan.duration_days.toString() + ' Dias'"
-          [positionSide]="plan.name === 'Individual' ? { left: '50%' } : { right: '50%' }"
-          optionClick="payment"
-        />
+        <!-- Información del plan seleccionado cuando está disponible -->
+        <div *ngIf="hasPlanBeenSelected && selectedPlanFromRegister" class="selected-plan-info">
+          <h3>Has seleccionado: Plan {{selectedPlanFromRegister.name}}</h3>
+          <p>Haz clic en "Adquirir" para iniciar el proceso de pago.</p>
+        </div>
+
+        <!-- Renderizamos las tarjetas de plan -->
+        <div class="plan-container">
+          <app-plan-card
+            *ngFor="let plan of plans"
+            [selectedPlanId]="plan.id"
+            [planData]="plan"
+            [imagen]="plan.name === 'Individual' ? imgPlanIndividual : imgPlanFamiliar"
+            [titulo]="'Plan ' + plan.name"
+            [precio]="plan.price "
+            [descripcion]="plan.duration_days.toString() + ' Dias'"
+            [positionSide]="plan.name === 'Individual' ? { left: '50%' } : { right: '50%' }"
+            optionClick="payment"
+          />
+        </div>
       </div>
+    </ng-container>
+    
+    <!-- Mostrar un indicador de carga si los planes aún no están disponibles -->
+    <div *ngIf="!plans || plans.length === 0" class="loading-container">
+      <ion-spinner name="circular"></ion-spinner>
+      <p>Cargando planes disponibles...</p>
     </div>
   </ng-template>
 

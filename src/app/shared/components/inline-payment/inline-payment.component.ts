@@ -106,14 +106,12 @@ export class InlinePaymentComponent implements OnInit, OnDestroy {
   }
 
   onIframeLoad() {
-    console.log('Iframe cargado');
     setTimeout(() => {
       this.checkTransactionOnce();
     }, 3000);
   }
 
   onIframeError() {
-    console.error('Error cargando el iframe');
     // Verificar el estado inmediatamente si el iframe falla
     this.checkTransactionOnce();
   }
@@ -124,7 +122,6 @@ export class InlinePaymentComponent implements OnInit, OnDestroy {
         .verifyTransactionDetails(this.transactionId)
         .subscribe({
           next: (result) => {
-            console.log('Verificación inmediata:', result);
             if (result.success) {
               this.paymentComplete.emit({
                 success: true,
@@ -140,7 +137,6 @@ export class InlinePaymentComponent implements OnInit, OnDestroy {
 
   private startPaymentMonitoring() {
     if (this.transactionId) {
-      console.log(`Iniciando monitoreo de transacción: ${this.transactionId}`);
 
       // Crear un intervalo para verificar periódicamente el estado de la transacción
       this.checkInterval = setInterval(() => {
@@ -148,10 +144,8 @@ export class InlinePaymentComponent implements OnInit, OnDestroy {
           .verifyTransactionDetails(this.transactionId)
           .subscribe({
             next: (result) => {
-              console.log('Resultado de verificación:', result);
 
               if (result.success) {
-                console.log('Transacción aprobada:', result);
                 // Modificar el tipo de EventEmitter para aceptar un objeto
                 this.paymentComplete.emit({
                   success: true,

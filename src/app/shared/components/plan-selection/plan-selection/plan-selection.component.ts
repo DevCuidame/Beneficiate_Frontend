@@ -59,7 +59,6 @@ export class PlanSelectionComponent implements OnInit {
 
     this.paymentService.getPlans().subscribe({
       next: (plans) => {
-        console.log('Planes recibidos:', plans);
 
         // Verificar si planes es un array
         if (Array.isArray(plans)) {
