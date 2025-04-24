@@ -35,6 +35,8 @@ import { FooterComponent } from 'src/app/pages/components/footer/footer.componen
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
+// Login para escritorios
+
 export class LoginComponent {
   loginForm: FormGroup;
   public passwordVisible: boolean = false;

@@ -31,6 +31,7 @@ import { CustomButtonComponent } from 'src/app/shared/components/custom-button/c
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
+// Login para celulars
 export class LoginComponent {
   public loginForm: FormGroup;
   public passwordVisible: boolean = false;

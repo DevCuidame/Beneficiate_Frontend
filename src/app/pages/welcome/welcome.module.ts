@@ -23,7 +23,6 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    canActivate: [AutoRedirectGuard],
     data: { redirectTo: '/home-desktop' },
   },
   {
