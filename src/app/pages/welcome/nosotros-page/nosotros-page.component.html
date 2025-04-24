@@ -3,10 +3,17 @@
   <section class="info-section">
       <app-header [addBackground]="true"></app-header>
 
-      <img src="../../../../assets/logo/beneficiate_logo.svg" alt="logo" class="logo">
+      @if (width > 800){
+        <img src="../../../../assets/logo/beneficiate_logo.svg" alt="logo" class="logo">
+      } @else {
+        <img src="../../../../assets/logo/beneficiate_foot.svg" alt="logo" class="logo">
+      }
 
       <div class="info-contain">
-        <img src="../../../../assets/images/Desktop/nosotros/banner.jpg" alt="" class="banner">
+        <div class="banner-container">
+          <div class="filter-bg"></div>
+          <img src="../../../../assets/images/Desktop/nosotros/banner.jpg" alt="" class="banner">
+        </div>
 
         <p class="text">
           Somos una plataforma tecnológica de conexión en salud y bienestar,

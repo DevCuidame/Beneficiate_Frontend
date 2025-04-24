@@ -23,9 +23,22 @@
       justify-content: center;
       align-items: center;
 
-      .banner {
-        height: 45vh;
-        width: 40vw;
+      .banner-container {
+        position: relative;
+
+        .filter-bg {
+          background-color: #5fa823b4;
+          height: 100%;
+          width: 100%;
+          border-radius: 45px;
+          position: absolute;
+          top: 0;
+        }
+
+        .banner {
+          height: 45vh;
+          width: 40vw;
+        }
       }
 
       .text {
@@ -133,7 +146,11 @@
       padding: 15px 0 ;
 
       .logo {
-
+        width: 50vw;
+        margin-left: 10%;
+        position: absolute;
+        top: 20vh;
+        z-index: 1;
       }
   
       .info-contain {
@@ -141,11 +158,25 @@
         display: flex;
         flex-direction: column;
 
-        .banner {
-          height: 45vh;
+        .banner-container {
           width: 120%;
-          margin-top: 100px;
-          object-fit: cover;
+          position: relative;
+  
+          .filter-bg {
+            background-color: #5fa823b4;
+            height: 100%;
+            width: 100%;
+            border-radius: 45px;
+            position: absolute;
+            top: 0;
+          }
+  
+          .banner {
+            height: 45vh;
+            width: 120%;
+            margin-top: 100px;
+            object-fit: cover;
+          }
         }
   
         .text {
