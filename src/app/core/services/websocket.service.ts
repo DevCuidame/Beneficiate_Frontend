@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { AppointmentService } from './appointment.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { UserService } from 'src/app/modules/auth/services/user.service';
+import { AuthService } from 'src/app/modules/auth/services/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +25,8 @@ export class WebsocketService {
   constructor(
     private appointmentService: AppointmentService,
     private toastService: ToastService,
-    private userService: UserService
+    private userService: UserService,
+    private authService: AuthService
   ) {}
 
   public connect(professionalId?: number): Observable<any> {
@@ -62,6 +64,7 @@ export class WebsocketService {
         'Necesitas tener un plan activo para acceder a esta funcionalidad',
         'warning'
       );
+      this.authService.logout();
       return throwError(() => new Error('Usuario sin plan activo'));
     }
 
