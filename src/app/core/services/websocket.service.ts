@@ -57,8 +57,14 @@ export class WebsocketService {
       );
     }
 
+    // Código modificado para excluir a los agentes de la validación de plan
+
     const user = this.userService.getUser();
-    if (!user?.plan) {
+    // Verificar si el usuario es un agente
+    const isAgent = user?.isAgent && user?.agentActive;
+
+    // Solo validar el plan si NO es un agente
+    if (!isAgent && !user?.plan) {
       this.connecting = false;
       this.toastService.presentToast(
         'Necesitas tener un plan activo para acceder a esta funcionalidad',
