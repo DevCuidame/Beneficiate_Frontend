@@ -2,87 +2,120 @@
   <div class="content">
     <app-header [addBackground]="true"></app-header>
 
-
     <form [formGroup]="beneficiaryForm" (ngSubmit)="actionSubmit()">
       <div class="form-container">
-  <h3>Imagen del beneficiario</h3>
+        <h3>Imagen del beneficiario</h3>
 
-  <div class="image-upload-container">
-    <div class="image-circle" (click)="selectImage()">
-      <img
-  *ngIf="selectedImage"
-  [src]="beneficiaryForm.get('base_64')?.value"
-  alt="User Image"
-      />
-      <div *ngIf="!selectedImage" class="upload-icon"></div>
-      <div class="small-circle">
-  <ion-icon class="camera-icon" name="camera"></ion-icon>
-      </div>
-    </div>
-    <input
-      type="file"
-      id="imageInput"
-      (change)="onImageSelected($event)"
-      hidden
-      accept="image/*"
-    />
-  </div>
+        <div class="image-upload-container">
+          <div class="image-circle" (click)="selectImage()">
+            <img
+              *ngIf="selectedImage"
+              [src]="beneficiaryForm.get('base_64')?.value"
+              alt="User Image"
+            />
+            <div *ngIf="!selectedImage" class="upload-icon"></div>
+            <div class="small-circle">
+              <ion-icon class="camera-icon" name="camera"></ion-icon>
+            </div>
+          </div>
+          <input
+            type="file"
+            id="imageInput"
+            (change)="onImageSelected($event)"
+            hidden
+            accept="image/*"
+          />
+        </div>
 
-  <h3>Datos Personales</h3>
-  <div class="separator">
-
-    <div class="form-group">
-      <app-custom-input label="Nombres" type="text" label_s="color: var(--ion-color-dark)" [control]="first_name"></app-custom-input>
-    </div>
-
-    <div class="form-group">
-      <app-custom-input label="Apellidos" type="text" label_s="color: var(--ion-color-dark)" [control]="last_name"></app-custom-input>
-    </div>
-
-    <div class="form-group">
-      <app-custom-input
-  label="Tipo de Identificación"
-  type="select"
-        label_s="color: var(--ion-color-dark)" [control]="identification_type"
-  [options]="[
-    { value: 'CC', label: 'Cédula' },
-    { value: 'TI', label: 'Tarjeta de Identidad' },
-    { value: 'PASSPORT', label: 'Pasaporte' },
-    { value: 'OTHER', label: 'Otro' }
-  ]"
-      ></app-custom-input>
-    </div>
-
-    <div class="form-group">
-      <app-custom-input label="Número de Identificación" type="text" label_s="color: var(--ion-color-dark)" [control]="identification_number"></app-custom-input>
-    </div>
-
-    <div class="form-group">
-      <app-custom-input label="Fecha de Nacimiento" type="date" label_s="color: var(--ion-color-dark)" [control]="birth_date"></app-custom-input>
-    </div>
-
-    <div class="form-group">
-      <app-custom-input
-        label="Género"
-        type="select"
-        label_s="color: var(--ion-color-dark)"
-        [control]="gender"
-        [options]="[
-          { value: 'M', label: 'Masculino' },
-          { value: 'F', label: 'Femenino' },
-          { value: 'Other', label: 'Otro' }
-        ]"
+        <h3>Datos Personales</h3>
+        <div class="separator">
+          <div class="form-group">
+            <app-custom-input
+              label="Nombres"
+              type="text"
+              label_s="color: var(--ion-color-dark)"
+              [control]="first_name"
             ></app-custom-input>
           </div>
+
+          <div class="form-group">
+            <app-custom-input
+              label="Apellidos"
+              type="text"
+              label_s="color: var(--ion-color-dark)"
+              [control]="last_name"
+            ></app-custom-input>
+          </div>
+
+          <div class="form-group">
+            <app-custom-input
+              label="Tipo de Identificación"
+              type="select"
+              label_s="color: var(--ion-color-dark)"
+              [control]="identification_type"
+              [options]="[
+                { value: 'CC', label: 'Cédula' },
+                { value: 'TI', label: 'Tarjeta de Identidad' },
+                { value: 'PASSPORT', label: 'Pasaporte' },
+                { value: 'OTHER', label: 'Otro' }
+              ]"
+            ></app-custom-input>
+          </div>
+
+          <div class="form-group">
+            <app-custom-input
+              label="Número de Identificación"
+              type="text"
+              label_s="color: var(--ion-color-dark)"
+              [control]="identification_number"
+            ></app-custom-input>
+          </div>
+
+          <div class="form-group">
+            <app-custom-input
+              label="Fecha de Nacimiento"
+              type="date"
+              label_s="color: var(--ion-color-dark)"
+              [control]="birth_date"
+            ></app-custom-input>
+          </div>
+
+          <div class="form-group">
+            <app-custom-input
+              label="Género"
+              type="select"
+              label_s="color: var(--ion-color-dark)"
+              [control]="gender"
+              [options]="[
+                { value: 'M', label: 'Masculino' },
+                { value: 'F', label: 'Femenino' },
+                { value: 'Other', label: 'Otro' }
+              ]"
+            ></app-custom-input>
+          </div>
+
+           <!-- Campo de correo electrónico que aparece solo si el usuario es mayor de edad -->
+           <div class="form-group" *ngIf="isAdult">
+            <app-custom-input 
+              label="Correo Electrónico" 
+              type="email" 
+              label_s="color: var(--ion-color-dark)" 
+              [control]="email">
+            </app-custom-input>
+          </div>
+
         </div>
 
         <h3>Datos de contacto</h3>
         <div class="separator">
           <div class="form-group">
-            <app-custom-input label="Dirección" type="text" label_s="color: var(--ion-color-dark)" [control]="address"></app-custom-input>
+            <app-custom-input
+              label="Dirección"
+              type="text"
+              label_s="color: var(--ion-color-dark)"
+              [control]="address"
+            ></app-custom-input>
           </div>
-
-
 
           <div class="form-group">
             <app-custom-input
@@ -105,39 +138,71 @@
           </div>
 
           <div class="form-group">
-            <app-custom-input label="Teléfono" type="text" label_s="color: var(--ion-color-dark)" [control]="phone"></app-custom-input>
+            <app-custom-input
+              label="Teléfono"
+              type="text"
+              label_s="color: var(--ion-color-dark)"
+              [control]="phone"
+            ></app-custom-input>
           </div>
         </div>
 
         <h3>Información de salud</h3>
         <div class="separator">
           <div class="form-group">
-            <app-custom-input label="Tipo de sangre (RH)" type="text" label_s="color: var(--ion-color-dark)" [control]="blood_type"></app-custom-input>
+            <app-custom-input
+              label="Tipo de sangre (RH)"
+              type="text"
+              label_s="color: var(--ion-color-dark)"
+              [control]="blood_type"
+            ></app-custom-input>
           </div>
 
           <div class="form-group">
-            <app-custom-input label="EPS" type="text" label_s="color: var(--ion-color-dark)" [control]="health_provider"></app-custom-input>
+            <app-custom-input
+              label="EPS"
+              type="text"
+              label_s="color: var(--ion-color-dark)"
+              [control]="health_provider"
+            ></app-custom-input>
           </div>
 
           <div class="form-group">
-            <app-custom-input label="Prepagada" type="text" label_s="color: var(--ion-color-dark)" [control]="prepaid_health"></app-custom-input>
+            <app-custom-input
+              label="Prepagada"
+              type="text"
+              label_s="color: var(--ion-color-dark)"
+              [control]="prepaid_health"
+            ></app-custom-input>
           </div>
 
           <div class="form-group">
-            <app-custom-input label="ARL" type="text" label_s="color: var(--ion-color-dark)" [control]="work_risk_insurance"></app-custom-input>
+            <app-custom-input
+              label="ARL"
+              type="text"
+              label_s="color: var(--ion-color-dark)"
+              [control]="work_risk_insurance"
+            ></app-custom-input>
           </div>
 
           <div class="form-group">
-            <app-custom-input label="Seguro funerario" type="text" label_s="color: var(--ion-color-dark)" [control]="funeral_insurance"></app-custom-input>
+            <app-custom-input
+              label="Seguro funerario"
+              type="text"
+              label_s="color: var(--ion-color-dark)"
+              [control]="funeral_insurance"
+            ></app-custom-input>
           </div>
         </div>
 
-        <button class="register-button" type="submit" [disabled]="beneficiaryForm.invalid">
+        <button
+          class="register-button"
+          type="submit"
+          [disabled]="beneficiaryForm.invalid"
+        >
           Registrar
         </button>
       </div>
     </form>
-
   </div>
-
 </main>

@@ -73,13 +73,13 @@
   <div class="appointment-body">
     <div class="patient-info">
       <img
-        [src]="environment + appointment.userData.image.image_path"
-        alt="Foto de perfil"
-      />
+      [src]="appointment.userData.image ? (environment + appointment.userData.image.image_path) : 'assets/images/default_user.png'"
+      alt="Foto de perfil"
+    />
       <div>
         <p class="patient-name">
-          {{ appointment.userData.first_name }}
-          {{ appointment.userData.last_name }}
+          {{ appointment.userData.first_name || 'Sin nombre registrado'}}
+          {{ appointment.userData.last_name || 'Sin apellido registrado' }}
         </p>
         <p class="patient-specialty">
           {{ appointment.specialtyData.name || "Sin especialidad solicitada" }}
@@ -99,7 +99,7 @@
         <fa-icon [icon]="faCalendar"></fa-icon>
         {{ formatDate(appointment.appointment_date) }}
         <fa-icon [icon]="faClock" class="time-icon"></fa-icon>
-        {{ appointment.appointment_time }}
+        {{ appointment.appointment_time || 'Sin hora asignada'}}
       </p>
     </div>
     }
