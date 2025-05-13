@@ -22,9 +22,18 @@ export class UserService {
   );
 
   public user$: Observable<User | null> = this.userSubject.asObservable();
+
+  public accountType$: Observable<'user' | 'beneficiary' | null> = 
+    this.user$.pipe(map(user => user?.accountType || null));
+
   private baseUrl = environment.url;
 
   constructor(private http: HttpClient) {}
+
+  getAccountType(): 'user' | 'beneficiary' | null {
+    const user = this.userSubject.getValue();
+    return user?.accountType || null;
+  }
 
   setUser(userData: User) {
     this.userSubject.next(userData);

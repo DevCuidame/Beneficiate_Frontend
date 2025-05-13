@@ -32,4 +32,6 @@ export interface User extends RegisterData {
   agentId?: any,
   health: any
   has_active_plan?: boolean
+  accountType: 'user' | 'beneficiary';
+  ownerUser: User;
 }

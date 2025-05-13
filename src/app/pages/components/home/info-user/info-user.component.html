@@ -1,35 +1,23 @@
 <section class="info-container">
-
   <div class="translate">
-
     <div class="circle left">
       <img [src]="profileImage" [alt]="user?.first_name" />
     </div>
 
-    <h1 class="user-name">{{user?.first_name}} {{user?.last_name}}</h1>
+    <h1 class="user-name">{{ user?.first_name }} {{ user?.last_name }}</h1>
 
     <div class="content-plan">
-      <!--
-        @if (user?.plan?.name === 'Básico') {
-          <ion-icon name="star-outline" class="icon"></ion-icon>
-        }@else {
-          <fa-icon class="icon" [icon]="faCrown"></fa-icon>
-        }
-      -->
       <span class="plan-name">
         {{ user?.plan?.name }}
       </span>
     </div>
 
+    @if((userService.accountType$ | async) === 'user'){
     <div class="care-div">
       <h2>{{ numBeneficiry }}</h2>
       <span>Personas a cargo</span>
-
-      <!--
-      <h2>5</h2>
-      <span>Adiciones restantes</span>
-      -->
     </div>
+    }
 
     <div class="personal-info">
       <div class="parent-column">
@@ -39,8 +27,8 @@
             <fa-icon [icon]="faAddressCard"></fa-icon>
           </div>
           <div class="item-info">
-            <p>{{ user?.identification_number || 'No aplica' }}</p>
-            <p>{{ user?.identification_type || 'No aplica' }}</p>
+            <p>{{ user?.identification_number || "No aplica" }}</p>
+            <p>{{ user?.identification_type || "No aplica" }}</p>
           </div>
         </div>
         <!-- Address -->
@@ -49,7 +37,7 @@
             <fa-icon [icon]="faHouse"></fa-icon>
           </div>
           <div class="item-info">
-            <p>{{ user?.address || 'No aplica' }}</p>
+            <p>{{ user?.address || "No aplica" }}</p>
             <p>Dirección</p>
           </div>
         </div>
@@ -71,7 +59,7 @@
             <fa-icon [icon]="faCity"></fa-icon>
           </div>
           <div class="item-info">
-            <p>{{ user?.location?.township_name || 'No aplica' }}</p>
+            <p>{{ user?.location?.township_name || "No aplica" }}</p>
             <p>Ciudad</p>
           </div>
         </div>
@@ -81,7 +69,7 @@
             <fa-icon [icon]="faHeart"></fa-icon>
           </div>
           <div class="item-info">
-            <p>{{  'No aplica' }}</p>
+            <p>{{ "No aplica" }}</p>
             <p>Tipo de sangre</p>
           </div>
         </div>
@@ -91,7 +79,7 @@
             <fa-icon [icon]="faHospital"></fa-icon>
           </div>
           <div class="item-info">
-            <p>{{ 'No aplica' }}</p>
+            <p>{{ "No aplica" }}</p>
             <p>EPS</p>
           </div>
         </div>
@@ -103,7 +91,7 @@
             <fa-icon [icon]="faPersonHalfDress"></fa-icon>
           </div>
           <div class="item-info">
-            <p>{{ user?.gender || 'No aplica' }}</p>
+            <p>{{ user?.gender || "No aplica" }}</p>
             <p>Género</p>
           </div>
         </div>
@@ -113,7 +101,7 @@
             <fa-icon [icon]="faCakeCandles"></fa-icon>
           </div>
           <div class="item-info">
-            <p>{{ user?.birth_date || 'No aplica' }}</p>
+            <p>{{ user?.birth_date || "No aplica" }}</p>
             <p>Fecha Nacimiento</p>
           </div>
         </div>
@@ -123,7 +111,7 @@
             <fa-icon [icon]="faPhone"></fa-icon>
           </div>
           <div class="item-info">
-            <p>{{ user?.phone || 'No aplica' }}</p>
+            <p>{{ user?.phone || "No aplica" }}</p>
             <p>Teléfono</p>
           </div>
         </div>
@@ -133,7 +121,7 @@
             <fa-icon [icon]="faHospital"></fa-icon>
           </div>
           <div class="item-info">
-            <p>{{ 'No aplica' }}</p>
+            <p>{{ "No aplica" }}</p>
             <p>ARL</p>
           </div>
         </div>
@@ -143,19 +131,16 @@
             <fa-icon [icon]="faHospital"></fa-icon>
           </div>
           <div class="item-info">
-            <p>{{ 'No aplica' }}</p>
+            <p>{{ "No aplica" }}</p>
             <p>Seguro funerario</p>
           </div>
         </div>
       </div>
     </div>
 
-
     <button class="plan-button" (click)="goToHealthInfo()">
       <ion-icon name="create-outline"></ion-icon>
       Ver información de salud
     </button>
-
   </div>
-
 </section>

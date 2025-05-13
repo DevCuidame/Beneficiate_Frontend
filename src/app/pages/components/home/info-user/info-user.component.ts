@@ -22,15 +22,18 @@ import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
 import { User } from 'src/app/core/interfaces/auth.interface';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
 import { Router } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-info-user',
   imports: [
     IonicModule,
     FontAwesomeModule,
+    AsyncPipe
   ],
   templateUrl: './info-user.component.html',
   styleUrls: ['./info-user.component.scss'],
+  standalone: true,
 })
 export class InfoUserComponent  implements OnInit {
   @Input() numBeneficiry: string = '';
@@ -53,7 +56,7 @@ export class InfoUserComponent  implements OnInit {
 
 
   constructor(
-    private userService: UserService,
+    public userService: UserService,
     private beneficiaryService: BeneficiaryService,
     private authService: AuthService,
     private router: Router,

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { User } from 'src/app/core/interfaces/auth.interface';
@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-user-profile-info',
   standalone: true,
-  imports: [CommonModule, IonicModule],
+  imports: [CommonModule, IonicModule, AsyncPipe],
   templateUrl: './user-profile-info.component.html',
   styleUrls: ['./user-profile-info.component.scss'],
 })
@@ -19,7 +19,7 @@ export class UserProfileInfoComponent implements OnInit {
   private apiUrl = environment.url;
 
   constructor(
-    private userService: UserService,
+    public userService: UserService,
     private router: Router
   ) {}
 

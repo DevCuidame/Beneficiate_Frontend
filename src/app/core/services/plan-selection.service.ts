@@ -96,7 +96,6 @@ export class PlanSelectionService {
           sessionStorage.removeItem('selectedPlan');
         }
       } else {
-        console.log('No se encontró plan guardado en sessionStorage');
       }
     } catch (error) {
       console.error('Error al verificar el plan en sessionStorage:', error);
