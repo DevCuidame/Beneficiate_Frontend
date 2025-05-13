@@ -44,12 +44,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public selectedIndicatorBorder: string = '20px';
   public showCards: boolean = true;
   public faCrown = faCrown;
-  
+
   private subscriptions: Subscription[] = [];
   private refreshInterval: Subscription | null = null;
 
   constructor(
-    private userService: UserService,
+    public userService: UserService,
     private authService: AuthService,
     private beneficiaryService: BeneficiaryService,
     private cdRef: ChangeDetectorRef,
@@ -61,51 +61,53 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // Load initial data
     this.loadUserData();
     this.loadBeneficiaries();
-    
+
     // Initial refresh from localStorage
     this.authService.refreshUserData();
-    
+
     // Start automatic refresh cycle
     this.startAutoRefresh();
   }
-  
+
   ngOnDestroy() {
     // Clean up all subscriptions to prevent memory leaks
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
-    
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+
     // Stop automatic refresh interval
     if (this.refreshInterval) {
       this.refreshInterval.unsubscribe();
     }
   }
-  
+
   startAutoRefresh() {
     this.refreshInterval = interval(30000).subscribe(() => {
       if (this.user?.id) {
         this.refreshFromLocalStorage();
       }
     });
-    
-    document.addEventListener('visibilitychange', this.handleVisibilityChange.bind(this));
+
+    document.addEventListener(
+      'visibilitychange',
+      this.handleVisibilityChange.bind(this)
+    );
     window.addEventListener('focus', this.handleWindowFocus.bind(this));
   }
-  
+
   handleVisibilityChange() {
     if (document.visibilityState === 'visible' && this.user?.id) {
       // When tab becomes visible again, refresh from server
       this.refreshUserDataFromServer();
     }
   }
-  
+
   handleWindowFocus() {
     if (this.user?.id) {
       this.refreshUserDataFromServer();
     }
   }
-  
+
   loadUserData() {
     const userSub = this.userService.user$.subscribe((userData) => {
-      
       if (Array.isArray(userData) && userData.length > 0) {
         this.user = userData[0];
       } else {
@@ -119,34 +121,36 @@ export class DashboardComponent implements OnInit, OnDestroy {
       ) {
         this.user.location = this.user.location[0];
       }
-      
+
       this.updateProfileImage();
       this.cdRef.detectChanges();
     });
-    
+
     this.subscriptions.push(userSub);
   }
-  
+
   /**
    * Loads beneficiaries data from the BeneficiaryService
    */
   loadBeneficiaries() {
-    const beneficiarySub = this.beneficiaryService.beneficiaries$.subscribe((beneficiaries) => {
-      if (Array.isArray(beneficiaries)) {
-        this.beneficiaries = beneficiaries.map((beneficiary) => ({
-          ...beneficiary,
-          image:
-            Array.isArray(beneficiary.image) && beneficiary.image.length > 0
-              ? beneficiary.image[0]
-              : null,
-        }));
+    const beneficiarySub = this.beneficiaryService.beneficiaries$.subscribe(
+      (beneficiaries) => {
+        if (Array.isArray(beneficiaries)) {
+          this.beneficiaries = beneficiaries.map((beneficiary) => ({
+            ...beneficiary,
+            image:
+              Array.isArray(beneficiary.image) && beneficiary.image.length > 0
+                ? beneficiary.image[0]
+                : null,
+          }));
+        }
+        this.cdRef.detectChanges();
       }
-      this.cdRef.detectChanges();
-    });
-    
+    );
+
     this.subscriptions.push(beneficiarySub);
   }
-  
+
   /**
    * Updates the profile image URL
    */
@@ -165,18 +169,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
   refreshUserDataFromServer() {
     if (this.user?.id) {
-      const refreshSub = this.userService.refreshUserData(this.user.id).subscribe(
-        () => {
-        },
-        (error) => {
-          this.refreshFromLocalStorage();
-        }
-      );
-      
+      const refreshSub = this.userService
+        .refreshUserData(this.user.id)
+        .subscribe(
+          () => {},
+          (error) => {
+            this.refreshFromLocalStorage();
+          }
+        );
+
       this.subscriptions.push(refreshSub);
     }
   }
-  
+
   /**
    * Refreshes user data from localStorage
    */
@@ -194,6 +199,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   goToPlans() {
     this.activeTab = 'plans-selection';
+  }
+
+  selectButtonToBeneficiary(type: string) {
+    if (type === 'Agenda') {
+      this.navController.navigateForward(['/home/appointment-booking']);
+    } else if (type === 'Mi Salud') {
+      this.navController.navigateForward(['/user/home']);
+    }
   }
 
   async selectButton(buttonType: string) {

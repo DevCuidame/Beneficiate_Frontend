@@ -26,7 +26,7 @@ export class UserVaccinationsListComponent implements OnInit {
   public user: User | null = null;
   public faSyringe = faSyringe;
 
-  constructor(private userService: UserService, private userHealthService: UserHealthService) {}
+  constructor(public userService: UserService, private userHealthService: UserHealthService) {}
 
   ngOnInit() {
     this.userService.user$.subscribe((userData) => {

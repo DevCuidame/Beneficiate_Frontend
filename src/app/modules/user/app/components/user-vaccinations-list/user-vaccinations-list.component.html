@@ -20,4 +20,7 @@
   </div>
 </app-primary-card>
 
+@if((userService.accountType$ | async) === 'user'){
+
 <app-edit-button route="/user/home/vaccinations/form"></app-edit-button>
+}

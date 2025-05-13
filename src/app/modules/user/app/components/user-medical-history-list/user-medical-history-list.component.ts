@@ -21,7 +21,7 @@ export class UserMedicalHistoryListComponent implements OnInit {
   public relativeOptions = relativeOptions;
 
   constructor(
-    private userService: UserService,
+    public userService: UserService,
     private userHealthService: UserHealthService
   ) {}
 

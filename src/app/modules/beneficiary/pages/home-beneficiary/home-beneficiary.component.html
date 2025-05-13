@@ -28,8 +28,9 @@
         [beneficiary]="activeBeneficiary"
       >
       </app-basic-data>
+      @if((userService.accountType$ | async) === 'user'){
       <app-edit-button route="/beneficiary/add"></app-edit-button>
-      }
+      } }
     </div>
   </div>
 </ion-content>

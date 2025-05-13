@@ -35,6 +35,10 @@
   </div>
 </app-primary-card>
 
+@if((userService.accountType$ | async) === 'user'){
+
 <app-edit-button
   route="/user/home/medical-history/form"
 ></app-edit-button>
+
+}
