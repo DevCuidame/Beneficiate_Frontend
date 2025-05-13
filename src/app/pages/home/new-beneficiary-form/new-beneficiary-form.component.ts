@@ -18,11 +18,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
 import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
-import { debounceTime } from 'rxjs';
+import { debounceTime, Subscription } from 'rxjs';
 import { CustomInputComponent } from '../../components/inputs/custom-input/custom-input.component';
 import { HeaderComponent } from '../../components/home/header/header.component';
 import { LocationService } from '../../../modules/auth/services/location.service';
 import { environment } from 'src/environments/environment';
+import { setupEmailValidation } from 'src/app/shared/utils/form-utils';
 
 @Component({
   selector: 'app-new-beneficiary',
@@ -38,7 +39,7 @@ import { environment } from 'src/environments/environment';
   templateUrl: './new-beneficiary-form.component.html',
   styleUrls: ['.//new-beneficiary-form.component.scss'],
 })
-export class NewBeneficiaryFormComponent implements OnInit {
+export class NewBeneficiaryFormComponent implements OnInit, OnDestroy {
   public beneficiaryForm: FormGroup;
   public newImage: boolean = false;
   public selectedImage: string | ArrayBuffer | null = null;
@@ -46,12 +47,16 @@ export class NewBeneficiaryFormComponent implements OnInit {
   public databs64: any;
   public buttonBackground: string = 'assets/background/secondary_button_bg.svg';
   public actionSubmit = () => this.editBeneficiary();
+  public isAdult: boolean = false;
+
+  private dateSubscription: Subscription | null = null;
 
   errorMessages: any = {
     first_name: 'El nombre solo puede contener letras.',
     last_name: 'El apellido solo puede contener letras.',
     identification_number: 'Debe ser un número válido.',
     phone: 'Debe ser un número de teléfono válido.',
+    email: 'Debe ser un correo electrónico válido.',
   };
 
   public departmentsOption: any[] = [];
@@ -95,6 +100,7 @@ export class NewBeneficiaryFormComponent implements OnInit {
       funeral_insurance: [''],
       public_name: ['', Validators.maxLength(50)],
       base_64: ['', Validators.required],
+      email: [''],
     });
 
     this.setupRealTimeValidation();
@@ -105,7 +111,7 @@ export class NewBeneficiaryFormComponent implements OnInit {
 
     this.loadDepartments();
 
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       if (params['new']) {
         this.beneficiaryService.setActiveBeneficiary(null);
         this.actionSubmit = () => this.saveBeneficiary();
@@ -122,12 +128,30 @@ export class NewBeneficiaryFormComponent implements OnInit {
         }
       });
 
+    // Escuchar cambios en la fecha de nacimiento para verificar si es mayor de edad
+    this.dateSubscription =
+      this.beneficiaryForm
+        .get('birth_date')
+        ?.valueChanges.subscribe((birthDate) => {
+          if (birthDate) {
+            this.checkAge(birthDate);
+          }
+        }) || null;
+
     this.loadBeneficiaryData();
   }
 
   ngOnDestroy() {
-
+    if (this.dateSubscription) {
+      this.dateSubscription.unsubscribe();
+    }
   }
+
+  // Utiliza la función de utilidad para verificar edad y configurar validación
+  checkAge(birthDateStr: string) {
+    this.isAdult = setupEmailValidation(this.beneficiaryForm, birthDateStr);
+  }
+
   // -------------------------------------- Load Select input options -------------------------------------- //
 
   loadBeneficiaryData() {
@@ -136,7 +160,7 @@ export class NewBeneficiaryFormComponent implements OnInit {
     if (!beneficiary) {
       this.beneficiaryForm.reset();
       this.beneficiaryForm.patchValue({
-        id: ''
+        id: '',
       });
       return;
     }
@@ -145,39 +169,50 @@ export class NewBeneficiaryFormComponent implements OnInit {
       this.beneficiaryForm.reset();
       this.beneficiaryForm.patchValue(beneficiary);
 
-
       this.beneficiaryForm.patchValue({
         base_64: beneficiary.image?.image_path
-        ? `${environment.url}${beneficiary.image.image_path.replace('\\', '/')}`
-        : ''
+          ? `${environment.url}${beneficiary.image.image_path.replace(
+              '\\',
+              '/'
+            )}`
+          : '',
       });
 
       this.selectedImage = beneficiary.image?.image_path
         ? `${environment.url}${beneficiary.image.image_path.replace('\\', '/')}`
         : '';
 
-
       this.locationService.fetchDepartments();
       this.locationService.departments$.subscribe((departments) => {
-        this.departmentsOption = departments.map(dept => ({
+        this.departmentsOption = departments.map((dept) => ({
           value: dept.id,
-          label: dept.name
+          label: dept.name,
         }));
 
         if (beneficiary.location?.department_id) {
-          this.beneficiaryForm.patchValue({ department: beneficiary.location.department_id });
-          this.loadCities(beneficiary.location.department_id, beneficiary.location?.township_id);
+          this.beneficiaryForm.patchValue({
+            department: beneficiary.location.department_id,
+          });
+          this.loadCities(
+            beneficiary.location.department_id,
+            beneficiary.location?.township_id
+          );
         }
       });
+
+      // Si tenemos fecha de nacimiento, verificar la edad
+      if (beneficiary.birth_date) {
+        this.checkAge(beneficiary.birth_date);
+      }
     }
   }
 
   loadDepartments() {
     this.locationService.fetchDepartments();
     this.locationService.departments$.subscribe((departments) => {
-      this.departmentsOption = departments.map(dept => ({
+      this.departmentsOption = departments.map((dept) => ({
         value: dept.id,
-        label: dept.name
+        label: dept.name,
       }));
     });
   }
@@ -186,12 +221,12 @@ export class NewBeneficiaryFormComponent implements OnInit {
     this.locationService.fetchCitiesByDepartment(departmentId);
 
     this.locationService.cities$.subscribe((cities) => {
-      this.citiesOption = cities.map(city => ({
+      this.citiesOption = cities.map((city) => ({
         value: city.id,
-        label: city.name
+        label: city.name,
       }));
 
-      if (cityId && cities.some(city => city.id === cityId)) {
+      if (cityId && cities.some((city) => city.id === cityId)) {
         setTimeout(() => {
           this.beneficiaryForm.patchValue({ city_id: cityId });
         }, 100);
@@ -226,7 +261,6 @@ export class NewBeneficiaryFormComponent implements OnInit {
       await loading.present();
 
       const beneficiaryData = { ...this.beneficiaryForm.value };
-
 
       this.beneficiaryService
         .addBeneficiary(beneficiaryData as Beneficiary)
@@ -400,5 +434,7 @@ export class NewBeneficiaryFormComponent implements OnInit {
     return this.beneficiaryForm.get('base_64') as FormControl;
   }
 
+  get email(): FormControl {
+    return this.beneficiaryForm.get('email') as FormControl;
+  }
 }
-

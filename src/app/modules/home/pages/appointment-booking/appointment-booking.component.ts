@@ -56,7 +56,7 @@ export class AppointmentBookingComponent implements OnInit, OnDestroy {
     private medicalProfessionalService: MedicalProfessionalService,
     private alertController: AlertController,
     private appointmentService: AppointmentService,
-    private navCtrl: NavController
+    private navCtrl: NavController,
   ) {
     effect(() => {
       const appointments = this.appointmentService.appointments();
@@ -83,6 +83,12 @@ export class AppointmentBookingComponent implements OnInit, OnDestroy {
         this.profileImage = 'assets/images/default_user.png';
       }
     });
+
+    if (this.user && !this.user.plan) {
+      this.isLoading = false;
+      this.presentPlanRequiredMessage();
+      return;
+    }
 
     // Conectar al WebSocket y suscribirse a eventos
     this.wsSubscription = this.websocketService.connect().subscribe(
@@ -146,6 +152,16 @@ export class AppointmentBookingComponent implements OnInit, OnDestroy {
         console.error('Error al cargar profesionales médicos:', error);
       }
     );
+  }
+
+  async presentPlanRequiredMessage() {
+    const alert = await this.alertController.create({
+      header: 'Plan Requerido',
+      message: 'Para acceder a las citas y al chat, necesitas tener un plan activo. Por favor, adquiere un plan para utilizar estas funcionalidades.',
+      buttons: ['Entendido'],
+    });
+  
+    await alert.present();
   }
 
   goToChat(){

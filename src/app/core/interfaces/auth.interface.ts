@@ -31,4 +31,5 @@ export interface User extends RegisterData {
   agentActive?: boolean
   agentId?: any,
   health: any
+  has_active_plan?: boolean
 }

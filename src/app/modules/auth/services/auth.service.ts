@@ -90,7 +90,7 @@ export class AuthService {
     );
   }
 
-  logout(): void {
+  public logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('refresh-token');
     localStorage.removeItem('user');
@@ -182,7 +182,6 @@ export class AuthService {
       })
       .pipe(
         map((response: any) => {
-          console.log("🚀 ~ AuthService ~ map ~ response:", response)
           // Clear all user data and log out after successful deletion
           this.logout();
           return response;

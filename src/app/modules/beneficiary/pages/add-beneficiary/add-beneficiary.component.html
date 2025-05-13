@@ -53,6 +53,10 @@
           </ion-select>
         </ion-item>
 
+        <ion-item *ngIf="isAdult">
+          <ion-input label="Correo Electrónico" labelPlacement="floating" type="email" formControlName="email" required></ion-input>
+        </ion-item>
+
         <div class="separator">
           <h4>Datos de contacto</h4>
         </div>

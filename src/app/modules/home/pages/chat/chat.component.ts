@@ -205,6 +205,30 @@ export class ChatComponent implements OnInit, OnDestroy {
         error: (error) => {
           this.isConnecting = false;
           this.connectionError = true;
+        
+          // Verificar si es un error específico de falta de plan
+          if (error.message && error.message.includes('sin plan activo')) {
+            // Mostrar mensaje específico en vez de intentar reconectar
+            const planMessage: Message = {
+              id: this.messages.length + 1,
+              chat_id: 4,
+              sender_id: 0,
+              message: 'Para acceder a esta funcionalidad, necesitas tener un plan activo. Por favor, contrata un plan para continuar.',
+              sender_type: 'BOT',
+              sent_at: new Date().toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true,
+              }),
+              status: 'sent',
+            };
+            
+            this.messages.push(planMessage);
+            this.scrollToBottom();
+            
+            // No intentar reconectar en este caso específico
+            return;
+          }
           console.error('Error en la conexión WebSocket:', error);
 
           // Solo mostrar una notificación si hay un error genuino (no durante reconexiones)

@@ -13,16 +13,12 @@ export class WorkWithUsService {
 
   constructor(private http: HttpClient) { }
 
-  // Método para enviar el formulario de trabajo
   sendWorkForm(formData: any): Observable<any> {
-    console.log('formData', formData);
     return this.http.post(`${apiUrl}api/v1/work-with-us/send-work`, formData).pipe(
       map(response => {
-        // Puedes hacer cualquier manejo adicional con la respuesta, si es necesario
         return response;
       }),
       catchError(error => {
-        // Aquí se manejarían errores si los hay
         throw error;
       })
     );
