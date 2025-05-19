@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { BeneficiaryService } from '../../../../core/services/beneficiary.service';
 import { EditButtonComponent } from 'src/app/shared/components/edit-button/edit-button.component';
+import { UserService } from 'src/app/modules/auth/services/user.service';
 
 @Component({
   selector: 'app-home-beneficiary',
@@ -39,7 +40,8 @@ export class HomeBeneficiaryComponent implements OnInit {
   constructor(
     private beneficiaryService: BeneficiaryService,
     private navCtrl: NavController,
-    private router: Router
+    private router: Router,
+    public userService : UserService
   ) {}
 
   ngOnInit() {

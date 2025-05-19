@@ -16,7 +16,7 @@ import { SecondaryCardComponent } from 'src/app/shared/components/secondary-card
 export class UserConditionsListComponent implements OnInit {
   public user: User | null = null;
 
-  constructor(private userService: UserService, private userHealthService: UserHealthService) {}
+  constructor(public userService: UserService, private userHealthService: UserHealthService) {}
 
   ngOnInit() {
     this.userService.user$.subscribe((userData) => {

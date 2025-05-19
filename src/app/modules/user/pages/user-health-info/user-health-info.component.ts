@@ -19,6 +19,7 @@ import { UserVacinationsFormComponent } from '../../components/health/vacination
 import { UserMedicalHistoryFormComponent } from '../../components/health/medical-history/user-medical-history-form/user-medical-history-form.component';
 import { UserHealthConditionFormComponent } from '../../components/health/health-condition/user-health-condition-form/user-health-condition-form.component';
 import { UserMedicamentsAllergiesFormComponent } from '../../components/health/allergies/user-medicaments-allergies-form/user-medicaments-allergies-form.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-user-health-info',
@@ -34,7 +35,8 @@ import { UserMedicamentsAllergiesFormComponent } from '../../components/health/a
     UserMedicalHistoryFormComponent,
     UserHealthConditionFormComponent,
     UserMedicamentsAllergiesFormComponent,
-    UserProfileInfoComponent
+    UserProfileInfoComponent,
+    AsyncPipe
   ],
   templateUrl: './user-health-info.component.html',
   styleUrls: ['./user-health-info.component.scss'],
@@ -53,8 +55,8 @@ export class UserHealthInfoComponent implements OnInit {
   public addAllergies: boolean = false;
 
   constructor(
-    private userService: UserService,
-    private userHealthService: UserHealthService
+    public userService: UserService,
+    private userHealthService: UserHealthService,
   ) {}
 
   ngOnInit() {

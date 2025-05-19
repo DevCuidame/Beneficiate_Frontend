@@ -24,7 +24,9 @@
           </div>
           }@else {
           <div class="plan-name" style="color: var(--ion-color-dark)">
-            No tienes un plan
+            @if((userService.accountType$ | async) === 'user'){ No tienes un
+            plan }@else if((userService.accountType$ | async) ===
+            'beneficiary'){ Cuenta beneficiario}
           </div>
           }
         </div>
@@ -39,6 +41,8 @@
       >
         Salud Info.
       </div>
+      @if((userService.accountType$ | async) === 'user'){
+
       <div
         class="nav-item"
         [class.active]="activeTab === 'beneficios'"
@@ -53,6 +57,7 @@
       >
         Planes
       </div>
+      }
     </div>
 
     <div class="options-container">
@@ -138,6 +143,8 @@
 
     <div class="buttons-container">
       <div class="buttons">
+        @if((userService.accountType$ | async) === 'user'){
+
         <div
           class="button"
           id="firstOption"
@@ -148,21 +155,32 @@
         <div class="button" id="secondOption" (click)="selectButton('Agenda')">
           <span>Agenda</span>
         </div>
-        <div
-          class="button"
-          id="thirdOption"
-          (click)="selectButton('Mi Salud')"
-        >
+
+        <div class="button" id="thirdOption" (click)="selectButton('Mi Salud')">
           <span>Mi Salud</span>
         </div>
+        }@else if((userService.accountType$ | async) === 'beneficiary'){
+        <div
+          class="button"
+          id="secondOption"
+          (click)="selectButtonToBeneficiary('Agenda')"
+        >
+          <span>Agenda</span>
+        </div>
+        <div class="button" id="thirdOption" (click)="selectButtonToBeneficiary('Mi Salud')">
+          <span>Mi Salud</span>
+        </div>
+        }
       </div>
     </div>
     <!-- Beneficiary Cards -->
+    @if((userService.accountType$ | async) === 'user'){
 
     <app-beneficiary-card
       [beneficiaries]="beneficiaries"
       [plan]="user.plan"
     ></app-beneficiary-card>
+    }
   </div>
 </ion-content>
 <!-- <app-user-chat-widget></app-user-chat-widget> -->

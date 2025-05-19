@@ -3,31 +3,33 @@
 
   <div *ngIf="user?.plan !== null; else noPlan" style="height: 100%;">
     <div class="beneficiarios-container">
-      <div class="beneficiarios-nav">
-        <button
-          class="btn-nav"
-          [class.selected]="selectedButton === 'beneficiarios'"
-          (click)="selectButton('beneficiarios')">
-          <p>Beneficiarios</p>
-        </button>
-
-        <button
-          class="btn-nav"
-          [class.selected]="selectedButton === 'detalles'"
-          (click)="selectButton('detalles')">
-          <p>Detalles del plan</p>
-        </button>
-
-        <button
-          class="btn-nav"
-          [class.selected]="selectedButton === 'planes'"
-          (click)="selectButton('planes')">
-          <p>Planes</p>
-        </button>
-      </div>
+      @if((userService.accountType$ | async) === 'user'){
+        <div class="beneficiarios-nav" >
+          <button
+            class="btn-nav"
+            [class.selected]="selectedButton === 'beneficiarios'"
+            (click)="selectButton('beneficiarios')">
+            <p>Beneficiarios</p>
+          </button>
+  
+          <button
+            class="btn-nav"
+            [class.selected]="selectedButton === 'detalles'"
+            (click)="selectButton('detalles')">
+            <p>Detalles del plan</p>
+          </button>
+  
+          <button
+            class="btn-nav"
+            [class.selected]="selectedButton === 'planes'"
+            (click)="selectButton('planes')">
+            <p>Planes</p>
+          </button>
+        </div>
+      }
 
       <div class="paneles-container">
-        <div class="beneficiarios-panel" *ngIf="selectedPanel === 'beneficiarios'">
+        <div class="beneficiarios-panel" *ngIf="selectedPanel === 'beneficiarios' && (userService.accountType$ | async) === 'user'">
           <app-beneficiary-card [isIndividual]="user?.plan?.id === 1"></app-beneficiary-card>
         </div>
 
@@ -69,18 +71,15 @@
   </div>
 
   <ng-template #noPlan>
-    <!-- Solución: Aseguramos que los componentes solo se rendericen cuando planes y el plan seleccionado estén disponibles -->
     <ng-container *ngIf="plans && plans.length > 0">
       <div class="planes-panel">
         <h2>Tu bienestar es nuestra prioridad. Descubre opciones que se adaptan a ti.</h2>
 
-        <!-- Información del plan seleccionado cuando está disponible -->
         <div *ngIf="hasPlanBeenSelected && selectedPlanFromRegister" class="selected-plan-info">
           <h3>Has seleccionado: Plan {{selectedPlanFromRegister.name}}</h3>
           <p>Haz clic en "Adquirir" para iniciar el proceso de pago.</p>
         </div>
 
-        <!-- Renderizamos las tarjetas de plan -->
         <div class="plan-container">
           <app-plan-card
             *ngFor="let plan of plans"
@@ -97,7 +96,6 @@
       </div>
     </ng-container>
     
-    <!-- Mostrar un indicador de carga si los planes aún no están disponibles -->
     <div *ngIf="!plans || plans.length === 0" class="loading-container">
       <ion-spinner name="circular"></ion-spinner>
       <p>Cargando planes disponibles...</p>

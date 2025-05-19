@@ -32,7 +32,7 @@ export class UserMedicationsAllergiesListComponent implements OnInit {
     SEVERE: 'Severo'
   };
 
-  constructor(private userService: UserService, private userHealthService: UserHealthService) {}
+  constructor(public userService: UserService, private userHealthService: UserHealthService) {}
 
   ngOnInit() {
     this.userService.user$.subscribe((userData) => {

@@ -44,5 +44,7 @@
     </div>
   </div>
 </app-primary-card>
+@if((userService.accountType$ | async) === 'user'){
 
 <app-edit-button route="/user/home/conditions/form"></app-edit-button>
+}

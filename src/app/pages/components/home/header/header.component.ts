@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { UserService } from './../../../../modules/auth/services/user.service';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AlertController, IonicModule } from '@ionic/angular';
@@ -14,7 +15,7 @@ import { AuthService } from 'src/app/modules/auth/services/auth.service';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   @Input() addBackground: boolean = false;
   @Input() noPlan: boolean = false;
   showProfileMenu: boolean = false;
@@ -22,8 +23,14 @@ export class HeaderComponent {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private alertController: AlertController
-  ) {}
+    private alertController: AlertController,
+    public userService: UserService
+  ) {
+    const accountType = this.userService.getAccountType();
+  }
+
+  ngOnInit() {
+  }
 
   isActive(path: string): boolean {
     return this.router.url === path;

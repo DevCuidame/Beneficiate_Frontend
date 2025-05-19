@@ -65,7 +65,7 @@ export class HomePageComponent implements OnInit {
     '../../../../assets/images/Desktop/plan-card-individual.png';
 
   constructor(
-    private userService: UserService,
+    public userService: UserService,
     private beneficiaryService: BeneficiaryService,
     private loadingController: LoadingController,
     private toastController: ToastController,

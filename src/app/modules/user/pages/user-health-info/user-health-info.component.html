@@ -5,153 +5,163 @@
     <div class="cards-container">
       <!-- ---------- Card para Enfermedades, Condiciones y Distintivos ---------- -->
       <div class="card">
+        @if((userService.accountType$ | async) === 'user'){
+
         <button class="btn btn-edit" (click)="toggleEdit('addHealthCondition')">
-          <fa-icon [icon]="addHealthCondition? faTimes : faPen"></fa-icon>
+          <fa-icon [icon]="addHealthCondition ? faTimes : faPen"></fa-icon>
         </button>
-        @if (addHealthCondition == false) {
-          <h3 class="title">Enfermedades</h3>
-          <div class="scroll-x">
-            @if (user?.health?.diseases?.length ?? 0 > 0) { @for (item of
-              user?.health?.diseases; track item){
-              <app-card-info-input
-                [title]="item.disease"
-              ></app-card-info-input>
-            } }@else {
-              <p style="text-align: start; width: 100%">
-                No hay enfermedades registradas
-              </p>
-            }
-          </div>
+        } @if (addHealthCondition == false) {
+        <h3 class="title">Enfermedades</h3>
+        <div class="scroll-x">
+          @if (user?.health?.diseases?.length ?? 0 > 0) { @for (item of
+          user?.health?.diseases; track item){
+          <app-card-info-input [title]="item.disease"></app-card-info-input>
+          } }@else {
+          <p style="text-align: start; width: 100%">
+            No hay enfermedades registradas
+          </p>
+          }
+        </div>
 
-          <h3 class="title">Condiciones</h3>
-          <div class="scroll-x">
-            @if(user?.health?.disabilities?.length ?? 0 > 0){ @for (item of
-              user?.health?.disabilities; track item){
-              <app-card-info-input
-                [title]="item.name?.toString() || ' '"
-              ></app-card-info-input>
-            } }@else {
-              <p>No hay condiciones registradas</p>
-            }
-          </div>
+        <h3 class="title">Condiciones</h3>
+        <div class="scroll-x">
+          @if(user?.health?.disabilities?.length ?? 0 > 0){ @for (item of
+          user?.health?.disabilities; track item){
+          <app-card-info-input
+            [title]="item.name?.toString() || ' '"
+          ></app-card-info-input>
+          } }@else {
+          <p>No hay condiciones registradas</p>
+          }
+        </div>
 
-          <h3 class="title">Distintivos</h3>
-          <div class="scroll-x">
-            @if(user?.health?.distinctives?.length ?? 0 > 0){ @for (item of
-              user?.health?.distinctives; track item){
-              <app-card-info-input
-                [title]="item.description?.toString() || ' '"
-              ></app-card-info-input>
-            } }@else {
-              <p>No hay distintivos registrados</p>
-            }
-          </div>
+        <h3 class="title">Distintivos</h3>
+        <div class="scroll-x">
+          @if(user?.health?.distinctives?.length ?? 0 > 0){ @for (item of
+          user?.health?.distinctives; track item){
+          <app-card-info-input
+            [title]="item.description?.toString() || ' '"
+          ></app-card-info-input>
+          } }@else {
+          <p>No hay distintivos registrados</p>
+          }
+        </div>
         }@else {
-          <app-user-health-condition-form></app-user-health-condition-form>
+        <app-user-health-condition-form></app-user-health-condition-form>
         }
       </div>
 
       <!-- ----------------------- Card para Antecedentes ----------------------- -->
       <div class="card">
-        <button class="btn btn-edit" (click)="toggleEdit('addMedicalHistory')">
-          <fa-icon [icon]="addMedicalHistory? faTimes : faPen"></fa-icon>
-        </button>
-        @if (addMedicalHistory == false) {
-          <h3 class="title">Antecedentes Personales</h3>
-          <div class="scroll-x">
-            @if (user?.health?.medical_history?.length ?? 0 > 0) { @for (item of
-              user?.health?.medical_history; track item){
-            <app-card-info-input
-              [title]="item.history_type"
-              [info]="item.history_date.toString() || 'Fecha no disponible'"
-            ></app-card-info-input>
-          } }@else {
-            <p style="text-align: start; width: 100%">
-              No hay antecedentes personales registrados.
-            </p>
-          }
-          </div>
+        @if((userService.accountType$ | async) === 'user'){
 
-          <h3 class="title">Antecedentes Familiares</h3>
-          <div class="scroll-x">
-            @if(user?.health?.family_history?.length ?? 0 > 0){ @for (item of
-              user?.health?.family_history; track item){
-              <app-card-info-input
-                [title]="getLabel(historyTypeOptions, item.history_type)"
-                [info]=" getLabel(relativeOptions, item.relationship) "
-                [optionalInfo]="item.history_date.toString() || 'Fecha no disponible'"
-              ></app-card-info-input>
-            } }@else {
-              <p>No hay antecedentes familiares registrados.</p>
-            }
-          </div>
+        <button class="btn btn-edit" (click)="toggleEdit('addMedicalHistory')">
+          <fa-icon [icon]="addMedicalHistory ? faTimes : faPen"></fa-icon>
+        </button>
+        } @if (addMedicalHistory == false) {
+        <h3 class="title">Antecedentes Personales</h3>
+        <div class="scroll-x">
+          @if (user?.health?.medical_history?.length ?? 0 > 0) { @for (item of
+          user?.health?.medical_history; track item){
+          <app-card-info-input
+            [title]="item.history_type"
+            [info]="item.history_date.toString() || 'Fecha no disponible'"
+          ></app-card-info-input>
+          } }@else {
+          <p style="text-align: start; width: 100%">
+            No hay antecedentes personales registrados.
+          </p>
+          }
+        </div>
+
+        <h3 class="title">Antecedentes Familiares</h3>
+        <div class="scroll-x">
+          @if(user?.health?.family_history?.length ?? 0 > 0){ @for (item of
+          user?.health?.family_history; track item){
+          <app-card-info-input
+            [title]="getLabel(historyTypeOptions, item.history_type)"
+            [info]="getLabel(relativeOptions, item.relationship)"
+            [optionalInfo]="
+              item.history_date.toString() || 'Fecha no disponible'
+            "
+          ></app-card-info-input>
+          } }@else {
+          <p>No hay antecedentes familiares registrados.</p>
+          }
+        </div>
         }@else {
-          <app-user-medical-history-form></app-user-medical-history-form>
+        <app-user-medical-history-form></app-user-medical-history-form>
         }
       </div>
 
       <!-- ------------------ Card para Medicamentos y Alergias ------------------ -->
       <div class="card">
-        <button class="btn btn-edit" (click)="toggleEdit('addAllergies')">
-          <fa-icon [icon]="addAllergies? faTimes : faPen"></fa-icon>
-        </button>
-        @if (addAllergies == false) {
-          <h3 class="title">Medicamentos</h3>
-          <div class="scroll-x">
-            @if (user?.health?.medications?.length ?? 0 > 0) { @for (item of
-              user?.health?.medications; track item){
-              <app-card-info-input
-                [title]="item.medication"
-                [info]="item.laboratory"
-                [optionalInfo]="item.dosage"
-              ></app-card-info-input>
-            } }@else {
-              <p style="text-align: start; width: 100%">
-                No hay medicamentos registrados.
-              </p>
-            }
-          </div>
+        @if((userService.accountType$ | async) === 'user'){
 
-          <h3 class="title">Alergias</h3>
-          <div class="scroll-x">
-            @if(user?.health?.allergies?.length ?? 0 > 0){ @for (item of
-              user?.health?.allergies; track item){
-              <app-card-info-input
-                [title]="item.allergy_type"
-                [info]="item.description"
-                [optionalInfo]="severityText(item.severity)"
-              ></app-card-info-input>
-            } }@else {
-              <p>No hay alergias registradas.</p>
-            }
-          </div>
+        <button class="btn btn-edit" (click)="toggleEdit('addAllergies')">
+          <fa-icon [icon]="addAllergies ? faTimes : faPen"></fa-icon>
+        </button>
+        } @if (addAllergies == false) {
+        <h3 class="title">Medicamentos</h3>
+        <div class="scroll-x">
+          @if (user?.health?.medications?.length ?? 0 > 0) { @for (item of
+          user?.health?.medications; track item){
+          <app-card-info-input
+            [title]="item.medication"
+            [info]="item.laboratory"
+            [optionalInfo]="item.dosage"
+          ></app-card-info-input>
+          } }@else {
+          <p style="text-align: start; width: 100%">
+            No hay medicamentos registrados.
+          </p>
+          }
+        </div>
+
+        <h3 class="title">Alergias</h3>
+        <div class="scroll-x">
+          @if(user?.health?.allergies?.length ?? 0 > 0){ @for (item of
+          user?.health?.allergies; track item){
+          <app-card-info-input
+            [title]="item.allergy_type"
+            [info]="item.description"
+            [optionalInfo]="severityText(item.severity)"
+          ></app-card-info-input>
+          } }@else {
+          <p>No hay alergias registradas.</p>
+          }
+        </div>
         }@else {
-          <app-user-medicaments-allergies-form></app-user-medicaments-allergies-form>
+        <app-user-medicaments-allergies-form></app-user-medicaments-allergies-form>
         }
       </div>
 
       <!-- ----------------------- Card para Vacunas ----------------------- -->
       <div class="card">
+        @if((userService.accountType$ | async) === 'user'){
+
         <button class="btn btn-edit" (click)="toggleEdit('addVacination')">
-          <fa-icon [icon]="addVacination? faTimes : faPen"></fa-icon>
+          <fa-icon [icon]="addVacination ? faTimes : faPen"></fa-icon>
         </button>
-        @if (addVacination == false) {
-          <h3 class="title">Vacunas</h3>
-          <div class="scroll-x">
-            @if (user?.health?.vaccinations?.length ?? 0 > 0) { @for (item of
-              user?.health?.vaccinations; track item){
-              <app-card-info-input
-                [title]="item.vaccine"
-                [info]="item.vaccination_date.toString() || 'Fecha no disponible'"
-              ></app-card-info-input>
-            } }@else {
-              <p style="text-align: start; width: 100%; color: var(--ion-color-dark)">
-                No hay vacunas registradas.
-              </p>
-            }
-          </div>
+        } @if (addVacination == false) {
+        <h3 class="title">Vacunas</h3>
+        <div class="scroll-x">
+          @if (user?.health?.vaccinations?.length ?? 0 > 0) { @for (item of
+          user?.health?.vaccinations; track item){
+          <app-card-info-input
+            [title]="item.vaccine"
+            [info]="item.vaccination_date.toString() || 'Fecha no disponible'"
+          ></app-card-info-input>
+          } }@else {
+          <p
+            style="text-align: start; width: 100%; color: var(--ion-color-dark)"
+          >
+            No hay vacunas registradas.
+          </p>
+          }
+        </div>
         }@else {
-          <app-user-vacinations-form></app-user-vacinations-form>
+        <app-user-vacinations-form></app-user-vacinations-form>
         }
       </div>
     </div>

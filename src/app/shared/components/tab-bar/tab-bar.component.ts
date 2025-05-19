@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { IonicModule, AlertController, LoadingController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { UserService } from 'src/app/modules/auth/services/user.service';
 
 @Component({
   selector: 'app-tab-bar',
@@ -21,37 +22,48 @@ export class TabBarComponent {
   menuItems: { icon: string; label: string; action: () => void }[] = [];
   deleteAccountForm: FormGroup;
 
+  public accountType: any;
+
   constructor(
     private router: Router,
     private authService: AuthService,
     private alertController: AlertController,
     private loadingController: LoadingController,
     private toastController: ToastController,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    public userService: UserService
   ) {
+
+    this.accountType = this.userService.getAccountType();
+
     // Inicializar formulario para eliminar cuenta
     this.deleteAccountForm = this.formBuilder.group({
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
 
-    // Opciones del menú desplegable
+    this.initializeMenuItems();
+  }
+
+  private initializeMenuItems() {
+    const accountType = this.userService.getAccountType();
+    
+    // Opciones base que todos ven
     this.menuItems = [
-      // { 
-      //   icon: 'person-outline', 
-      //   label: 'Mi perfil', 
-      //   action: () => this.navigateToProfile() 
-      // },
-      { 
-        icon: 'trash-outline', 
-        label: 'Eliminar Cuenta', 
-        action: () => this.deleteAccount() 
-      },
       { 
         icon: 'log-out-outline', 
         label: 'Cerrar sesión', 
         action: () => this.confirmLogout() 
       }
     ];
+  
+    if (accountType === 'user') {
+      this.menuItems.unshift({
+        icon: 'trash-outline',
+        label: 'Eliminar Cuenta',
+        action: () => this.deleteAccount()
+      });
+    }
+
   }
 
   navigate(route: string) {

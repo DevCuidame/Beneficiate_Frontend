@@ -37,13 +37,20 @@
     </div>
     <div class="detail-item">
       <span class="label">Género:</span>
-      <span class="value">{{ user?.gender === 'M' ? 'Masculino' : user?.gender === 'F' ? 'Femenino' : 'Otro' }}</span>
+      <span class="value">{{
+        user?.gender === "M"
+          ? "Masculino"
+          : user?.gender === "F"
+          ? "Femenino"
+          : "Otro"
+      }}</span>
     </div>
     <div class="detail-item">
       <span class="label">F. Nacimiento:</span>
-      <span class="value">{{ user?.birth_date | date:'dd/MM/yyyy' }}</span>
+      <span class="value">{{ user?.birth_date | date : "dd/MM/yyyy" }}</span>
     </div>
   </div>
+  @if((userService.accountType$ | async) === 'user'){
 
   <div class="profile-actions">
     <button class="edit-button" (click)="goToEditProfile()">
@@ -51,4 +58,5 @@
       Editar perfil
     </button>
   </div>
+  }
 </div>
