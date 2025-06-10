@@ -17,7 +17,7 @@ import { UserService } from '../../../modules/auth/services/user.service';
 import { User } from 'src/app/core/interfaces/auth.interface';
 import { BeneficiaryService } from 'src/app/core/services/beneficiary.service';
 import { Beneficiary } from 'src/app/core/interfaces/beneficiary.interface';
-import { Plan, PaymentService } from 'src/app/core/services/payment.service';
+import { Plan, PaymentService, PaymentConfirmationEmail } from 'src/app/core/services/payment.service';
 
 import { InfoUserComponent } from '../../components/home/info-user/info-user.component';
 import { HeaderComponent } from '../../components/home/header/header.component';
@@ -37,7 +37,7 @@ import { InlinePaymentComponent } from 'src/app/shared/components/inline-payment
     FollowUsComponent,
     BeneficiaryCardComponent,
     PlanCardComponent,
-    IonicModule
+    IonicModule,
   ],
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.scss'],
@@ -71,7 +71,7 @@ export class HomePageComponent implements OnInit {
     private toastController: ToastController,
     private paymentService: PaymentService,
     private planSelectionService: PlanSelectionService,
-    private modalController: ModalController,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {
@@ -102,138 +102,215 @@ export class HomePageComponent implements OnInit {
     setTimeout(() => {
       this.checkPlanSelection();
     }, 200);
-
   }
-checkPlanSelection(): void {
-  // Forzar actualización desde sessionStorage
-  this.planSelectionService.forceRefreshFromStorage();
-  
-  // Variable para controlar si debemos iniciar el pago automáticamente
-  let shouldInitiatePayment = false;
-  
-  // Verificar directamente en el sessionStorage
-  const storedPlan = sessionStorage.getItem('selectedPlan');
-  
-  if (storedPlan) {
-    try {
-      const plan = JSON.parse(storedPlan) as Plan;
-      this.selectedPlanFromRegister = plan;
-      this.hasPlanBeenSelected = true;
-      this.selectedPanel = 'planes';
-      this.selectedButton = 'planes';
-      
-      // Marcamos que se debe iniciar el pago automáticamente
-      shouldInitiatePayment = true;
-      
-    } catch (e) {
-      console.error('Error al parsear el plan desde sessionStorage:', e);
-      sessionStorage.removeItem('selectedPlan');
-    }
-  }
+  checkPlanSelection(): void {
+    // Forzar actualización desde sessionStorage
+    this.planSelectionService.forceRefreshFromStorage();
 
-  // Suscribirse al plan seleccionado
-  const planSub = this.planSelectionService.selectedPlan$.subscribe((plan) => {
-    if (plan) {
-      this.selectedPlanFromRegister = plan;
-      this.hasPlanBeenSelected = true;
-      this.selectedPanel = 'planes';
-      this.selectedButton = 'planes';
-    }
-  });
-  this.subscriptions.push(planSub);
+    // Variable para controlar si debemos iniciar el pago automáticamente
+    let shouldInitiatePayment = false;
 
-  // Suscribirse al estado de selección de plan
-  const hasSelectedSub = this.planSelectionService.hasPlanSelected$.subscribe((hasSelected) => {
-    this.hasPlanBeenSelected = hasSelected;
-  });
-  this.subscriptions.push(hasSelectedSub);
-  
-  // Si debemos iniciar el pago y tenemos los planes cargados, iniciamos después de un breve retraso
-  // para asegurar que los componentes hijo estén cargados
-  if (shouldInitiatePayment) {
-    // Esperar a que los planes estén cargados
-    const checkPlansAndInitiate = () => {
-      if (this.plans && this.plans.length > 0) {
-        // Pequeño retraso para asegurar que los componentes se han renderizado
-        setTimeout(() => {
-          this.initiatePaymentAutomatically();
-        }, 500);
-      } else {
-        // Si aún no hay planes, volvemos a verificar en un momento
-        setTimeout(checkPlansAndInitiate, 200);
+    // Verificar directamente en el sessionStorage
+    const storedPlan = sessionStorage.getItem('selectedPlan');
+
+    if (storedPlan) {
+      try {
+        const plan = JSON.parse(storedPlan) as Plan;
+        this.selectedPlanFromRegister = plan;
+        this.hasPlanBeenSelected = true;
+        this.selectedPanel = 'planes';
+        this.selectedButton = 'planes';
+
+        // Marcamos que se debe iniciar el pago automáticamente
+        shouldInitiatePayment = true;
+      } catch (e) {
+        console.error('Error al parsear el plan desde sessionStorage:', e);
+        sessionStorage.removeItem('selectedPlan');
       }
-    };
-    
-    checkPlansAndInitiate();
-  }
-}
+    }
 
-// Nuevo método para iniciar el pago automáticamente
-initiatePaymentAutomatically(): void {
-  
-  if (!this.selectedPlanFromRegister) {
-    console.error('No hay plan seleccionado para iniciar pago automático');
-    return;
-  }
-  
-  // Crear el modal de pago directamente desde el componente principal
-  this.startPaymentProcess(this.selectedPlanFromRegister.id);
-}
+    // Suscribirse al plan seleccionado
+    const planSub = this.planSelectionService.selectedPlan$.subscribe(
+      (plan) => {
+        if (plan) {
+          this.selectedPlanFromRegister = plan;
+          this.hasPlanBeenSelected = true;
+          this.selectedPanel = 'planes';
+          this.selectedButton = 'planes';
+        }
+      }
+    );
+    this.subscriptions.push(planSub);
 
-// Nuevo método para centralizar el proceso de pago
-async startPaymentProcess(planId: number): Promise<void> {
-  
-  if (!planId) {
-    const toast = await this.toastController.create({
-      message: 'No se pudo identificar el plan seleccionado.',
-      duration: 2000,
-      position: 'bottom',
-      color: 'warning'
+    // Suscribirse al estado de selección de plan
+    const hasSelectedSub = this.planSelectionService.hasPlanSelected$.subscribe(
+      (hasSelected) => {
+        this.hasPlanBeenSelected = hasSelected;
+      }
+    );
+    this.subscriptions.push(hasSelectedSub);
+
+    // Si debemos iniciar el pago y tenemos los planes cargados, iniciamos después de un breve retraso
+    // para asegurar que los componentes hijo estén cargados
+    if (shouldInitiatePayment) {
+      // Esperar a que los planes estén cargados
+      const checkPlansAndInitiate = () => {
+        if (this.plans && this.plans.length > 0) {
+          // Pequeño retraso para asegurar que los componentes se han renderizado
+          setTimeout(() => {
+            this.initiatePaymentAutomatically();
+          }, 500);
+        } else {
+          // Si aún no hay planes, volvemos a verificar en un momento
+          setTimeout(checkPlansAndInitiate, 200);
+        }
+      };
+
+      checkPlansAndInitiate();
+    }
+  }
+
+  // Nuevo método para iniciar el pago automáticamente
+  initiatePaymentAutomatically(): void {
+    if (!this.selectedPlanFromRegister) {
+      console.error('No hay plan seleccionado para iniciar pago automático');
+      return;
+    }
+
+    // Crear el modal de pago directamente desde el componente principal
+    this.startPaymentProcess(this.selectedPlanFromRegister.id);
+  }
+
+  // Nuevo método para centralizar el proceso de pago
+  async startPaymentProcess(planId: number): Promise<void> {
+    if (!planId) {
+      const toast = await this.toastController.create({
+        message: 'No se pudo identificar el plan seleccionado.',
+        duration: 2000,
+        position: 'bottom',
+        color: 'warning',
+      });
+      toast.present();
+      return;
+    }
+
+    const loading = await this.loadingController.create({
+      message: 'Iniciando proceso de pago...',
+      spinner: 'circular',
     });
-    toast.present();
-    return;
-  }
+    await loading.present();
 
-  const loading = await this.loadingController.create({
-    message: 'Iniciando proceso de pago...',
-    spinner: 'circular'
-  });
-  await loading.present();
+    this.paymentService.initiatePayment(planId).subscribe({
+      next: async (paymentTransaction) => {
+        loading.dismiss();
 
-  this.paymentService.initiatePayment(planId).subscribe({
-    next: async (paymentTransaction) => {
-      loading.dismiss();
+        if (!paymentTransaction.redirectUrl) {
+          const toast = await this.toastController.create({
+            message: 'No se pudo obtener el enlace de pago',
+            duration: 4000,
+            position: 'bottom',
+            color: 'danger',
+          });
+          toast.present();
+          return;
+        }
 
-      if (!paymentTransaction.redirectUrl) {
+        try {
+          // Abrir modal de pago
+          const modal = await this.modalController.create({
+            component: InlinePaymentComponent,
+            componentProps: {
+              paymentUrl: paymentTransaction.redirectUrl,
+              transactionId: paymentTransaction.transactionId,
+            },
+            cssClass: 'payment-modal',
+            backdropDismiss: false,
+          });
+
+          await modal.present();
+
+          const { data } = await modal.onDidDismiss();
+
+          this.planSelectionService.clearPlanSelection();
+
+          if (data?.success) {
+            const toast = await this.toastController.create({
+              message:
+                '¡Pago completado con éxito! Tu plan ha sido actualizado.',
+              duration: 5000,
+              position: 'middle',
+              color: 'success',
+              buttons: [
+                {
+                  text: 'OK',
+                  role: 'cancel',
+                  handler: () => {
+                    // Recargar datos del usuario
+                    window.location.reload();
+                  },
+                },
+              ],
+            });
+            toast.present();
+
+            const emailData: PaymentConfirmationEmail = {
+              emailTo: this.user?.email || '',
+              name: this.selectedPlanFromRegister?.name || '',
+              price: this.selectedPlanFromRegister?.price || 0,
+              duration: this.selectedPlanFromRegister?.duration_days?.toString() || '0',
+            }
+
+            if (emailData.emailTo) {
+              console.error('Falta el email del destinatario');
+              this.planSelectionService.clearPlanSelection();
+              return;
+            }
+
+            this.paymentService.sendEmailConfirmation(emailData);
+
+            // Limpiar la selección si el pago fue exitoso
+            this.planSelectionService.clearPlanSelection();
+          } else {
+            // Verificar una vez más el estado del pago
+            this.verifyPaymentStatus(paymentTransaction.transactionId);
+          }
+        } catch (error) {
+          console.error('Error mostrando el modal de pago:', error);
+          const toast = await this.toastController.create({
+            message: 'Hubo un problema con la pasarela de pago',
+            duration: 4000,
+            position: 'bottom',
+            color: 'danger',
+          });
+          toast.present();
+        }
+      },
+      error: async (error) => {
+        console.error('Error iniciando pago:', error);
+        loading.dismiss();
         const toast = await this.toastController.create({
-          message: 'No se pudo obtener el enlace de pago',
+          message: 'Error al iniciar el pago. Intenta de nuevo.',
           duration: 4000,
           position: 'bottom',
-          color: 'danger'
+          color: 'danger',
         });
         toast.present();
-        return;
-      }
+      },
+    });
+  }
 
-      try {
-        // Abrir modal de pago
-        const modal = await this.modalController.create({
-          component: InlinePaymentComponent,
-          componentProps: {
-            paymentUrl: paymentTransaction.redirectUrl,
-            transactionId: paymentTransaction.transactionId
-          },
-          cssClass: 'payment-modal',
-          backdropDismiss: false
-        });
+  // Método para verificar el estado del pago
+  async verifyPaymentStatus(transactionId: string): Promise<void> {
+    const loading = await this.loadingController.create({
+      message: 'Verificando estado del pago...',
+      spinner: 'circular',
+    });
+    await loading.present();
 
-        await modal.present();
-
-        const { data } = await modal.onDidDismiss();
-
-        this.planSelectionService.clearPlanSelection();
-
-        if (data?.success) {
+    this.paymentService.verifyTransaction(transactionId).subscribe({
+      next: async (success) => {
+        loading.dismiss();
+        if (success) {
           const toast = await this.toastController.create({
             message: '¡Pago completado con éxito! Tu plan ha sido actualizado.',
             duration: 5000,
@@ -246,102 +323,40 @@ async startPaymentProcess(planId: number): Promise<void> {
                 handler: () => {
                   // Recargar datos del usuario
                   window.location.reload();
-                }
-              }
-            ]
+                },
+              },
+            ],
           });
           toast.present();
-          
-          // Limpiar la selección si el pago fue exitoso
+
+          // Limpiar la selección del plan si el pago fue exitoso
           this.planSelectionService.clearPlanSelection();
         } else {
-          // Verificar una vez más el estado del pago
-          this.verifyPaymentStatus(paymentTransaction.transactionId);
+          const toast = await this.toastController.create({
+            message: 'El pago no se completó o está pendiente de confirmación.',
+            duration: 4000,
+            position: 'bottom',
+            color: 'warning',
+          });
+          toast.present();
         }
-      } catch (error) {
-        console.error('Error mostrando el modal de pago:', error);
+      },
+      error: async (error) => {
+        console.error('Error verificando pago:', error);
+        loading.dismiss();
         const toast = await this.toastController.create({
-          message: 'Hubo un problema con la pasarela de pago',
+          message:
+            'Error al verificar el pago. Contacta a soporte si el problema persiste.',
           duration: 4000,
           position: 'bottom',
-          color: 'danger'
+          color: 'danger',
         });
         toast.present();
-      }
-    },
-    error: async (error) => {
-      console.error('Error iniciando pago:', error);
-      loading.dismiss();
-      const toast = await this.toastController.create({
-        message: 'Error al iniciar el pago. Intenta de nuevo.',
-        duration: 4000,
-        position: 'bottom',
-        color: 'danger'
-      });
-      toast.present();
-    }
-  });
-}
-
-// Método para verificar el estado del pago
-async verifyPaymentStatus(transactionId: string): Promise<void> {
-  const loading = await this.loadingController.create({
-    message: 'Verificando estado del pago...',
-    spinner: 'circular'
-  });
-  await loading.present();
-
-  this.paymentService.verifyTransaction(transactionId).subscribe({
-    next: async (success) => {
-      loading.dismiss();
-      if (success) {
-        const toast = await this.toastController.create({
-          message: '¡Pago completado con éxito! Tu plan ha sido actualizado.',
-          duration: 5000,
-          position: 'middle',
-          color: 'success',
-          buttons: [
-            {
-              text: 'OK',
-              role: 'cancel',
-              handler: () => {
-                // Recargar datos del usuario
-                window.location.reload();
-              }
-            }
-          ]
-        });
-        toast.present();
-        
-        // Limpiar la selección del plan si el pago fue exitoso
-        this.planSelectionService.clearPlanSelection();
-      } else {
-        const toast = await this.toastController.create({
-          message: 'El pago no se completó o está pendiente de confirmación.',
-          duration: 4000,
-          position: 'bottom',
-          color: 'warning'
-        });
-        toast.present();
-      }
-    },
-    error: async (error) => {
-      console.error('Error verificando pago:', error);
-      loading.dismiss();
-      const toast = await this.toastController.create({
-        message: 'Error al verificar el pago. Contacta a soporte si el problema persiste.',
-        duration: 4000,
-        position: 'bottom',
-        color: 'danger'
-      });
-      toast.present();
-    }
-  });
-}
-
-
-  ngOnDestroy() {
+      },
+    });
   }
+
+  ngOnDestroy() {}
 
   selectButton(panel: string) {
     this.selectedButton = panel;

@@ -55,7 +55,7 @@ const routes: Routes = [
     path: 'payment/result',
     component: PaymentConfirmationComponent,
   },
-
+  
   {
     path: 'auth',
     loadChildren: () =>
@@ -66,6 +66,13 @@ const routes: Routes = [
     loadChildren: () =>
       import('./modules/callCenter/call-center.module').then(
         (m) => m.CallCenterModule
+      ),
+  },
+  {
+    path: 'admin',
+    loadChildren: () =>
+      import('./modules/admin/admin.module').then(
+        (m) => m.AdminModule
       ),
   },
   {

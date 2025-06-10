@@ -254,7 +254,8 @@ export class NewBeneficiaryFormComponent implements OnInit, OnDestroy {
   }
 
   async saveBeneficiary() {
-    if (this.beneficiaryForm.valid) {
+    
+    if (!this.beneficiaryForm.valid) {
       const loading = await this.loadingCtrl.create({
         message: 'Guardando...',
       });

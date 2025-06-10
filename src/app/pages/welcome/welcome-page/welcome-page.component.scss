@@ -57,7 +57,7 @@
         }
       }
 
-      .img-progress-bar{
+      .img-progress-bar {
         position: absolute;
         top: 25%;
         left: 40px;
@@ -101,6 +101,7 @@
                 opacity: 0;
                 transform: translateY(20px);
               }
+
               to {
                 opacity: 1;
                 transform: translateY(0);
@@ -187,7 +188,7 @@
       display: flex;
       text-align: center;
       flex-direction: column;
-  
+
       .plan-container {
         margin-top: 50px;
         display: flex;
@@ -202,11 +203,10 @@
   }
 }
 
-  
-  
+
+
 @media (max-width: 800px) {
   .banner-container {
-    flex-direction: column;
 
     .banner {
       height: 100vh !important;
@@ -215,7 +215,7 @@
 
       .banner-svg {
         margin-top: 5rem !important;
-        height: 80%;
+        height: 70% !important;
         position: absolute;
         filter: saturate(1.25);
         z-index: 1;
@@ -229,25 +229,27 @@
         width: 100%;
         height: 100%;
         display: flex;
+        flex-direction: column;
         z-index: 5;
 
         .left-banner {
 
           .texto-banner {
             font-size: 1.5rem !important;
-            max-width: 100% !important;
+            max-width: 90% !important;
             margin: 0 25px 125px !important;
             text-shadow: 1px 1px 4px black;
           }
         }
 
-      }
-    }
+        h2 {
+          margin: 0 15px 7.5%;
+          text-align: center !important;
+          font-size: 1.5rem;
+          z-index: 10;
+        }
 
-    h2 {
-      margin: -50px 15px 40px;
-      text-align: center !important;
-      z-index: 10;
+      }
     }
   }
 
@@ -260,7 +262,11 @@
 
     .planes-panel {
       .plan-container {
+        height: 100vh;
+        margin: 0 !important;
+        padding: 5rem 0;
         flex-direction: column;
+        overflow: auto;
 
         app-plan-card {
           transform: scale(0.9) !important;

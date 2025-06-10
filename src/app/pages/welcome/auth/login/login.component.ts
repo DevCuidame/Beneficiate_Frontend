@@ -83,10 +83,14 @@ export class LoginComponent {
         async (response) => {
           await loading.dismiss();
           setTimeout(() => {
-            if (!response.data.user.agentActive) {
-              this.router.navigateByUrl('/home-desktop');
-            } else {
+            const user = response.data.user;
+
+            if (user.admin) {
+              this.router.navigateByUrl('/admin/home');
+            } else if (user.agentActive) {
               this.router.navigateByUrl('/call-center/dash/assigment');
+            } else {
+              this.router.navigateByUrl('/home-desktop');
             }
           }, 100);
         },
