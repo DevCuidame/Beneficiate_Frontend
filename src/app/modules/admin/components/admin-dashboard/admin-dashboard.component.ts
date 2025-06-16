@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminService } from '../../../../core/services/admin.service';
+import { User, StatsData, PlanOption } from '../../../../core/interfaces/admin.interface';
 
 // PrimeNG Modules
 import { TableModule } from 'primeng/table';
@@ -12,32 +13,6 @@ import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { ChartModule } from 'primeng/chart';
 import { CardModule } from 'primeng/card';
-
-interface User {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  verified: boolean;
-  identification_type: string;
-  identification_number: string;
-  gender: string;
-  created_at: string;
-  city_name: string;
-  department_name: string;
-  plan_name: string | null;
-}
-
-interface StatsData {
-  totalUsers: number;
-  individualPlan: number;
-  familyPlan: number;
-}
-
-interface PlanOption {
-  label: string;
-  value: string;
-}
 
 @Component({
   selector: 'app-dashboard',
@@ -104,8 +79,6 @@ export class DashboardComponent implements OnInit {
       this.calculateStats();
       this.updateChart();
       this.applyFilters();
-
-      console.log('Usuarios cargados:', this.user);
     });
   }
 

@@ -4,18 +4,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
-// PrimeNG Modules para el dashboard
-import { TableModule } from 'primeng/table';
-import { InputTextModule } from 'primeng/inputtext';
-import { DropdownModule } from 'primeng/dropdown';
-import { TagModule } from 'primeng/tag';
-import { AvatarModule } from 'primeng/avatar';
-import { AvatarGroupModule } from 'primeng/avatargroup';
-import { ButtonModule } from 'primeng/button';
-import { RippleModule } from 'primeng/ripple';
-
 // Components
 import { DashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
+import { PlanDashboardComponent } from './components/plan-dashboard/plan-dashboard.component';
 import { AppLayoutComponent } from 'src/app/layout/app.layout.component';
 
 const routes: Routes = [
@@ -24,6 +15,7 @@ const routes: Routes = [
     component: AppLayoutComponent,
     children: [
       { path: '', component: DashboardComponent },
+      { path: 'plans', component: PlanDashboardComponent },
     ]
   },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -40,20 +32,12 @@ const routes: Routes = [
     FormsModule, // Necesario para [(ngModel)]
     RouterModule.forChild(routes),
     IonicModule,
+
     
-    // PrimeNG modules
-    TableModule,
-    InputTextModule,
-    DropdownModule,
-    TagModule,
-    AvatarModule,
-    AvatarGroupModule,
-    ButtonModule,
-    RippleModule,
-    
-    // Components (si son standalone)
+    // Components
     AppLayoutComponent,
-    DashboardComponent
+    DashboardComponent,
+    PlanDashboardComponent
   ],
 })
 export class AdminModule { }

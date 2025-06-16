@@ -29,6 +29,7 @@
 
 
 
+
 /**
  * Ionic Dark Mode
  * -----------------------------------------------------
@@ -49,6 +50,15 @@
 
 p {
     margin: 0;
+}
+
+.p-float-label > label {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.field {
+  margin-bottom: 1.5rem;
 }
 
 /* Añade esto a tu archivo global.scss o donde manejes los estilos globales */

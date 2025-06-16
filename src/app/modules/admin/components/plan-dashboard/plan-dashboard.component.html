@@ -1,0 +1,309 @@
+<div class="grid plan-dashboard">
+  <!-- Toast para mensajes -->
+  <p-toast></p-toast>
+
+  <!-- Header Section -->
+  <div class="col-12 my-3">
+    <div class="card">
+      <div class="flex justify-content-between align-items-center">
+        <div>
+          <h2 class="text-900 font-bold mb-2">Panel de Planes</h2>
+          <p class="text-600 m-0">
+            Gestión y administración de planes de suscripción
+          </p>
+        </div>
+        <div class="text-right">
+          <span class="text-500 text-sm"
+            >Última actualización: {{ getCurrentDate() }}</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Plans Table Section -->
+  <div class="col-12 my-3">
+    <div class="card">
+      <!-- Table Header with filters -->
+      <div
+        class="flex flex-column md:flex-row md:justify-content-between md:align-items-center mb-5"
+      >
+        <h5 class="m-0">Lista de Planes</h5>
+
+        <!-- Filters Row -->
+        <div class="flex flex-column md:flex-row gap-3 mt-3 md:mt-0">
+          <!-- Create Button -->
+          <p-button
+            label="Nuevo Plan"
+            icon="pi pi-plus"
+            (onClick)="onCreatePlan()"
+            styleClass="p-button-success"
+          >
+          </p-button>
+
+          <!-- Search -->
+          <span class="p-input-icon-left">
+            <i class="pi pi-search"></i>
+            <input
+              type="text"
+              pInputText
+              placeholder="Buscar planes..."
+              [(ngModel)]="searchTerm"
+              (input)="onSearchInput($event)"
+              class="w-full md:w-20rem"
+            />
+          </span>
+
+          <!-- Status Filter -->
+          <p-dropdown
+            [options]="statusOptions"
+            [(ngModel)]="selectedStatus"
+            (onChange)="onStatusFilterChange($event.value)"
+            placeholder="Todos los estados"
+            optionLabel="label"
+            optionValue="value"
+            styleClass="w-full md:w-14rem"
+          >
+          </p-dropdown>
+        </div>
+      </div>
+
+      <!-- Results counter -->
+      <div class="flex align-items-center justify-content-between mb-4">
+        <span class="text-sm text-600">
+          Mostrando {{ filteredPlans.length }} de {{ plans.length }} planes
+        </span>
+        <div class="flex gap-2">
+          <p-tag
+            severity="success"
+            [value]="'Activos: ' + statsData.activePlans"
+          ></p-tag>
+          <p-tag
+            severity="danger"
+            [value]="'Inactivos: ' + statsData.inactivePlans"
+          ></p-tag>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <p-table
+        [value]="filteredPlans"
+        [paginator]="true"
+        [rows]="10"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} planes"
+        [rowsPerPageOptions]="[5, 10, 25, 50]"
+        [responsive]="true"
+        styleClass="p-datatable-customers"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="name" style="min-width: 14rem">
+              Nombre del Plan
+              <p-sortIcon field="name"></p-sortIcon>
+            </th>
+            <th style="min-width: 20rem">Descripción</th>
+            <th pSortableColumn="price" style="min-width: 10rem">
+              Precio
+              <p-sortIcon field="price"></p-sortIcon>
+            </th>
+            <th style="min-width: 8rem">Duración</th>
+            <th style="min-width: 12rem">Beneficiarios</th>
+            <th pSortableColumn="is_active" style="min-width: 8rem">
+              Estado
+              <p-sortIcon field="is_active"></p-sortIcon>
+            </th>
+            <th pSortableColumn="created_at" style="min-width: 10rem">
+              Creado
+              <p-sortIcon field="created_at"></p-sortIcon>
+            </th>
+            <th style="min-width: 10rem">Acciones</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-plan>
+          <tr>
+            <td>
+              <div class="flex align-items-center">
+                <div>
+                  <div class="font-medium text-900">{{ plan.name }}</div>
+                  <div class="text-sm text-500">{{ plan.code }}</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="max-w-20rem">
+                <span class="text-900">{{
+                  plan.description || "Sin descripción"
+                }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="font-medium text-lg text-primary">
+                {{ formatPrice(plan.price) }}
+              </div>
+            </td>
+            <td>
+              <span class="font-medium">
+                {{ getDurationText(plan.duration_days) }}
+              </span>
+            </td>
+            <td>
+              <div class="flex align-items-center gap-2">
+                <i class="pi pi-users text-primary"></i>
+                <span class="font-medium"
+                  >{{ plan.max_beneficiaries }} beneficiarios</span
+                >
+              </div>
+            </td>
+            <td>
+              <p-tag
+                [value]="getStatusText(plan.is_active)"
+                [severity]="getStatusSeverity(plan.is_active)"
+              >
+              </p-tag>
+            </td>
+            <td>{{ formatDate(plan.created_at) }}</td>
+            <td>
+              <div class="flex gap-2">
+                <p-button
+                  icon="pi pi-pencil"
+                  severity="info"
+                  size="small"
+                  [text]="true"
+                  (onClick)="onEditPlan(plan)"
+                  pTooltip="Editar plan"
+                >
+                </p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="8" class="text-center">
+              <div
+                class="flex flex-column align-items-center justify-content-center py-5"
+              >
+                <i class="pi pi-info-circle text-4xl text-500 mb-3"></i>
+                <span class="text-500 text-lg">No se encontraron planes</span>
+                <span class="text-500">con los filtros aplicados</span>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+  <!-- Form Section -->
+  <div class="col-12 my-3">
+    <div class="card">
+      <!-- Estado inicial: Sin selección -->
+      <div *ngIf="!showForm" class="text-center p-6">
+        <i
+          class="pi pi-file-edit"
+          style="
+            font-size: 4rem;
+            color: var(--text-color-secondary);
+            margin-bottom: 1rem;
+          "
+        ></i>
+        <h4 class="text-color-secondary mb-3">Gestión de Planes</h4>
+        <p class="text-color-secondary mb-4 line-height-3">
+          Seleccione un plan de la tabla para ver sus detalles o haga clic en
+          "Nuevo Plan" para crear uno.
+        </p>
+        <p-button
+          label="Crear Nuevo Plan"
+          icon="pi pi-plus"
+          (onClick)="onCreatePlan()"
+          class="p-button-outlined"
+        >
+        </p-button>
+      </div>
+
+      <!-- Formulario -->
+      <div *ngIf="showForm">
+        <!-- Header del formulario -->
+ 
+        <!-- Formulario -->
+        <div *ngIf="showForm">
+
+          <!-- Formulario reactivo -->
+          <div class="plan-form-container">
+            <div class="form-header">
+              <h2>Crear Nuevo Plan</h2>
+              <p>
+                Complete la información para crear un nuevo plan de suscripción.
+              </p>
+            </div>
+
+            <form>
+              <div class="form-grid">
+                <!-- Nombre -->
+                <div class="form-group">
+                  <label for="name">Nombre del Plan <span>*</span></label>
+                  <input type="text" id="name" placeholder="Ej: Plan Básico" />
+                </div>
+
+                <!-- Código -->
+                <div class="form-group">
+                  <label for="code">Código <span>*</span></label>
+                  <input type="text" id="code" placeholder="Ej: BASIC-001" />
+                </div>
+
+                <!-- Descripción -->
+                <div class="form-group full-width">
+                  <label for="description">Descripción <span>*</span></label>
+                  <textarea
+                    id="description"
+                    rows="3"
+                    placeholder="Describa las características y beneficios del plan..."
+                  ></textarea>
+                </div>
+
+                <!-- Precio -->
+                <div class="form-group">
+                  <label for="price">Precio (COP) <span>*</span></label>
+                  <input type="number" id="price" placeholder="Ej: 25000" />
+                </div>
+
+                <!-- Duración -->
+                <div class="form-group">
+                  <label for="duration">Duración (días) <span>*</span></label>
+                  <input type="number" id="duration" placeholder="Ej: 30" />
+                </div>
+
+                <!-- Máx. Beneficiarios -->
+                <div class="form-group">
+                  <label for="beneficiaries"
+                    >Máx. Beneficiarios <span>*</span></label
+                  >
+                  <input type="number" id="beneficiaries" placeholder="Ej: 5" />
+                </div>
+
+                <!-- Estado activo -->
+                <div class="form-group full-width switch-group">
+                  <input type="checkbox" id="is_active" />
+                  <label for="is_active">Plan activo</label>
+                  <small
+                    >Los planes inactivos no estarán disponibles para nuevas
+                    suscripciones.</small
+                  >
+                </div>
+              </div>
+
+              <!-- Botones -->
+              <div class="form-actions">
+                <button type="button" class="btn cancel">Cancelar</button>
+                <button type="submit" class="btn save">Crear Plan</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
