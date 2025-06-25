@@ -14,6 +14,7 @@ export interface Plan {
   duration_days: number;
   max_beneficiaries: number;
   is_active: boolean;
+  to_show: boolean;
   created_at: string;
 }
 

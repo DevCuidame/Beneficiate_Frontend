@@ -113,6 +113,10 @@
               Estado
               <p-sortIcon field="is_active"></p-sortIcon>
             </th>
+            <th pSortableColumn="is_active" style="min-width: 8rem">
+              Mostrar
+              <p-sortIcon field="to_show"></p-sortIcon>
+            </th>
             <th pSortableColumn="created_at" style="min-width: 10rem">
               Creado
               <p-sortIcon field="created_at"></p-sortIcon>
@@ -160,6 +164,13 @@
               <p-tag
                 [value]="getStatusText(plan.is_active)"
                 [severity]="getStatusSeverity(plan.is_active)"
+              >
+              </p-tag>
+            </td>
+            <td>
+              <p-tag
+                [value]="getStatusText(plan.to_show)"
+                [severity]="getStatusSeverity(plan.to_show)"
               >
               </p-tag>
             </td>
@@ -226,82 +237,115 @@
 
       <!-- Formulario -->
       <div *ngIf="showForm">
-        <!-- Header del formulario -->
- 
-        <!-- Formulario -->
-        <div *ngIf="showForm">
+        <div class="plan-form-container">
+          <div class="form-header">
+            <h2>{{ isEditing ? "Editar Plan" : "Crear Nuevo Plan" }}</h2>
+            <p>
+              {{
+                isEditing
+                  ? "Modifique la información para actualizar el plan."
+                  : "Complete la información para crear un nuevo plan de suscripción."
+              }}
+            </p>
+          </div>
 
-          <!-- Formulario reactivo -->
-          <div class="plan-form-container">
-            <div class="form-header">
-              <h2>Crear Nuevo Plan</h2>
-              <p>
-                Complete la información para crear un nuevo plan de suscripción.
-              </p>
+          <form [formGroup]="planForm" (ngSubmit)="onSubmitForm()">
+            <div class="form-grid">
+              <!-- Nombre -->
+              <div class="form-group">
+                <label for="name">Nombre del Plan <span>*</span></label>
+                <input
+                  type="text"
+                  id="name"
+                  formControlName="name"
+                  placeholder="Ej: Plan Básico"
+                />
+              </div>
+
+              <!-- Código -->
+              <div class="form-group">
+                <label for="code">Código <span>*</span></label>
+                <input
+                  type="text"
+                  id="code"
+                  formControlName="code"
+                  placeholder="Ej: BASIC-001"
+                />
+              </div>
+
+              <!-- Descripción -->
+              <div class="form-group full-width">
+                <label for="description">Descripción <span>*</span></label>
+                <textarea
+                  id="description"
+                  rows="3"
+                  formControlName="description"
+                  placeholder="Describa las características y beneficios del plan..."
+                ></textarea>
+              </div>
+
+              <!-- Precio -->
+              <div class="form-group">
+                <label for="price">Precio (COP) <span>*</span></label>
+                <input
+                  type="number"
+                  id="price"
+                  formControlName="price"
+                  placeholder="Ej: 25000"
+                />
+              </div>
+
+              <!-- Duración -->
+              <div class="form-group">
+                <label for="duration_days"
+                  >Duración (días) <span>*</span></label
+                >
+                <input
+                  type="number"
+                  id="duration_days"
+                  formControlName="duration_days"
+                  placeholder="Ej: 30"
+                />
+              </div>
+
+              <!-- Beneficiarios -->
+              <div class="form-group">
+                <label for="max_beneficiaries"
+                  >Máx. Beneficiarios <span>*</span></label
+                >
+                <input
+                  type="number"
+                  id="max_beneficiaries"
+                  formControlName="max_beneficiaries"
+                  placeholder="Ej: 5"
+                />
+              </div>
+
+              <!-- Estado activo -->
+              <div class="form-group full-width switch-group">
+                <input
+                  type="checkbox"
+                  id="is_active"
+                  formControlName="is_active"
+                />
+                <label for="is_active">Plan activo</label>
+                <small
+                  >Los planes inactivos no estarán disponibles para nuevas
+                  suscripciones.</small
+                >
+              </div>
             </div>
 
-            <form>
-              <div class="form-grid">
-                <!-- Nombre -->
-                <div class="form-group">
-                  <label for="name">Nombre del Plan <span>*</span></label>
-                  <input type="text" id="name" placeholder="Ej: Plan Básico" />
-                </div>
-
-                <!-- Código -->
-                <div class="form-group">
-                  <label for="code">Código <span>*</span></label>
-                  <input type="text" id="code" placeholder="Ej: BASIC-001" />
-                </div>
-
-                <!-- Descripción -->
-                <div class="form-group full-width">
-                  <label for="description">Descripción <span>*</span></label>
-                  <textarea
-                    id="description"
-                    rows="3"
-                    placeholder="Describa las características y beneficios del plan..."
-                  ></textarea>
-                </div>
-
-                <!-- Precio -->
-                <div class="form-group">
-                  <label for="price">Precio (COP) <span>*</span></label>
-                  <input type="number" id="price" placeholder="Ej: 25000" />
-                </div>
-
-                <!-- Duración -->
-                <div class="form-group">
-                  <label for="duration">Duración (días) <span>*</span></label>
-                  <input type="number" id="duration" placeholder="Ej: 30" />
-                </div>
-
-                <!-- Máx. Beneficiarios -->
-                <div class="form-group">
-                  <label for="beneficiaries"
-                    >Máx. Beneficiarios <span>*</span></label
-                  >
-                  <input type="number" id="beneficiaries" placeholder="Ej: 5" />
-                </div>
-
-                <!-- Estado activo -->
-                <div class="form-group full-width switch-group">
-                  <input type="checkbox" id="is_active" />
-                  <label for="is_active">Plan activo</label>
-                  <small
-                    >Los planes inactivos no estarán disponibles para nuevas
-                    suscripciones.</small
-                  >
-                </div>
-              </div>
-
-              <!-- Botones -->
-              <div class="form-actions">
-                <button type="button" class="btn cancel">Cancelar</button>
-                <button type="submit" class="btn save">Crear Plan</button>
-              </div>
-            </form>
-          </div>
+            <!-- Botones -->
+            <div class="form-actions">
+              <button type="button" (click)="onCancelForm()" class="btn cancel">
+                Cancelar
+              </button>
+              <button type="submit" class="btn save">
+                {{ isEditing ? "Actualizar Plan" : "Crear Plan" }}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
