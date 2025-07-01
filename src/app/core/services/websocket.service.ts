@@ -75,7 +75,7 @@ export class WebsocketService {
     }
 
     // Asegurarse de que la URL de WebSocket esté correctamente formateada
-    let wsUrl = environment.url.replace(/^http/, 'ws').replace(/\/$/, '');
+    let wsUrl = environment.url.replace(/^http/, 'ws').replace(/\/$/, '') + '/ws';
 
     return new Observable((observer: Observer<any>) => {
       try {
