@@ -32,7 +32,7 @@
     </ion-buttons>
 
     <!-- Menú lateral para móviles -->
-    <ion-menu side="start" menuId="main-menu" contentId="main-content">
+    <ion-menu side="start" menuId="main-menu" contentId="main-content" sttyle="z-index: 1000;">
       <ion-header>
         <ion-toolbar>
           <div class="toolbar-content">
@@ -51,14 +51,15 @@
       <ion-content>
         <div class="menu-list-content">
           <ion-list>
-              <ion-item button (click)="navigateToHome()" [class.active]="isActive('/desktop')">Inicio</ion-item>
-              <ion-item button (click)="navigateToAboutUs()" [class.active]="isActive('/desktop/about-us')">Nosotros</ion-item>
-              <ion-item button (click)="navigateToWorkWithUs()" [class.active]="isActive('/desktop/work-with-us')">Trabaja con Nosotros</ion-item>
+              <ion-item button (click)="navigateToHome()">Inicio</ion-item>
+              <ion-item button (click)="navigateToAboutUs()">Nosotros</ion-item>
+              <ion-item button (click)="navigateToWorkWithUs()">Trabaja con Nosotros</ion-item>
           </ion-list>
         </div>     
 
         <div class="auth-section">
-          <button class="login-button">Iniciar sesión</button>
+          <button (click)="navigateToLogin()" class="button">Iniciar sesión</button>
+          <button (click)="navigateToRegister()" class="button">Registrarte</button>
         </div>   
       </ion-content>
 

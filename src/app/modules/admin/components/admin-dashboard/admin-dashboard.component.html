@@ -1,0 +1,228 @@
+<div class="grid admin-dashboard">
+    <!-- Header Section -->
+    <div class="col-12 my-3">
+        <div class="card">
+            <div class="flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="text-900 font-bold mb-2">Panel Usuario</h2>
+                    <p class="text-600 m-0">Gestión y estadísticas de usuarios</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-500 text-sm">Última actualización: {{ getCurrentDate() }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-cards-container my-3">
+        <!-- Total Users Card -->
+        <div class="stats-card">
+            <div class="card mb-0"> 
+                <div class="flex justify-content-between align-items-center">
+                    <div>
+                        <span class="block text-500 font-medium mb-2">Usuarios</span>
+                        <div class="text-900 font-bold text-xl">{{ statsData.totalUsers | number }}</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-primary-100 border-circle" 
+                         style="width: 3rem; height: 3rem;">
+                        <i class="pi pi-users text-primary text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Individual Plan Card -->
+        <div class="stats-card">
+            <div class="card mb-0">
+                <div class="flex justify-content-between align-items-center">
+                    <div>
+                        <span class="block text-500 font-medium mb-2">Plan Individual</span>
+                        <div class="text-900 font-bold text-xl">{{ statsData.individualPlan | number }}</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-primary-100 border-circle" 
+                         style="width: 3rem; height: 3rem;">
+                        <i class="pi pi-user text-primary text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Family Plan Card -->
+        <div class="stats-card">
+            <div class="card mb-0">
+                <div class="flex justify-content-between align-items-center">
+                    <div>
+                        <span class="block text-500 font-medium mb-2">Plan Familiar</span>
+                        <div class="text-900 font-bold text-xl">{{ statsData.familyPlan | number }}</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-primary-100 border-circle" 
+                         style="width: 3rem; height: 3rem;">
+                        <i class="pi pi-home text-primary text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="col-12 lg:col-6 my-3">
+        <div class="card">
+            <h5>Distribución de Planes</h5>
+            <div style="height: 300px;">
+                <p-chart 
+                    type="doughnut" 
+                    [data]="chartData" 
+                    [options]="chartOptions"
+                    [responsive]="true">
+                </p-chart>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Table Section -->
+    <div class="col-12 my-3">
+        <div class="card">
+            <!-- Table Header with filters -->
+            <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center mb-5">
+                <h5 class="m-0">Lista de Usuarios</h5>
+                
+                <!-- Filters Row -->
+                <div class="flex flex-column md:flex-row gap-3 mt-3 md:mt-0">
+                    <!-- Search -->
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input 
+                            type="text" 
+                            pInputText 
+                            placeholder="Buscar usuarios..."
+                            [(ngModel)]="searchTerm"
+                            (input)="onSearchInput($event)"
+                            class="w-full md:w-20rem"
+                        />
+                    </span>
+                    
+                    <!-- Plan Filter -->
+                    <p-dropdown 
+                        [options]="planOptions" 
+                        [(ngModel)]="selectedPlan"
+                        (onChange)="onPlanFilterChange($event.value)"
+                        placeholder="Todos los planes"
+                        optionLabel="label"
+                        optionValue="value"
+                        styleClass="w-full md:w-14rem">
+                    </p-dropdown>
+                </div>
+            </div>
+            
+            <!-- Results counter -->
+            <div class="flex align-items-center justify-content-between mb-4">
+                <span class="text-sm text-600">
+                    Mostrando {{ filteredUsers.length }} de {{ user.length }} usuarios
+                </span>
+                <div class="flex gap-2">
+                    <p-tag severity="info" [value]="'Individual: ' + statsData.individualPlan"></p-tag>
+                    <p-tag severity="warning" [value]="'Familiar: ' + statsData.familyPlan"></p-tag>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <p-table 
+                [value]="filteredUsers" 
+                [paginator]="true" 
+                [rows]="10" 
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} usuarios"
+                [rowsPerPageOptions]="[5, 10, 25, 50]"
+                [responsive]="true"
+                styleClass="p-datatable-customers">
+                
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="first_name" style="min-width:14rem">
+                            Usuario 
+                            <p-sortIcon field="first_name"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="email" style="min-width:12rem">
+                            Email 
+                            <p-sortIcon field="email"></p-sortIcon>
+                        </th>
+                        <th style="min-width:8rem">Verificado</th>
+                        <th style="min-width:10rem">Identificación</th>
+                        <th pSortableColumn="gender" style="min-width:8rem">
+                            Género 
+                            <p-sortIcon field="gender"></p-sortIcon>
+                        </th>
+                        <th style="min-width:10rem">Ubicación</th>
+                        <th pSortableColumn="plan_name" style="min-width:8rem">
+                            Plan 
+                            <p-sortIcon field="plan_name"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="created_at" style="min-width:10rem">
+                            Creado 
+                            <p-sortIcon field="created_at"></p-sortIcon>
+                        </th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-user>
+                    <tr>
+                        <td>
+                            <div class="flex align-items-center">
+                                <p-avatar 
+                                    [label]="getUserInitials(user.first_name, user.last_name)"
+                                    styleClass="mr-2"
+                                    size="normal"
+                                    shape="circle">
+                                </p-avatar>
+                                <div>
+                                    <div class="font-medium">{{ user.first_name }} {{ user.last_name }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="font-medium">{{ user.email }}</span>
+                        </td>
+                        <td>
+                            <p-tag 
+                                [value]="getVerifiedText(user.verified)"
+                                [severity]="getVerifiedSeverity(user.verified)">
+                            </p-tag>
+                        </td>
+                        <td>
+                            <div>
+                                <div class="font-medium">{{ user.identification_type }}</div>
+                                <div class="text-sm text-500">{{ user.identification_number }}</div>
+                            </div>
+                        </td>
+                        <td>{{ getGenderText(user.gender) }}</td>
+                        <td>
+                            <div>
+                                <div class="font-medium">{{ user.city_name }}</div>
+                                <div class="text-sm text-500">{{ user.department_name }}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <p-tag 
+                                [value]="user.plan_name || 'Sin plan'"
+                                [severity]="user.plan_name ? getPlanSeverity(user.plan_name) : 'danger'">
+                            </p-tag>
+                        </td>
+                        <td>{{ formatDate(user.created_at) }}</td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="8" class="text-center">
+                            <div class="flex flex-column align-items-center justify-content-center py-5">
+                                <i class="pi pi-info-circle text-4xl text-500 mb-3"></i>
+                                <span class="text-500 text-lg">No se encontraron usuarios</span>
+                                <span class="text-500">con los filtros aplicados</span>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

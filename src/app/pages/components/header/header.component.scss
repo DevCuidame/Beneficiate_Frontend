@@ -110,15 +110,19 @@
     .auth-section {
       background-color: white;
       height: 20%;
+      padding-bottom: 4rem;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
+      gap: 20px;
 
-      .login-button {
+      .button {
         background-image: url('../../../../assets/background/primary_button_bg.svg');
         background-repeat: no-repeat;
         background-size: cover;
         color: var(--ion-color-dark);
+        width: 75%;
         border: none;
         padding: 15px 25px;
         border-radius: 30px;

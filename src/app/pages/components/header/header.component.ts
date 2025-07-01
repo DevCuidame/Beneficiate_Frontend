@@ -57,4 +57,12 @@ export class HeaderComponent {
   navigateToWorkWithUs() {
     this.router.navigate(['/desktop/work-with-us']);
   }
+
+  navigateToLogin() {
+    this.router.navigate(['/desktop/login']);
+  }
+
+  navigateToRegister() {
+    this.router.navigate(['/desktop/register']);
+  }
 }

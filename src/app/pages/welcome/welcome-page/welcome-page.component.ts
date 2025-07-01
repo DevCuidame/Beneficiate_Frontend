@@ -85,7 +85,7 @@ export class WelcomePageComponent  implements OnInit {
         next: (plans) => {
           // Verificar si planes es un array
           if (Array.isArray(plans)) {
-            this.plans = plans.filter(plan => plan && plan.is_active);
+            this.plans = plans.filter(plan => plan && plan.is_active && plan.to_show);
           } else if (plans && typeof plans === 'object') {
             // Si es un objeto, convertirlo a array
             this.plans = Object.values(plans as Record<string, Plan>).filter(plan => plan && plan.is_active);
