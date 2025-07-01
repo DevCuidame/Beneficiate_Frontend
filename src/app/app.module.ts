@@ -1,7 +1,10 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouteReuseStrategy } from '@angular/router';
 
+import { ToastrModule } from 'ngx-toastr';
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
 import { AppComponent } from './app.component';
@@ -16,12 +19,15 @@ import { BrowserRedirectGuard } from './core/guards/redirect.guard';
   declarations: [AppComponent],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    HttpClientModule, // Añadí HttpClientModule aquí ya que lo estás importando
+    HttpClientModule,
     CoreModule,
     FontAwesomeModule,
     FormsModule,
+    ToastrModule,
+    NgbModule,
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

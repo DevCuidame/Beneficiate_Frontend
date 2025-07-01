@@ -78,13 +78,11 @@
               <button class="login-button" (click)="navigateToLogin()">Iniciar sesión</button>
             </div>
           </div>
+        } @else {
+          <h2>Tu bienestar es nuestra prioridad. Descubre opciones que se adaptan a ti.</h2>
         }
       </div>
     </div>
-
-    @if (width < 800) {
-      <h2>Tu bienestar es nuestra prioridad. Descubre opciones que se adaptan a ti.</h2>
-    }
 
     <app-whatsapp-btn></app-whatsapp-btn>
   </section>
@@ -113,5 +111,6 @@
     </div>
     
   </section>
+  
   <app-footer></app-footer>
 </div>

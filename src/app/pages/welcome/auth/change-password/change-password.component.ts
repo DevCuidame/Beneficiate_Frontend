@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { HeaderComponent } from '../../../components/header/header.component';
 import { ResetPasswordComponent } from 'src/app/modules/auth/pages/reset-password/reset-password.component';
@@ -10,11 +10,8 @@ import { FooterComponent } from 'src/app/pages/components/footer/footer.componen
   templateUrl: './change-password.component.html',
   styleUrls: ['./change-password.component.scss'],
 })
-export class ChangePasswordComponent  implements OnInit {
+export class ChangePasswordComponent  {
 
   constructor() {}
-
-  ngOnInit() {}
-
 
 }

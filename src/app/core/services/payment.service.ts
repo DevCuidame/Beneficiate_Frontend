@@ -14,6 +14,7 @@ export interface Plan {
   duration_days: number;
   max_beneficiaries: number;
   is_active: boolean;
+  to_show: boolean;
   created_at: string;
 }
 
@@ -21,6 +22,13 @@ export interface PaymentTransaction {
   transactionId: string;
   publicKey: string;
   redirectUrl: string;
+}
+
+export interface PaymentConfirmationEmail {
+  emailTo: string;
+  name: string;
+  price: number;
+  duration: string;
 }
 
 export interface PaymentHistory {
@@ -265,6 +273,27 @@ export class PaymentService {
         catchError((error) => {
           console.error('Error iniciando pago:', error);
           return throwError(() => new Error('No se pudo iniciar el pago'));
+        })
+      );
+  }
+
+  sendEmailConfirmation(mailData: PaymentConfirmationEmail): Observable<boolean> {
+    return this.http
+      .post<ApiResponse<{ success: boolean }> | { success: boolean }>(
+        `${this.baseUrl}api/v1/payments/send-confirmation-email`,
+        mailData
+      )
+      .pipe(
+        map((response) => {
+          if (response && typeof response === 'object' && 'data' in response) {
+            return (response as ApiResponse<{ success: boolean }>).data.success;
+          } else {
+            return (response as { success: boolean }).success;
+          }
+        }),
+        catchError((error) => {
+          console.error('Error enviando email de confirmación:', error);
+          return throwError(() => new Error('No se pudo enviar el email de confirmación'));
         })
       );
   }

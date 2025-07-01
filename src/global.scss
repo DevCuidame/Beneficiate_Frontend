@@ -25,6 +25,9 @@
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 @import "./theme/variables.scss";
+@import "assets/admin/layout/styles/layout/layout.scss";
+
+
 
 
 /**
@@ -47,6 +50,15 @@
 
 p {
     margin: 0;
+}
+
+.p-float-label > label {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.field {
+  margin-bottom: 1.5rem;
 }
 
 /* Añade esto a tu archivo global.scss o donde manejes los estilos globales */

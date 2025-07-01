@@ -24,7 +24,8 @@
       z-index: 0;
     }
 
-    .banner, .form-section {
+    .banner,
+    .form-section {
       position: relative;
       z-index: 2;
     }
@@ -102,18 +103,59 @@
     }
   }
 }
-@media (max-width: 1300px) {
-  .login-container {
-    .banner-section {
-      .banner {
-        width: 80%;
+
+@media (max-width: 800px) {
+  .login-main {
+    height: 125dvh !important;
+
+    .login-container {
+      height: auto !important;
+      padding: 6rem 0 0;
+      flex-direction: column;
+
+      .banner-section {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+
+        .banner {
+          width: 100% !important;
+          height: 40vh;
+          border-radius: 0 !important;
+        }
       }
-    }
 
-    .form-section {
+      .form-section {
+        width: 100%;
+        padding: 40px 20px;
+        height: auto;
 
-      form {
-        padding: 0 25% 0 5%;
+        form {
+          padding: 0;
+          width: 100%;
+          height: auto;
+          gap: 20px;
+
+          .input-contain {
+            width: 100%;
+            gap: 15px;
+          }
+
+          .btn-form {
+            width: 100%;
+            gap: 10px;
+
+            .forgot-password {
+              font-size: 1.2rem;
+              margin-bottom: 10px;
+            }
+
+            .login-button {
+              font-size: 1.5rem;
+              height: 3.5rem;
+            }
+          }
+        }
       }
     }
   }
