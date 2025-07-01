@@ -27,49 +27,32 @@ export class BrowserRedirectGuard implements CanActivate {
     const isNativeApp = this.platformService.isNativeApp();
     const isMobileBrowser = this.platformService.isMobileBrowser();
     
-    // Rutas exclusivas para escritorio
-    const desktopOnlyRoutes = ['/home-desktop', '/call-center'];
-    
-    // Rutas específicas para móvil
-    const mobileRoutes = ['/auth', '/home', '/beneficiary', '/user'];
-    
-    // Ruta base para determinar redirecciones
-    const currentRoute = '/' + url.split('/')[1];
-    
-    // CASO 1: Navegador de escritorio
-    if (isDesktopBrowser) {
-      if (mobileRoutes.some(route => currentRoute.startsWith(route))) {
-        // Redirigir a escritorio si intenta acceder a rutas móviles
-        this.router.navigate(['/desktop']);
-        return false;
-      }
-      
+    // CASO 1: Navegadores (desktop y móvil) - Acceso libre a todas las rutas
+    if (isDesktopBrowser || isMobileBrowser) {
+      // Solo redirigir la ruta raíz a /desktop para todos los navegadores
       if (url === '/') {
         this.router.navigate(['/desktop']);
         return false;
       }
       
+      // Permitir acceso a cualquier otra ruta
       return true;
     } 
-    // CASO 2: Dispositivos móviles (app nativa o navegador)
-    else {
-      // Los usuarios móviles no pueden acceder a rutas exclusivas de escritorio
+    // CASO 2: App nativa de Android - Mantener restricciones
+    else if (isNativeApp) {
+      // Rutas exclusivas para escritorio (no permitidas en app nativa)
+      const desktopOnlyRoutes = ['/home-desktop', '/call-center', '/desktop'];
+      
+      // Ruta base para determinar redirecciones
+      const currentRoute = '/' + url.split('/')[1];
+      
+      // Los usuarios de app nativa no pueden acceder a rutas exclusivas de escritorio
       if (desktopOnlyRoutes.some(route => currentRoute.startsWith(route))) {
         this.router.navigate(['/auth/login']);
         return false;
       }
       
-      // Permitir acceso a ruta /desktop en navegador móvil
-      if (currentRoute === '/desktop' && isMobileBrowser) {
-        return true;
-      }
-      
-      // Redirigir rutas de escritorio a auth/login en app nativa
-      if (currentRoute === '/desktop' && isNativeApp) {
-        this.router.navigate(['/auth/login']);
-        return false;
-      }
-      
+      // Redirigir ruta raíz a login en app nativa
       if (url === '/') {
         this.router.navigate(['/auth/login']);
         return false;
@@ -77,5 +60,8 @@ export class BrowserRedirectGuard implements CanActivate {
       
       return true;
     }
+    
+    // Fallback: permitir acceso por defecto
+    return true;
   }
 }

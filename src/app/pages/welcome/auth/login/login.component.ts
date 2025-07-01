@@ -15,6 +15,7 @@ import {
   NavController,
 } from '@ionic/angular';
 import { AuthService } from '../../../../modules/auth/services/auth.service';
+import { PlatformDetectionService } from '../../../../core/services/platform-detection.service';
 import { CommonModule } from '@angular/common';
 import { CustomInputComponent } from 'src/app/pages/components/inputs/custom-input/custom-input.component';
 import { HeaderComponent } from 'src/app/pages/components/header/header.component';
@@ -48,7 +49,8 @@ export class LoginComponent {
     private router: Router,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
-    public navCtrl: NavController
+    public navCtrl: NavController,
+    private platformService: PlatformDetectionService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -82,10 +84,20 @@ export class LoginComponent {
       this.authService.login(this.loginForm.value).subscribe(
         async (response) => {
           await loading.dismiss();
-          setTimeout(() => {
+          setTimeout(async () => {
+            // Detectar si es navegador móvil
+            const isMobileBrowser = this.platformService.isMobileBrowser();
+            
             if (!response.data.user.agentActive) {
-              this.router.navigateByUrl('/home-desktop');
+              if (isMobileBrowser) {
+                // Redirigir a dashboard móvil si es navegador móvil
+                await this.navCtrl.navigateRoot(['/home/dashboard']);
+              } else {
+                // Redirigir a escritorio si es navegador desktop
+                this.router.navigateByUrl('/home-desktop');
+              }
             } else {
+              // Para agentes siempre ir al call center
               this.router.navigateByUrl('/call-center/dash/assigment');
             }
           }, 100);
